@@ -173,40 +173,17 @@ export default function HomeScreen() {
             onPress={() => setShowNotifications(false)}
           />
           <View style={[styles.notificationPopup, { top: insets.top + 60 }]}>
-            <LinearGradient
-              colors={['rgba(30, 30, 30, 0.98)', 'rgba(20, 20, 20, 0.98)']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0, y: 1 }}
-              style={styles.glassBackground}
-            >
+            <View style={styles.notificationContainer}>
               <View style={styles.notificationHeader}>
-                <View>
-                  <Text style={styles.notificationTitle}>Notifications</Text>
-                  <Text style={styles.notificationSubtitle}>{notifications.filter(n => !n.read).length} new</Text>
-                </View>
-                <TouchableOpacity
-                  style={styles.closeButton}
-                  onPress={() => {
-                    if (Platform.OS !== 'web') {
-                      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-                    }
-                    setShowNotifications(false);
-                  }}
-                  activeOpacity={0.6}
-                >
-                  <X color="#ffffff" size={20} strokeWidth={2.5} />
-                </TouchableOpacity>
+                <Text style={styles.notificationTitle}>Notifications</Text>
               </View>
               {notifications.map((notif) => {
                 return (
                   <TouchableOpacity
                     key={notif.id}
-                    style={[
-                      styles.notificationItem,
-                      notif.read && styles.notificationItemRead
-                    ]}
+                    style={styles.notificationItem}
                     onPress={() => handleNotificationPress(notif.id)}
-                    activeOpacity={0.5}
+                    activeOpacity={0.7}
                   >
                     <View style={styles.notificationIconWrapper}>
                       <LinearGradient
@@ -216,7 +193,7 @@ export default function HomeScreen() {
                         style={styles.notificationIconContainer}
                       >
                       {notif.icon === 'heart' && (
-                        <Svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                        <Svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                           <Path
                             fillRule="evenodd"
                             clipRule="evenodd"
@@ -229,7 +206,7 @@ export default function HomeScreen() {
                         </Svg>
                       )}
                       {notif.icon === 'website' && (
-                        <Svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                        <Svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                           <Path
                             d="M22 9H2M2 7.8L2 16.2C2 17.8802 2 18.7202 2.32698 19.362C2.6146 19.9265 3.07354 20.3854 3.63803 20.673C4.27976 21 5.11984 21 6.8 21H17.2C18.8802 21 19.7202 21 20.362 20.673C20.9265 20.3854 21.3854 19.9265 21.673 19.362C22 18.7202 22 17.8802 22 16.2V7.8C22 6.11984 22 5.27977 21.673 4.63803C21.3854 4.07354 20.9265 3.6146 20.362 3.32698C19.7202 3 18.8802 3 17.2 3L6.8 3C5.11984 3 4.27976 3 3.63803 3.32698C3.07354 3.6146 2.6146 4.07354 2.32698 4.63803C2 5.27976 2 6.11984 2 7.8Z"
                             stroke="#ffffff"
@@ -240,7 +217,7 @@ export default function HomeScreen() {
                         </Svg>
                       )}
                       {notif.icon === 'upload' && (
-                        <Svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+                        <Svg width="20" height="20" viewBox="0 0 24 24" fill="none">
                           <Path
                             d="M21 12V16.2C21 17.8802 21 18.7202 20.673 19.362C20.3854 19.9265 19.9265 20.3854 19.362 20.673C18.7202 21 17.8802 21 16.2 21H7.8C6.11984 21 5.27976 21 4.63803 20.673C4.07354 20.3854 3.6146 19.9265 3.32698 19.362C3 18.7202 3 17.8802 3 16.2V12M16 7L12 3M12 3L8 7M12 3V15"
                             stroke="#ffffff"
@@ -253,14 +230,26 @@ export default function HomeScreen() {
                       </LinearGradient>
                     </View>
                     <View style={styles.notificationTextContainer}>
-                      <Text style={styles.notificationText} numberOfLines={2}>{notif.text}</Text>
+                      <Text style={styles.notificationText} numberOfLines={1}>{notif.text}</Text>
                       <Text style={styles.notificationTime}>{notif.time}</Text>
                     </View>
-                    {!notif.read && <View style={styles.notificationItemDot} />}
+                    <TouchableOpacity
+                      style={styles.dismissButton}
+                      onPress={(e) => {
+                        e.stopPropagation();
+                        if (Platform.OS !== 'web') {
+                          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                        }
+                        setNotifications(prev => prev.filter(n => n.id !== notif.id));
+                      }}
+                      activeOpacity={0.6}
+                    >
+                      <X color="#9ca3af" size={18} strokeWidth={2} />
+                    </TouchableOpacity>
                   </TouchableOpacity>
                 );
               })}
-            </LinearGradient>
+            </View>
           </View>
         </>
       )}
@@ -1013,119 +1002,76 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 20,
     width: 380,
-    overflow: 'hidden',
-    borderRadius: 28,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 24 },
-    shadowOpacity: 0.9,
-    shadowRadius: 48,
-    elevation: 20,
     zIndex: 9999,
   },
-  glassBackground: {
-    padding: 24,
+  notificationContainer: {
+    backgroundColor: '#000000',
     borderRadius: 24,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    padding: 16,
     shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.5,
-    shadowRadius: 24,
+    shadowOffset: { width: 0, height: 16 },
+    shadowOpacity: 0.6,
+    shadowRadius: 32,
+    elevation: 20,
   },
   notificationHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    marginBottom: 20,
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+    marginBottom: 12,
+    paddingHorizontal: 4,
   },
   notificationTitle: {
-    fontSize: 24,
+    fontSize: 18,
     fontFamily: 'Archivo-Bold',
     color: '#ffffff',
-    letterSpacing: -0.5,
-    marginBottom: 2,
-  },
-  notificationSubtitle: {
-    fontSize: 13,
-    fontFamily: 'Inter-Medium',
-    color: 'rgba(255, 255, 255, 0.5)',
-  },
-  closeButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.15)',
+    letterSpacing: -0.3,
   },
   notificationItem: {
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    backgroundColor: '#f3f4f6',
     borderRadius: 16,
-    padding: 16,
-    marginBottom: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    padding: 14,
+    marginBottom: 10,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 14,
-  },
-  notificationItemRead: {
-    backgroundColor: 'rgba(255, 255, 255, 0.02)',
-    borderColor: 'rgba(255, 255, 255, 0.05)',
-    opacity: 0.6,
+    gap: 12,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.08,
+    shadowRadius: 8,
+    elevation: 2,
   },
   notificationIconWrapper: {
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  notificationContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
+    shadowOpacity: 0.2,
+    shadowRadius: 6,
+    elevation: 3,
   },
   notificationIconContainer: {
-    width: 48,
-    height: 48,
-    borderRadius: 14,
+    width: 44,
+    height: 44,
+    borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   notificationTextContainer: {
     flex: 1,
+    gap: 2,
   },
   notificationText: {
-    fontSize: 14,
-    fontFamily: 'Inter-Medium',
-    color: '#ffffff',
+    fontSize: 15,
+    fontFamily: 'Inter-SemiBold',
+    color: '#1f2937',
     lineHeight: 20,
-    marginBottom: 4,
   },
   notificationTime: {
-    fontSize: 12,
+    fontSize: 13,
     fontFamily: 'Inter-Regular',
-    color: 'rgba(255, 255, 255, 0.45)',
+    color: '#6b7280',
   },
-  notificationItemDot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#3b82f6',
-    borderWidth: 2,
-    borderColor: '#1e40af',
-    shadowColor: '#3b82f6',
-    shadowOffset: { width: 0, height: 0 },
-    shadowOpacity: 0.8,
-    shadowRadius: 8,
-    elevation: 5,
+  dismissButton: {
+    width: 32,
+    height: 32,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 16,
   },
 });
