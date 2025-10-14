@@ -174,95 +174,129 @@ export default function StatsScreen() {
           {PLATFORM_STATS.map((platform, index) => {
             const isExpanded = expandedPlatform === platform.name;
             return (
-              <View key={index} style={styles.platformCardWrapper}>
-                <TouchableOpacity
-                  onPress={() => handlePlatformPress(platform.name)}
-                  activeOpacity={0.7}
-                >
+              <TouchableOpacity
+                key={index}
+                onPress={() => handlePlatformPress(platform.name)}
+                activeOpacity={0.8}
+                style={styles.platformCardWrapper}
+              >
+                <View style={styles.platformCardInner}>
                   <LinearGradient
-                    colors={[platform.color[0] + '15', platform.color[1] + '15']}
+                    colors={[platform.color[0] + '18', platform.color[1] + '18']}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
                     style={[styles.platformGradient, isExpanded && styles.platformGradientExpanded]}
                   >
-                    <View style={styles.platformHeader}>
-                      <View style={styles.platformTitleRow}>
-                        <View style={styles.platformIconWrapper}>
+                    <View style={styles.platformMainContent}>
+                      <View style={styles.platformLeftSection}>
+                        <View style={[styles.platformIconWrapper, {
+                          backgroundColor: platform.color[0] + '25',
+                          borderColor: platform.color[0] + '40'
+                        }]}>
                           <Image
                             source={{ uri: platform.icon }}
                             style={styles.platformIcon}
                           />
                         </View>
-                        <View>
-                          <Text style={styles.platformName}>{platform.name}</Text>
-                          <View style={styles.growthBadge}>
-                            {platform.growthUp ? (
-                              <ArrowUp color="#10b981" size={10} strokeWidth={2.5} />
-                            ) : (
-                              <ArrowDown color="#ef4444" size={10} strokeWidth={2.5} />
-                            )}
-                            <Text style={[styles.growthText, { color: platform.growthUp ? '#10b981' : '#ef4444' }]}>
-                              {platform.growth}
-                            </Text>
+                        <View style={styles.platformInfo}>
+                          <View style={styles.platformNameRow}>
+                            <Text style={styles.platformName}>{platform.name}</Text>
+                            <View style={[styles.growthBadge, {
+                              backgroundColor: platform.growthUp ? '#10b98115' : '#ef444415'
+                            }]}>
+                              {platform.growthUp ? (
+                                <ArrowUp color="#10b981" size={10} strokeWidth={2.5} />
+                              ) : (
+                                <ArrowDown color="#ef4444" size={10} strokeWidth={2.5} />
+                              )}
+                              <Text style={[styles.growthText, { color: platform.growthUp ? '#10b981' : '#ef4444' }]}>
+                                {platform.growth}
+                              </Text>
+                            </View>
+                          </View>
+                          <View style={styles.quickStats}>
+                            <View style={styles.quickStatItem}>
+                              <View style={styles.statDot} />
+                              <Text style={styles.quickStatText}>{platform.followers} followers</Text>
+                            </View>
+                            <View style={styles.quickStatItem}>
+                              <View style={styles.statDot} />
+                              <Text style={styles.quickStatText}>{platform.totalReach} reach</Text>
+                            </View>
                           </View>
                         </View>
                       </View>
-                    </View>
-
-                    <View style={styles.platformStats}>
-                      <View style={styles.platformStatItem}>
-                        <Text style={styles.platformStatValue}>{platform.followers}</Text>
-                        <Text style={styles.platformStatLabel}>Followers</Text>
-                      </View>
-                      <View style={styles.platformStatDivider} />
-                      <View style={styles.platformStatItem}>
-                        <Text style={styles.platformStatValue}>{platform.totalReach}</Text>
-                        <Text style={styles.platformStatLabel}>Total Reach</Text>
+                      <View style={[styles.expandIndicator, isExpanded && styles.expandIndicatorActive]}>
+                        <View style={styles.expandLine} />
+                        <View style={[styles.expandLine, styles.expandLineRotated]} />
                       </View>
                     </View>
                   </LinearGradient>
 
                   {isExpanded && (
                     <LinearGradient
-                      colors={[platform.color[0] + '0d', platform.color[1] + '0d']}
+                      colors={[platform.color[0] + '0a', platform.color[1] + '0a']}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 1, y: 1 }}
                       style={styles.expandedGradient}
                     >
+                      <View style={styles.expandedDivider}>
+                        <View style={styles.dividerLine} />
+                      </View>
                       <View style={styles.detailsGrid}>
                         <View style={styles.detailItem}>
-                          <View style={styles.detailIconContainer}>
-                            <Eye color="rgba(255, 255, 255, 0.6)" size={16} strokeWidth={2} />
+                          <View style={styles.detailHeader}>
+                            <View style={[styles.detailIconContainer, { backgroundColor: '#60a5fa15' }]}>
+                              <Eye color="#60a5fa" size={18} strokeWidth={2} />
+                            </View>
+                            <Text style={styles.detailValue}>15.2K</Text>
                           </View>
-                          <Text style={styles.detailValue}>15.2K</Text>
                           <Text style={styles.detailLabel}>Views</Text>
+                          <View style={styles.detailProgress}>
+                            <View style={[styles.detailProgressBar, { width: '85%', backgroundColor: '#60a5fa' }]} />
+                          </View>
                         </View>
                         <View style={styles.detailItem}>
-                          <View style={styles.detailIconContainer}>
-                            <Heart color="rgba(255, 255, 255, 0.6)" size={16} strokeWidth={2} />
+                          <View style={styles.detailHeader}>
+                            <View style={[styles.detailIconContainer, { backgroundColor: '#fbbf2415' }]}>
+                              <Heart color="#fbbf24" size={18} strokeWidth={2} />
+                            </View>
+                            <Text style={styles.detailValue}>8.2K</Text>
                           </View>
-                          <Text style={styles.detailValue}>8.2K</Text>
                           <Text style={styles.detailLabel}>Likes</Text>
+                          <View style={styles.detailProgress}>
+                            <View style={[styles.detailProgressBar, { width: '65%', backgroundColor: '#fbbf24' }]} />
+                          </View>
                         </View>
                         <View style={styles.detailItem}>
-                          <View style={styles.detailIconContainer}>
-                            <Share2 color="rgba(255, 255, 255, 0.6)" size={16} strokeWidth={2} />
+                          <View style={styles.detailHeader}>
+                            <View style={[styles.detailIconContainer, { backgroundColor: '#10b98115' }]}>
+                              <Share2 color="#10b981" size={18} strokeWidth={2} />
+                            </View>
+                            <Text style={styles.detailValue}>1.7K</Text>
                           </View>
-                          <Text style={styles.detailValue}>1.7K</Text>
                           <Text style={styles.detailLabel}>Shares</Text>
+                          <View style={styles.detailProgress}>
+                            <View style={[styles.detailProgressBar, { width: '45%', backgroundColor: '#10b981' }]} />
+                          </View>
                         </View>
                         <View style={styles.detailItem}>
-                          <View style={styles.detailIconContainer}>
-                            <TrendingUp color="rgba(255, 255, 255, 0.6)" size={16} strokeWidth={2} />
+                          <View style={styles.detailHeader}>
+                            <View style={[styles.detailIconContainer, { backgroundColor: '#8b5cf615' }]}>
+                              <TrendingUp color="#8b5cf6" size={18} strokeWidth={2} />
+                            </View>
+                            <Text style={styles.detailValue}>4.2%</Text>
                           </View>
-                          <Text style={styles.detailValue}>4.2%</Text>
                           <Text style={styles.detailLabel}>Engagement</Text>
+                          <View style={styles.detailProgress}>
+                            <View style={[styles.detailProgressBar, { width: '55%', backgroundColor: '#8b5cf6' }]} />
+                          </View>
                         </View>
                       </View>
                     </LinearGradient>
                   )}
-                </TouchableOpacity>
-              </View>
+                </View>
+              </TouchableOpacity>
             );
           })}
         </View>
@@ -421,95 +455,127 @@ const styles = StyleSheet.create({
   },
   platformCardWrapper: {
     marginBottom: 16,
-    borderRadius: 20,
+  },
+  platformCardInner: {
+    borderRadius: 24,
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.08)',
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
   },
   platformGradient: {
     padding: 20,
-    gap: 16,
-    borderRadius: 20,
   },
   platformGradientExpanded: {
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
   },
-  platformHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-  },
-  platformTitleRow: {
+  platformMainContent: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    justifyContent: 'space-between',
+  },
+  platformLeftSection: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
   },
   platformIconWrapper: {
-    width: 44,
-    height: 44,
-    borderRadius: 12,
-    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    width: 52,
+    height: 52,
+    borderRadius: 14,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderWidth: 1.5,
   },
   platformIcon: {
-    width: 28,
-    height: 28,
-    borderRadius: 7,
+    width: 30,
+    height: 30,
+    borderRadius: 8,
+  },
+  platformInfo: {
+    flex: 1,
+    gap: 8,
+  },
+  platformNameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   platformName: {
     color: '#ffffff',
-    fontSize: 17,
+    fontSize: 18,
     fontFamily: 'Archivo-Bold',
-    letterSpacing: -0.3,
-    marginBottom: 4,
+    letterSpacing: -0.4,
   },
   growthBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 8,
   },
   growthText: {
-    fontSize: 12,
+    fontSize: 11,
     fontFamily: 'Archivo-Bold',
     letterSpacing: 0.2,
   },
-  platformStats: {
+  quickStats: {
+    flexDirection: 'row',
+    gap: 16,
+  },
+  quickStatItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
+    gap: 6,
   },
-  platformStatItem: {
-    flex: 1,
-    gap: 4,
+  statDot: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
   },
-  platformStatDivider: {
-    width: 1,
-    height: 32,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  platformStatValue: {
-    color: '#ffffff',
-    fontSize: 22,
-    fontFamily: 'Archivo-Bold',
-    letterSpacing: -0.5,
-    marginBottom: 2,
-  },
-  platformStatLabel: {
-    color: 'rgba(255, 255, 255, 0.4)',
-    fontSize: 11,
+  quickStatText: {
+    color: 'rgba(255, 255, 255, 0.5)',
+    fontSize: 12,
     fontFamily: 'Inter-Regular',
-    letterSpacing: 0.3,
-    textTransform: 'uppercase',
+    letterSpacing: 0.2,
+  },
+  expandIndicator: {
+    width: 24,
+    height: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'relative',
+  },
+  expandLine: {
+    width: 12,
+    height: 2,
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    borderRadius: 1,
+    position: 'absolute',
+  },
+  expandLineRotated: {
+    transform: [{ rotate: '90deg' }],
+  },
+  expandIndicatorActive: {
+    transform: [{ rotate: '45deg' }],
   },
   expandedGradient: {
-    padding: 20,
-    paddingTop: 24,
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
+  },
+  expandedDivider: {
+    marginBottom: 20,
+    paddingTop: 16,
+  },
+  dividerLine: {
+    height: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
   },
   detailsGrid: {
     flexDirection: 'row',
@@ -519,25 +585,28 @@ const styles = StyleSheet.create({
   detailItem: {
     flex: 1,
     minWidth: '45%',
-    backgroundColor: 'rgba(0, 0, 0, 0.15)',
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
     padding: 16,
-    borderRadius: 14,
-    gap: 8,
+    borderRadius: 16,
+    gap: 10,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.05)',
+    borderColor: 'rgba(255, 255, 255, 0.06)',
+  },
+  detailHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   detailIconContainer: {
-    width: 32,
-    height: 32,
-    borderRadius: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    width: 36,
+    height: 36,
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 4,
   },
   detailValue: {
     color: '#ffffff',
-    fontSize: 24,
+    fontSize: 22,
     fontFamily: 'Archivo-Bold',
     letterSpacing: -0.5,
   },
@@ -547,5 +616,16 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter-Regular',
     letterSpacing: 0.3,
     textTransform: 'uppercase',
+  },
+  detailProgress: {
+    height: 4,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 2,
+    overflow: 'hidden',
+    marginTop: 2,
+  },
+  detailProgressBar: {
+    height: '100%',
+    borderRadius: 2,
   },
 });
