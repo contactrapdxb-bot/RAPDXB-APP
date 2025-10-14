@@ -159,10 +159,20 @@ export default function HomeScreen() {
             <Bell color="#ffffff" size={18} strokeWidth={1.5} />
             {hasUnreadNotifications && <View style={styles.notificationDot} />}
           </TouchableOpacity>
-          <Image
-            source={{ uri: 'https://i.imgur.com/vhILBC1.png' }}
-            style={styles.profileImage}
-          />
+          <TouchableOpacity
+            onPress={() => {
+              if (Platform.OS !== 'web') {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+              }
+              router.replace('/(tabs)/settings');
+            }}
+            activeOpacity={0.6}
+          >
+            <Image
+              source={{ uri: 'https://i.imgur.com/vhILBC1.png' }}
+              style={styles.profileImage}
+            />
+          </TouchableOpacity>
         </View>
       </View>
 
