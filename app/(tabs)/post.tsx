@@ -219,7 +219,7 @@ export default function PostScreen() {
               onPress={() => handleToggle('post')}
               activeOpacity={0.8}
             >
-              <ImageIcon color={contentType === 'post' ? '#ffffff' : 'rgba(255, 255, 255, 0.4)'} size={18} strokeWidth={2.5} />
+              <ImageIcon color={contentType === 'post' ? '#000000' : 'rgba(0, 0, 0, 0.4)'} size={18} strokeWidth={2.5} />
               <Text style={[styles.toggleText, contentType === 'post' && styles.toggleTextActive]}>
                 Post
               </Text>
@@ -229,7 +229,7 @@ export default function PostScreen() {
               onPress={() => handleToggle('reel')}
               activeOpacity={0.8}
             >
-              <Video color={contentType === 'reel' ? '#ffffff' : 'rgba(255, 255, 255, 0.4)'} size={18} strokeWidth={2.5} />
+              <Video color={contentType === 'reel' ? '#000000' : 'rgba(0, 0, 0, 0.4)'} size={18} strokeWidth={2.5} />
               <Text style={[styles.toggleText, contentType === 'reel' && styles.toggleTextActive]}>
                 Reel
               </Text>
@@ -246,16 +246,16 @@ export default function PostScreen() {
           >
             <View style={styles.inputGroup}>
               <View style={styles.labelRow}>
-                <Text style={styles.label}>Title</Text>
-                <View style={styles.labelBadge}>
-                  <Text style={styles.labelBadgeText}>Required</Text>
+                <Text style={styles.labelDark}>Title</Text>
+                <View style={styles.labelBadgeDark}>
+                  <Text style={styles.labelBadgeTextDark}>Required</Text>
                 </View>
               </View>
-              <View style={styles.glassInputWrapper}>
+              <View style={styles.glassInputWrapperDark}>
                 <TextInput
-                  style={styles.input}
+                  style={styles.inputDark}
                   placeholder="Enter title..."
-                  placeholderTextColor="rgba(255, 255, 255, 0.4)"
+                  placeholderTextColor="rgba(0, 0, 0, 0.4)"
                   value={title}
                   onChangeText={setTitle}
                 />
@@ -264,16 +264,16 @@ export default function PostScreen() {
 
             <View style={styles.inputGroup}>
               <View style={styles.labelRow}>
-                <Text style={styles.label}>Caption</Text>
-                <View style={styles.labelBadgeOptional}>
-                  <Text style={styles.labelBadgeTextOptional}>Optional</Text>
+                <Text style={styles.labelDark}>Caption</Text>
+                <View style={styles.labelBadgeOptionalDark}>
+                  <Text style={styles.labelBadgeTextOptionalDark}>Optional</Text>
                 </View>
               </View>
-              <View style={styles.glassInputWrapper}>
+              <View style={styles.glassInputWrapperDark}>
                 <TextInput
-                  style={[styles.input, styles.textArea]}
+                  style={[styles.inputDark, styles.textArea]}
                   placeholder="Write your caption..."
-                  placeholderTextColor="rgba(255, 255, 255, 0.4)"
+                  placeholderTextColor="rgba(0, 0, 0, 0.4)"
                   value={caption}
                   onChangeText={setCaption}
                   multiline
@@ -375,14 +375,14 @@ export default function PostScreen() {
           >
             <View style={styles.inputGroup}>
               <View style={styles.labelRow}>
-                <Text style={styles.label}>Schedule</Text>
-                <View style={styles.labelBadgeOptional}>
-                  <Text style={styles.labelBadgeTextOptional}>Optional</Text>
+                <Text style={styles.labelDark}>Schedule</Text>
+                <View style={styles.labelBadgeOptionalDark}>
+                  <Text style={styles.labelBadgeTextOptionalDark}>Optional</Text>
                 </View>
               </View>
-              <TouchableOpacity activeOpacity={0.7} style={styles.scheduleButton}>
-                <Calendar color="#ffffff" size={18} strokeWidth={2} />
-                <Text style={styles.scheduleButtonText}>
+              <TouchableOpacity activeOpacity={0.7} style={styles.scheduleButtonDark}>
+                <Calendar color="#000000" size={18} strokeWidth={2} />
+                <Text style={styles.scheduleButtonTextDark}>
                   {scheduleDate || 'Select date & time'}
                 </Text>
               </TouchableOpacity>
@@ -562,13 +562,13 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   toggleText: {
-    color: 'rgba(255, 255, 255, 0.4)',
+    color: 'rgba(0, 0, 0, 0.4)',
     fontSize: 16,
     fontFamily: 'Archivo-Bold',
     letterSpacing: -0.4,
   },
   toggleTextActive: {
-    color: '#ffffff',
+    color: '#000000',
   },
   inputSection: {
     gap: 20,
@@ -708,6 +708,32 @@ const styles = StyleSheet.create({
     fontFamily: 'Archivo-Bold',
     letterSpacing: -0.4,
   },
+  labelBadgeDark: {
+    backgroundColor: 'rgba(0, 0, 0, 0.15)',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  labelBadgeTextDark: {
+    color: '#000000',
+    fontSize: 11,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+  },
+  labelBadgeOptionalDark: {
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+  },
+  labelBadgeTextOptionalDark: {
+    color: 'rgba(0, 0, 0, 0.7)',
+    fontSize: 11,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+  },
   glassInputWrapperDark: {
     backgroundColor: 'rgba(0, 0, 0, 0.1)',
     borderRadius: 20,
@@ -718,6 +744,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 18,
     color: '#000000',
+    fontSize: 16,
+    fontFamily: 'Inter-Regular',
+  },
+  scheduleButtonDark: {
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    borderRadius: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 18,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.15)',
+  },
+  scheduleButtonTextDark: {
+    color: 'rgba(0, 0, 0, 0.8)',
     fontSize: 16,
     fontFamily: 'Inter-Regular',
   },
