@@ -407,8 +407,9 @@ const styles = StyleSheet.create({
   },
   platformCard: {
     borderRadius: 20,
-    padding: 12,
-    gap: 8,
+    padding: 18,
+    gap: 12,
+    minHeight: 140,
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.15,
@@ -421,8 +422,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   platformIcon: {
-    width: 40,
-    height: 40,
+    width: 36,
+    height: 36,
   },
   connectedBadge: {
     width: 16,
