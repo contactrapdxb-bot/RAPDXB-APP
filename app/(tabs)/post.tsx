@@ -1212,7 +1212,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    paddingBottom: 34,
   },
   modalHeader: {
     flexDirection: 'row',
@@ -1241,6 +1240,7 @@ const styles = StyleSheet.create({
   },
   datePicker: {
     height: 160,
+    width: '100%',
   },
   createButtonText: {
     color: '#000000',
