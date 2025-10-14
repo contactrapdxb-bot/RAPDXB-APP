@@ -220,7 +220,7 @@ export default function PostScreen() {
               activeOpacity={0.8}
             >
               <ImageIcon color={contentType === 'post' ? '#000000' : 'rgba(0, 0, 0, 0.4)'} size={18} strokeWidth={2.5} />
-              <Text style={[styles.toggleText, contentType === 'post' && styles.toggleTextActive]}>
+              <Text style={[styles.toggleText, contentType === 'post' && styles.toggleTextActivePost]}>
                 Post
               </Text>
             </TouchableOpacity>
@@ -230,7 +230,7 @@ export default function PostScreen() {
               activeOpacity={0.8}
             >
               <Video color={contentType === 'reel' ? '#000000' : 'rgba(0, 0, 0, 0.4)'} size={18} strokeWidth={2.5} />
-              <Text style={[styles.toggleText, contentType === 'reel' && styles.toggleTextActive]}>
+              <Text style={[styles.toggleText, contentType === 'reel' && styles.toggleTextActiveReel]}>
                 Reel
               </Text>
             </TouchableOpacity>
@@ -569,8 +569,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Archivo-Bold',
     letterSpacing: -0.4,
   },
-  toggleTextActive: {
-    color: '#000000',
+  toggleTextActivePost: {
+    color: '#fbbf24',
+  },
+  toggleTextActiveReel: {
+    color: '#60a5fa',
   },
   inputSection: {
     gap: 20,
