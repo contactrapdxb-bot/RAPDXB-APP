@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, TextInput, Animated } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, TextInput, Animated, Dimensions } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -6,6 +6,8 @@ import { ArrowLeft, Upload, Link, Calendar, X, Image as ImageIcon, Video } from 
 import Svg, { Circle, Defs, RadialGradient as SvgRadialGradient, Stop } from 'react-native-svg';
 import * as Haptics from 'expo-haptics';
 import { useState, useRef, useEffect } from 'react';
+
+const { width } = Dimensions.get('window');
 
 const PLATFORMS_POST = ['Instagram', 'Facebook', 'Twitter', 'All'];
 const PLATFORMS_REEL = ['Instagram Reels', 'YouTube Shorts', 'TikTok', 'Facebook Reels', 'Snapchat', 'All'];
@@ -24,6 +26,7 @@ export default function PostScreen() {
   const floatAnim1 = useRef(new Animated.Value(0)).current;
   const floatAnim2 = useRef(new Animated.Value(0)).current;
   const floatAnim3 = useRef(new Animated.Value(0)).current;
+  const sliderAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     Animated.loop(
@@ -62,6 +65,14 @@ export default function PostScreen() {
     if (Platform.OS !== 'web') {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
+
+    Animated.spring(sliderAnim, {
+      toValue: type === 'post' ? 0 : 1,
+      useNativeDriver: false,
+      tension: 65,
+      friction: 8,
+    }).start();
+
     setContentType(type);
     setTitle('');
     setCaption('');
@@ -151,6 +162,11 @@ export default function PostScreen() {
     return colorMap[platform] || ['#8b5cf6', '#7c3aed'];
   };
 
+  const sliderPosition = sliderAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: [4, (width - 32) / 2],
+  });
+
   return (
     <View style={[styles.container, { paddingTop: insets.top + 8 }]}>
       <Animated.View style={[styles.floatingOrb, styles.orb1, { transform: [{ translateY: float1Y }] }]}>
@@ -214,14 +230,31 @@ export default function PostScreen() {
 
         <View style={styles.titleSection}>
           <Text style={styles.pageTitle}>Create </Text>
-          <Text style={styles.pageTitleBold}>Content</Text>
+          <Animated.Text style={[
+            styles.pageTitleBold,
+            {
+              color: sliderAnim.interpolate({
+                inputRange: [0, 1],
+                outputRange: ['#60a5fa', '#fbbf24'],
+              }),
+            },
+          ]}>
+            {contentType === 'post' ? 'Post' : 'Reel'}
+          </Animated.Text>
         </View>
 
         <View style={styles.toggleContainer}>
           <View style={styles.toggleBackground}>
-            <View style={[styles.toggleSlider, contentType === 'post' ? styles.toggleSliderLeft : styles.toggleSliderRight]}>
-              <View style={styles.toggleSliderInner} />
-            </View>
+            <Animated.View style={[styles.toggleSlider, {
+              left: sliderPosition,
+            }]}>
+              <LinearGradient
+                colors={contentType === 'post' ? ['#60a5fa', '#3b82f6'] : ['#fbbf24', '#f59e0b']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.toggleSliderInner}
+              />
+            </Animated.View>
             <TouchableOpacity
               style={styles.toggleOption}
               onPress={() => handleToggle('post')}
@@ -565,18 +598,16 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 4,
     bottom: 4,
-    width: '50%',
+    width: '47.5%',
     borderRadius: 20,
-  },
-  toggleSliderLeft: {
-    left: 4,
-  },
-  toggleSliderRight: {
-    right: 4,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 5,
   },
   toggleSliderInner: {
     flex: 1,
-    backgroundColor: '#000000',
     borderRadius: 20,
   },
   toggleOption: {
