@@ -18,6 +18,7 @@ export default function PostScreen() {
   const [scheduleDate, setScheduleDate] = useState('');
   const [tagInput, setTagInput] = useState('');
   const [tags, setTags] = useState<string[]>([]);
+  const [mediaLink, setMediaLink] = useState('');
 
   const slideAnim = useRef(new Animated.Value(0)).current;
 
@@ -47,6 +48,7 @@ export default function PostScreen() {
     setSelectedPlatforms([]);
     setTags([]);
     setTagInput('');
+    setMediaLink('');
   };
 
   const handleAddTag = () => {
@@ -81,7 +83,7 @@ export default function PostScreen() {
     if (Platform.OS !== 'web') {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     }
-    console.log('Creating', contentType, { title, caption, selectedPlatforms, scheduleDate, tags });
+    console.log('Creating', contentType, { title, caption, selectedPlatforms, scheduleDate, tags, mediaLink });
   };
 
   const platforms = contentType === 'post' ? PLATFORMS_POST : PLATFORMS_REEL;
@@ -173,42 +175,28 @@ export default function PostScreen() {
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Media</Text>
-              <View style={styles.mediaButtons}>
-                <TouchableOpacity style={styles.mediaButton} activeOpacity={0.7}>
-                  <Upload color="#ffffff" size={20} strokeWidth={2} />
-                  <Text style={styles.mediaButtonText}>Upload</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.mediaButton} activeOpacity={0.7}>
-                  <Link color="#ffffff" size={20} strokeWidth={2} />
-                  <Text style={styles.mediaButtonText}>Paste Link</Text>
-                </TouchableOpacity>
-              </View>
+              <Text style={styles.label}>Upload Media</Text>
+              <TouchableOpacity style={styles.uploadButton} activeOpacity={0.7}>
+                <Upload color="#ffffff" size={20} strokeWidth={2} />
+                <Text style={styles.uploadButtonText}>Upload File</Text>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Platforms</Text>
-              <View style={styles.platformGrid}>
-                {platforms.map((platform) => (
-                  <TouchableOpacity
-                    key={platform}
-                    style={[
-                      styles.platformChip,
-                      selectedPlatforms.includes(platform) && styles.platformChipActive,
-                    ]}
-                    onPress={() => handlePlatformToggle(platform)}
-                    activeOpacity={0.7}
-                  >
-                    <Text
-                      style={[
-                        styles.platformChipText,
-                        selectedPlatforms.includes(platform) && styles.platformChipTextActive,
-                      ]}
-                    >
-                      {platform}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
+              <Text style={styles.label}>Or Paste Media Link</Text>
+              <View style={styles.linkInputContainer}>
+                <View style={styles.linkIconWrapper}>
+                  <Link color="#ffffff" size={18} strokeWidth={2} />
+                </View>
+                <TextInput
+                  style={styles.linkInput}
+                  placeholder="https://..."
+                  placeholderTextColor="rgba(255, 255, 255, 0.25)"
+                  value={mediaLink}
+                  onChangeText={setMediaLink}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                />
               </View>
             </View>
 
@@ -260,6 +248,32 @@ export default function PostScreen() {
                   {scheduleDate || 'Select date & time'}
                 </Text>
               </TouchableOpacity>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Platforms</Text>
+              <View style={styles.platformGrid}>
+                {platforms.map((platform) => (
+                  <TouchableOpacity
+                    key={platform}
+                    style={[
+                      styles.platformChip,
+                      selectedPlatforms.includes(platform) && styles.platformChipActive,
+                    ]}
+                    onPress={() => handlePlatformToggle(platform)}
+                    activeOpacity={0.7}
+                  >
+                    <Text
+                      style={[
+                        styles.platformChipText,
+                        selectedPlatforms.includes(platform) && styles.platformChipTextActive,
+                      ]}
+                    >
+                      {platform}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
             </View>
           </View>
         </View>
@@ -420,12 +434,7 @@ const styles = StyleSheet.create({
     minHeight: 140,
     paddingTop: 16,
   },
-  mediaButtons: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  mediaButton: {
-    flex: 1,
+  uploadButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
@@ -436,11 +445,37 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.1)',
   },
-  mediaButtonText: {
+  uploadButtonText: {
     color: '#ffffff',
     fontSize: 15,
     fontFamily: 'Archivo-Bold',
     letterSpacing: -0.3,
+  },
+  linkInputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+    paddingLeft: 18,
+  },
+  linkIconWrapper: {
+    width: 32,
+    height: 32,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 12,
+  },
+  linkInput: {
+    flex: 1,
+    paddingVertical: 16,
+    paddingRight: 18,
+    color: '#ffffff',
+    fontSize: 16,
+    fontFamily: 'Inter-Regular',
   },
   platformGrid: {
     flexDirection: 'row',
