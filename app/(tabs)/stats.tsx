@@ -2,14 +2,15 @@ import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, Image }
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ArrowLeft, TrendingUp, Users, Award, ArrowUp, ArrowDown, MessageCircle, Heart, Share2 } from 'lucide-react-native';
+import { ArrowLeft, TrendingUp, Users, Award, ArrowUp, ArrowDown, MessageCircle, Heart, Share2, Eye, ThumbsUp } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 import Svg, { Path, Line } from 'react-native-svg';
+import { useState } from 'react';
 
 const KEY_METRICS = [
   { label: 'Total Reach', value: '24.5K', change: '+12%', changeUp: true, icon: Users },
   { label: 'Engagement', value: '4.2%', change: '+0.8%', changeUp: true, icon: TrendingUp },
-  { label: 'Top Platform', value: 'Instagram', change: '21.6K', changeUp: true, icon: Award },
+  { label: 'Top Platform', value: 'IG', change: '21.6K', changeUp: true, icon: Award },
 ];
 
 const WEEKLY_DATA = [
@@ -28,7 +29,7 @@ const PLATFORM_STATS = [
     followers: '21.6K',
     growth: '+8%',
     growthUp: true,
-    engagement: '12.3K',
+    totalReach: '12.3K',
     icon: 'https://i.imgur.com/vkcuEzE.png',
     color: ['#E1306C', '#C13584']
   },
@@ -37,7 +38,7 @@ const PLATFORM_STATS = [
     followers: '18.3K',
     growth: '+5%',
     growthUp: true,
-    engagement: '9.8K',
+    totalReach: '9.8K',
     icon: 'https://i.imgur.com/K2FKVUP.png',
     color: ['#000000', '#333333']
   },
@@ -46,7 +47,7 @@ const PLATFORM_STATS = [
     followers: '3.7K',
     growth: '+2%',
     growthUp: true,
-    engagement: '2.1K',
+    totalReach: '2.1K',
     icon: 'https://i.imgur.com/8H35ptZ.png',
     color: ['#FF0000', '#DC143C']
   },
@@ -55,7 +56,7 @@ const PLATFORM_STATS = [
     followers: '8.7K',
     growth: '+4%',
     growthUp: true,
-    engagement: '1.5K',
+    totalReach: '1.5K',
     icon: 'https://i.imgur.com/XF3FRka.png',
     color: ['#FFFC00', '#FFA500']
   },
@@ -64,7 +65,7 @@ const PLATFORM_STATS = [
     followers: '1.2K',
     growth: '-1%',
     growthUp: false,
-    engagement: '890',
+    totalReach: '890',
     icon: 'https://i.imgur.com/fPOjKNr.png',
     color: ['#1DA1F2', '#1a8cd8']
   },
@@ -73,7 +74,7 @@ const PLATFORM_STATS = [
     followers: '2.6K',
     growth: '+3%',
     growthUp: true,
-    engagement: '1.2K',
+    totalReach: '1.2K',
     icon: 'https://i.imgur.com/zfY36en.png',
     color: ['#1877F2', '#0a5fd1']
   },
@@ -81,6 +82,7 @@ const PLATFORM_STATS = [
 
 export default function StatsScreen() {
   const insets = useSafeAreaInsets();
+  const [expandedPlatform, setExpandedPlatform] = useState<string | null>(null);
 
   const handleBack = () => {
     if (Platform.OS !== 'web') {
@@ -89,11 +91,11 @@ export default function StatsScreen() {
     router.replace('/(tabs)/home');
   };
 
-  const handlePlatformPress = (platform: string) => {
+  const handlePlatformPress = (platformName: string) => {
     if (Platform.OS !== 'web') {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
-    console.log('View details for:', platform);
+    setExpandedPlatform(expandedPlatform === platformName ? null : platformName);
   };
 
   return (
@@ -117,8 +119,8 @@ export default function StatsScreen() {
         </View>
 
         <View style={styles.titleSection}>
-          <Text style={styles.pageTitle}>Your </Text>
-          <Text style={styles.pageTitleBold}>Analytics</Text>
+          <Text style={styles.pageTitleBold}>Your </Text>
+          <Text style={styles.pageTitle}>Analytics</Text>
         </View>
 
         <View style={styles.metricsGrid}>
@@ -169,55 +171,94 @@ export default function StatsScreen() {
 
         <View style={styles.platformSection}>
           <Text style={styles.sectionTitle}>Platform Breakdown</Text>
-          {PLATFORM_STATS.map((platform, index) => (
-            <TouchableOpacity
-              key={index}
-              style={styles.platformCard}
-              onPress={() => handlePlatformPress(platform.name)}
-              activeOpacity={0.7}
-            >
-              <LinearGradient
-                colors={[platform.color[0] + '20', platform.color[1] + '20']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.platformGradient}
-              >
-                <View style={styles.platformHeader}>
-                  <View style={styles.platformTitleRow}>
-                    <Image
-                      source={{ uri: platform.icon }}
-                      style={styles.platformIcon}
-                    />
-                    <Text style={styles.platformName}>{platform.name}</Text>
-                  </View>
-                  <View style={styles.growthBadge}>
-                    {platform.growthUp ? (
-                      <ArrowUp color="#10b981" size={14} strokeWidth={2.5} />
-                    ) : (
-                      <ArrowDown color="#ef4444" size={14} strokeWidth={2.5} />
-                    )}
-                    <Text style={[styles.growthText, { color: platform.growthUp ? '#10b981' : '#ef4444' }]}>
-                      {platform.growth}
-                    </Text>
-                  </View>
-                </View>
+          {PLATFORM_STATS.map((platform, index) => {
+            const isExpanded = expandedPlatform === platform.name;
+            return (
+              <View key={index}>
+                <TouchableOpacity
+                  style={styles.platformCard}
+                  onPress={() => handlePlatformPress(platform.name)}
+                  activeOpacity={0.7}
+                >
+                  <LinearGradient
+                    colors={[platform.color[0] + '33', platform.color[1] + '33']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={styles.platformGradient}
+                  >
+                    <View style={styles.platformHeader}>
+                      <View style={styles.platformTitleRow}>
+                        <Image
+                          source={{ uri: platform.icon }}
+                          style={styles.platformIcon}
+                        />
+                        <Text style={styles.platformName}>{platform.name}</Text>
+                      </View>
+                      <View style={styles.growthBadge}>
+                        {platform.growthUp ? (
+                          <ArrowUp color="#10b981" size={14} strokeWidth={2.5} />
+                        ) : (
+                          <ArrowDown color="#ef4444" size={14} strokeWidth={2.5} />
+                        )}
+                        <Text style={[styles.growthText, { color: platform.growthUp ? '#10b981' : '#ef4444' }]}>
+                          {platform.growth}
+                        </Text>
+                      </View>
+                    </View>
 
-                <View style={styles.platformStats}>
-                  <View style={styles.platformStatItem}>
-                    <Users color="rgba(255, 255, 255, 0.5)" size={16} strokeWidth={2} />
-                    <Text style={styles.platformStatValue}>{platform.followers}</Text>
-                    <Text style={styles.platformStatLabel}>Followers</Text>
+                    <View style={styles.platformStats}>
+                      <View style={styles.platformStatItem}>
+                        <Users color="rgba(255, 255, 255, 0.5)" size={16} strokeWidth={2} />
+                        <Text style={styles.platformStatValue}>{platform.followers}</Text>
+                        <Text style={styles.platformStatLabel}>Followers</Text>
+                      </View>
+                      <View style={styles.platformStatDivider} />
+                      <View style={styles.platformStatItem}>
+                        <Eye color="rgba(255, 255, 255, 0.5)" size={16} strokeWidth={2} />
+                        <Text style={styles.platformStatValue}>{platform.totalReach}</Text>
+                        <Text style={styles.platformStatLabel}>Total Reach</Text>
+                      </View>
+                    </View>
+                  </LinearGradient>
+                </TouchableOpacity>
+
+                {isExpanded && (
+                  <View style={styles.expandedDetails}>
+                    <LinearGradient
+                      colors={[platform.color[0] + '1a', platform.color[1] + '1a']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={styles.expandedGradient}
+                    >
+                      <Text style={styles.expandedTitle}>Detailed Stats</Text>
+                      <View style={styles.detailsGrid}>
+                        <View style={styles.detailItem}>
+                          <Heart color="#60a5fa" size={18} strokeWidth={2} />
+                          <Text style={styles.detailValue}>8.2K</Text>
+                          <Text style={styles.detailLabel}>Likes</Text>
+                        </View>
+                        <View style={styles.detailItem}>
+                          <MessageCircle color="#fbbf24" size={18} strokeWidth={2} />
+                          <Text style={styles.detailValue}>2.4K</Text>
+                          <Text style={styles.detailLabel}>Comments</Text>
+                        </View>
+                        <View style={styles.detailItem}>
+                          <Share2 color="#10b981" size={18} strokeWidth={2} />
+                          <Text style={styles.detailValue}>1.7K</Text>
+                          <Text style={styles.detailLabel}>Shares</Text>
+                        </View>
+                        <View style={styles.detailItem}>
+                          <ThumbsUp color="#8b5cf6" size={18} strokeWidth={2} />
+                          <Text style={styles.detailValue}>4.2%</Text>
+                          <Text style={styles.detailLabel}>Engagement</Text>
+                        </View>
+                      </View>
+                    </LinearGradient>
                   </View>
-                  <View style={styles.platformStatDivider} />
-                  <View style={styles.platformStatItem}>
-                    <Heart color="rgba(255, 255, 255, 0.5)" size={16} strokeWidth={2} />
-                    <Text style={styles.platformStatValue}>{platform.engagement}</Text>
-                    <Text style={styles.platformStatLabel}>Engagement</Text>
-                  </View>
-                </View>
-              </LinearGradient>
-            </TouchableOpacity>
-          ))}
+                )}
+              </View>
+            );
+          })}
         </View>
       </ScrollView>
     </View>
@@ -263,13 +304,13 @@ const styles = StyleSheet.create({
     marginBottom: 32,
   },
   pageTitle: {
-    color: 'rgba(255, 255, 255, 0.5)',
+    color: '#ffffff',
     fontSize: 36,
     fontFamily: 'Archivo-Bold',
     letterSpacing: -1,
   },
   pageTitleBold: {
-    color: '#ffffff',
+    color: 'rgba(255, 255, 255, 0.5)',
     fontSize: 36,
     fontFamily: 'Archivo-Bold',
     letterSpacing: -1,
@@ -444,6 +485,51 @@ const styles = StyleSheet.create({
     letterSpacing: -0.3,
   },
   platformStatLabel: {
+    color: 'rgba(255, 255, 255, 0.5)',
+    fontSize: 11,
+    fontFamily: 'Inter-Regular',
+    letterSpacing: 0.3,
+  },
+  expandedDetails: {
+    marginTop: -8,
+    marginBottom: 12,
+  },
+  expandedGradient: {
+    borderRadius: 20,
+    padding: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.06)',
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
+  },
+  expandedTitle: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.3,
+    marginBottom: 16,
+  },
+  detailsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 12,
+  },
+  detailItem: {
+    flex: 1,
+    minWidth: '45%',
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    padding: 16,
+    borderRadius: 12,
+    gap: 8,
+    alignItems: 'center',
+  },
+  detailValue: {
+    color: '#ffffff',
+    fontSize: 20,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.5,
+  },
+  detailLabel: {
     color: 'rgba(255, 255, 255, 0.5)',
     fontSize: 11,
     fontFamily: 'Inter-Regular',

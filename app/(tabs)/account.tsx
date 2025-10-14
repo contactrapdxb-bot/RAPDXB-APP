@@ -160,8 +160,8 @@ export default function AccountScreen() {
         </View>
 
         <View style={styles.titleSection}>
-          <Text style={styles.pageTitle}>Your </Text>
-          <Text style={styles.pageTitleBold}>Account</Text>
+          <Text style={styles.pageTitleBold}>Your </Text>
+          <Text style={styles.pageTitle}>Account</Text>
         </View>
 
         <LinearGradient
@@ -352,15 +352,15 @@ const styles = StyleSheet.create({
   },
   pageTitle: {
     fontSize: 44,
-    fontFamily: 'Inter-Thin',
+    fontFamily: 'Archivo-Bold',
     color: '#ffffff',
     letterSpacing: -1.2,
     lineHeight: 50,
   },
   pageTitleBold: {
     fontSize: 44,
-    fontFamily: 'Archivo-Bold',
-    color: '#8b5cf6',
+    fontFamily: 'Inter-Thin',
+    color: '#ffffff',
     letterSpacing: -1.2,
     lineHeight: 50,
   },
