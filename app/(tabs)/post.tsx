@@ -1193,6 +1193,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingBottom: 34,
+    maxHeight: 480,
   },
   modalHeader: {
     flexDirection: 'row',
@@ -1205,7 +1206,7 @@ const styles = StyleSheet.create({
   },
   modalCancelText: {
     color: '#000000',
-    fontSize: 16,
+    fontSize: 17,
     fontFamily: 'Inter-Regular',
   },
   modalTitle: {
@@ -1216,11 +1217,11 @@ const styles = StyleSheet.create({
   },
   modalDoneText: {
     color: '#3b82f6',
-    fontSize: 16,
+    fontSize: 17,
     fontFamily: 'Archivo-Bold',
   },
   datePicker: {
-    height: 200,
+    height: 180,
   },
   createButtonText: {
     color: '#000000',
