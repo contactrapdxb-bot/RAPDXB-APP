@@ -168,16 +168,18 @@ export default function SettingsScreen() {
                   style={styles.platformCard}
                 >
                   <View style={styles.platformHeader}>
+                    <View style={styles.connectedBadge}>
+                      <Check color="#ffffff" size={10} strokeWidth={3} />
+                    </View>
+                  </View>
+                  <View style={styles.platformContent}>
                     <Image
                       source={{ uri: platform.icon }}
                       style={styles.platformIcon}
                       resizeMode="contain"
                     />
-                    <View style={styles.connectedBadge}>
-                      <Check color="#ffffff" size={10} strokeWidth={3} />
-                    </View>
+                    <Text style={styles.platformName}>{platform.name}</Text>
                   </View>
-                  <Text style={styles.platformName}>{platform.name}</Text>
                   <View style={styles.connectedStatus}>
                     <Text style={styles.connectedText}>Connected</Text>
                   </View>
@@ -407,7 +409,7 @@ const styles = StyleSheet.create({
   },
   platformCard: {
     borderRadius: 20,
-    padding: 18,
+    padding: 16,
     minHeight: 140,
     justifyContent: 'space-between',
     shadowColor: '#000000',
@@ -418,12 +420,18 @@ const styles = StyleSheet.create({
   },
   platformHeader: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'flex-end',
+    alignItems: 'flex-start',
+  },
+  platformContent: {
+    flex: 1,
+    justifyContent: 'center',
     alignItems: 'center',
+    gap: 8,
   },
   platformIcon: {
-    width: 36,
-    height: 36,
+    width: 48,
+    height: 48,
   },
   connectedBadge: {
     width: 16,
@@ -434,20 +442,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   platformName: {
-    fontSize: 16,
+    fontSize: 15,
     fontFamily: 'Archivo-Bold',
     color: '#ffffff',
     letterSpacing: -0.3,
+    textAlign: 'center',
   },
   connectedStatus: {
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     borderRadius: 10,
-    paddingVertical: 6,
+    paddingVertical: 5,
     paddingHorizontal: 10,
-    alignSelf: 'flex-start',
+    alignSelf: 'center',
   },
   connectedText: {
-    fontSize: 11,
+    fontSize: 10,
     fontFamily: 'Archivo-Bold',
     color: '#ffffff',
     letterSpacing: 0.5,
