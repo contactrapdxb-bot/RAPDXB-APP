@@ -78,6 +78,13 @@ export default function HomeScreen() {
 
   const hasUnreadNotifications = notifications.some(n => !n.read);
 
+  const handleProfilePress = () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
+    router.replace('/(tabs)/settings');
+  };
+
   useEffect(() => {
     MONTHLY_DATA.forEach((data, index) => {
       Animated.parallel([
@@ -160,12 +167,7 @@ export default function HomeScreen() {
             {hasUnreadNotifications && <View style={styles.notificationDot} />}
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => {
-              if (Platform.OS !== 'web') {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-              }
-              router.replace('/(tabs)/settings');
-            }}
+            onPress={handleProfilePress}
             activeOpacity={0.6}
           >
             <Image
