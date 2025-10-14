@@ -164,7 +164,7 @@ export default function PostScreen() {
 
   const sliderPosition = sliderAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [4, (width - 32) / 2],
+    outputRange: [4, (width - 32) / 2 + 4],
   });
 
   return (
