@@ -443,18 +443,20 @@ export default function PostScreen() {
             activeOpacity={0.8}
             disabled={!title}
           >
-            <LinearGradient
-              colors={!title
-                ? ['rgba(139, 92, 246, 0.3)', 'rgba(124, 58, 237, 0.3)']
-                : ['#8b5cf6', '#7c3aed']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.createButtonGradient}
-            >
-              <Text style={styles.createButtonText}>
-                {contentType === 'post' ? 'Create Post' : 'Create Reel'}
-              </Text>
-            </LinearGradient>
+            <View style={styles.createButtonBorder}>
+              <LinearGradient
+                colors={!title
+                  ? ['rgba(139, 92, 246, 0.3)', 'rgba(124, 58, 237, 0.3)']
+                  : ['#8b5cf6', '#7c3aed']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.createButtonGradient}
+              >
+                <Text style={styles.createButtonText}>
+                  {contentType === 'post' ? 'Create Post' : 'Create Reel'}
+                </Text>
+              </LinearGradient>
+            </View>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -941,22 +943,31 @@ const styles = StyleSheet.create({
     letterSpacing: -0.3,
   },
   createButtonWrapper: {
-    borderRadius: 32,
-    overflow: 'hidden',
     marginTop: 12,
   },
   createButtonDisabled: {
     opacity: 0.5,
   },
+  createButtonBorder: {
+    borderRadius: 32,
+    padding: 3,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    shadowColor: '#ffffff',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 10,
+  },
   createButtonGradient: {
     paddingVertical: 24,
     alignItems: 'center',
     justifyContent: 'center',
+    borderRadius: 29,
     shadowColor: '#8b5cf6',
-    shadowOffset: { width: 0, height: 12 },
+    shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.5,
-    shadowRadius: 24,
-    elevation: 12,
+    shadowRadius: 12,
+    elevation: 8,
   },
   createButtonText: {
     color: '#ffffff',
