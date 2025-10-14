@@ -528,8 +528,8 @@ export default function FeedScreen() {
             <Text style={styles.statLabel}>Sources</Text>
           </View>
           <View style={styles.statBox}>
-            <Text style={styles.statLabel}>Updated</Text>
             <Text style={styles.statValue}>3h ago</Text>
+            <Text style={styles.statLabel}>Updated</Text>
           </View>
         </View>
 
@@ -634,17 +634,12 @@ export default function FeedScreen() {
             },
           ]}
         >
-          <LinearGradient
-            colors={['rgba(16, 185, 129, 0.95)', 'rgba(5, 150, 105, 0.95)']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.toastGradient}
-          >
+          <View style={styles.toastGradient}>
             <View style={styles.toastIconContainer}>
-              <Check color="#ffffff" size={20} strokeWidth={3} />
+              <Check color="#ffffff" size={22} strokeWidth={3.5} />
             </View>
             <Text style={styles.toastText}>{toastMessage}</Text>
-          </LinearGradient>
+          </View>
         </Animated.View>
       )}
     </View>
@@ -754,6 +749,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontFamily: 'Archivo-Bold',
     letterSpacing: -0.5,
+    marginBottom: 4,
   },
   statLabel: {
     color: 'rgba(255, 255, 255, 0.4)',
@@ -761,7 +757,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter-Regular',
     letterSpacing: 0.3,
     textTransform: 'uppercase',
-    marginBottom: 4,
   },
   filterBar: {
     marginBottom: 24,
@@ -918,37 +913,44 @@ const styles = StyleSheet.create({
     left: 20,
     right: 20,
     zIndex: 1000,
-    borderRadius: 16,
+    borderRadius: 20,
     overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 4,
+      height: 8,
     },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 10,
+    shadowOpacity: 0.5,
+    shadowRadius: 16,
+    elevation: 12,
   },
   toastGradient: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-    gap: 12,
+    paddingVertical: 18,
+    paddingHorizontal: 24,
+    gap: 14,
+    backgroundColor: '#000000',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.15)',
+    borderRadius: 20,
   },
   toastIconContainer: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.25)',
   },
   toastText: {
     color: '#ffffff',
-    fontSize: 15,
+    fontSize: 16,
     fontFamily: 'Archivo-Bold',
-    letterSpacing: -0.3,
+    letterSpacing: -0.4,
     flex: 1,
+    fontWeight: '800',
   },
 });
