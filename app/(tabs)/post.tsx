@@ -1214,7 +1214,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    height: 520,
+    height: '80%',
   },
   pickersContainer: {
     flex: 1,
