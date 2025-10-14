@@ -572,11 +572,11 @@ const styles = StyleSheet.create({
   },
   toggleTextActivePost: {
     color: '#fbbf24',
-    fontWeight: '900',
+    fontWeight: '1400',
   },
   toggleTextActiveReel: {
     color: '#60a5fa',
-    fontWeight: '900',
+    fontWeight: '1400',
   },
   inputSection: {
     gap: 20,
@@ -980,7 +980,7 @@ const styles = StyleSheet.create({
     color: '#000000',
     fontSize: 19,
     fontFamily: 'Archivo-Bold',
-    fontWeight: '900',
+    fontWeight: '1400',
     letterSpacing: -0.4,
   },
 });
