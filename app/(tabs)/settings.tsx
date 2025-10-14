@@ -421,8 +421,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   platformIcon: {
-    width: 30,
-    height: 30,
+    width: 40,
+    height: 40,
   },
   connectedBadge: {
     width: 16,

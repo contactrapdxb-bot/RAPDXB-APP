@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, Image, Animated, ScrollView, RefreshControl, TouchableOpacity, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Bell, MapPin, Moon, Flame, ChartBar as BarChart, X } from 'lucide-react-native';
 import Svg, { Path, Circle, Defs, Pattern, Rect, G, Line, ClipPath, LinearGradient as SvgLinearGradient, Stop, RadialGradient } from 'react-native-svg';
