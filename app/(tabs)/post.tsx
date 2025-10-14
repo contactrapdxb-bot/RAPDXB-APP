@@ -604,24 +604,22 @@ export default function PostScreen() {
                   <Text style={styles.modalDoneText}>Done</Text>
                 </TouchableOpacity>
               </View>
-              <View style={styles.pickersContainer}>
-                <DateTimePicker
-                  value={scheduleDate || new Date()}
-                  mode="date"
-                  display="spinner"
-                  onChange={handleDateChange}
-                  textColor="#000000"
-                  style={styles.datePicker}
-                />
-                <DateTimePicker
-                  value={scheduleDate || new Date()}
-                  mode="time"
-                  display="spinner"
-                  onChange={handleTimeChange}
-                  textColor="#000000"
-                  style={styles.datePicker}
-                />
-              </View>
+              <DateTimePicker
+                value={scheduleDate || new Date()}
+                mode="date"
+                display="spinner"
+                onChange={handleDateChange}
+                textColor="#000000"
+                style={styles.datePicker}
+              />
+              <DateTimePicker
+                value={scheduleDate || new Date()}
+                mode="time"
+                display="spinner"
+                onChange={handleTimeChange}
+                textColor="#000000"
+                style={styles.timePicker}
+              />
             </View>
           </View>
         </Modal>
@@ -1215,10 +1213,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
   },
-  pickersContainer: {
-    paddingHorizontal: 0,
-    paddingBottom: 0,
-  },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -1245,8 +1239,10 @@ const styles = StyleSheet.create({
     fontFamily: 'Archivo-Bold',
   },
   datePicker: {
-    height: 130,
-    marginHorizontal: -16,
+    flex: 1,
+  },
+  timePicker: {
+    flex: 1,
   },
   createButtonText: {
     color: '#000000',
