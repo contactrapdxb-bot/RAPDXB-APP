@@ -1214,9 +1214,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
+    height: 520,
   },
   pickersContainer: {
-    paddingBottom: 20,
+    flex: 1,
   },
   modalHeader: {
     flexDirection: 'row',
@@ -1244,11 +1245,11 @@ const styles = StyleSheet.create({
     fontFamily: 'Archivo-Bold',
   },
   datePicker: {
-    height: 200,
+    flex: 1,
     width: '100%',
   },
   timePicker: {
-    height: 200,
+    flex: 1,
     width: '100%',
   },
   createButtonText: {
