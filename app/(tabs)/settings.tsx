@@ -408,8 +408,8 @@ const styles = StyleSheet.create({
   platformCard: {
     borderRadius: 20,
     padding: 18,
-    gap: 12,
     minHeight: 140,
+    justifyContent: 'space-between',
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.15,
@@ -434,7 +434,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   platformName: {
-    fontSize: 13,
+    fontSize: 16,
     fontFamily: 'Archivo-Bold',
     color: '#ffffff',
     letterSpacing: -0.3,
@@ -442,15 +442,15 @@ const styles = StyleSheet.create({
   connectedStatus: {
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
     borderRadius: 10,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
+    paddingVertical: 6,
+    paddingHorizontal: 10,
     alignSelf: 'flex-start',
   },
   connectedText: {
-    fontSize: 9,
+    fontSize: 11,
     fontFamily: 'Archivo-Bold',
     color: '#ffffff',
-    letterSpacing: 0.3,
+    letterSpacing: 0.5,
     textTransform: 'uppercase',
   },
   modalOverlay: {
