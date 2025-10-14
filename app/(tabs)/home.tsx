@@ -185,43 +185,41 @@ export default function HomeScreen() {
                     onPress={() => handleNotificationPress(notif.id)}
                     activeOpacity={0.7}
                   >
-                    <View style={[styles.notificationIconContainer, { backgroundColor: notif.color }]}>
-                      {notif.icon === 'heart' && (
-                        <Svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                          <Path
-                            fillRule="evenodd"
-                            clipRule="evenodd"
-                            d="M11.9932 5.13581C9.9938 2.7984 6.65975 2.16964 4.15469 4.31001C1.64964 6.45038 1.29697 10.029 3.2642 12.5604C4.89982 14.6651 9.84977 19.1041 11.4721 20.5408C11.6536 20.7016 11.7444 20.7819 11.8502 20.8135C11.9426 20.8411 12.0437 20.8411 12.1361 20.8135C12.2419 20.7819 12.3327 20.7016 12.5142 20.5408C14.1365 19.1041 19.0865 14.6651 20.7221 12.5604C22.6893 10.029 22.3797 6.42787 19.8316 4.31001C17.2835 2.19216 13.9925 2.7984 11.9932 5.13581Z"
-                            stroke="#000000"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </Svg>
-                      )}
-                      {notif.icon === 'website' && (
-                        <Svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                          <Path
-                            d="M22 9H2M2 7.8L2 16.2C2 17.8802 2 18.7202 2.32698 19.362C2.6146 19.9265 3.07354 20.3854 3.63803 20.673C4.27976 21 5.11984 21 6.8 21H17.2C18.8802 21 19.7202 21 20.362 20.673C20.9265 20.3854 21.3854 19.9265 21.673 19.362C22 18.7202 22 17.8802 22 16.2V7.8C22 6.11984 22 5.27977 21.673 4.63803C21.3854 4.07354 20.9265 3.6146 20.362 3.32698C19.7202 3 18.8802 3 17.2 3L6.8 3C5.11984 3 4.27976 3 3.63803 3.32698C3.07354 3.6146 2.6146 4.07354 2.32698 4.63803C2 5.27976 2 6.11984 2 7.8Z"
-                            stroke="#000000"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </Svg>
-                      )}
-                      {notif.icon === 'upload' && (
-                        <Svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-                          <Path
-                            d="M21 12V16.2C21 17.8802 21 18.7202 20.673 19.362C20.3854 19.9265 19.9265 20.3854 19.362 20.673C18.7202 21 17.8802 21 16.2 21H7.8C6.11984 21 5.27976 21 4.63803 20.673C4.07354 20.3854 3.6146 19.9265 3.32698 19.362C3 18.7202 3 17.8802 3 16.2V12M16 7L12 3M12 3L8 7M12 3V15"
-                            stroke="#000000"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </Svg>
-                      )}
-                    </View>
+                    {notif.icon === 'heart' && (
+                      <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <Path
+                          fillRule="evenodd"
+                          clipRule="evenodd"
+                          d="M11.9932 5.13581C9.9938 2.7984 6.65975 2.16964 4.15469 4.31001C1.64964 6.45038 1.29697 10.029 3.2642 12.5604C4.89982 14.6651 9.84977 19.1041 11.4721 20.5408C11.6536 20.7016 11.7444 20.7819 11.8502 20.8135C11.9426 20.8411 12.0437 20.8411 12.1361 20.8135C12.2419 20.7819 12.3327 20.7016 12.5142 20.5408C14.1365 19.1041 19.0865 14.6651 20.7221 12.5604C22.6893 10.029 22.3797 6.42787 19.8316 4.31001C17.2835 2.19216 13.9925 2.7984 11.9932 5.13581Z"
+                          stroke="#000000"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </Svg>
+                    )}
+                    {notif.icon === 'website' && (
+                      <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <Path
+                          d="M22 9H2M2 7.8L2 16.2C2 17.8802 2 18.7202 2.32698 19.362C2.6146 19.9265 3.07354 20.3854 3.63803 20.673C4.27976 21 5.11984 21 6.8 21H17.2C18.8802 21 19.7202 21 20.362 20.673C20.9265 20.3854 21.3854 19.9265 21.673 19.362C22 18.7202 22 17.8802 22 16.2V7.8C22 6.11984 22 5.27977 21.673 4.63803C21.3854 4.07354 20.9265 3.6146 20.362 3.32698C19.7202 3 18.8802 3 17.2 3L6.8 3C5.11984 3 4.27976 3 3.63803 3.32698C3.07354 3.6146 2.6146 4.07354 2.32698 4.63803C2 5.27976 2 6.11984 2 7.8Z"
+                          stroke="#000000"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </Svg>
+                    )}
+                    {notif.icon === 'upload' && (
+                      <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                        <Path
+                          d="M21 12V16.2C21 17.8802 21 18.7202 20.673 19.362C20.3854 19.9265 19.9265 20.3854 19.362 20.673C18.7202 21 17.8802 21 16.2 21H7.8C6.11984 21 5.27976 21 4.63803 20.673C4.07354 20.3854 3.6146 19.9265 3.32698 19.362C3 18.7202 3 17.8802 3 16.2V12M16 7L12 3M12 3L8 7M12 3V15"
+                          stroke="#000000"
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        />
+                      </Svg>
+                    )}
                     <View style={styles.notificationTextContainer}>
                       <Text style={styles.notificationText} numberOfLines={1}>{notif.text}</Text>
                       <Text style={styles.notificationTime}>{notif.time}</Text>
@@ -993,7 +991,7 @@ const styles = StyleSheet.create({
   },
   notificationPopup: {
     position: 'absolute',
-    right: 20,
+    right: 16,
     width: 380,
     zIndex: 9999,
   },
@@ -1001,8 +999,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#000000',
     borderRadius: 24,
     padding: 16,
-    borderWidth: 2,
-    borderColor: '#ffffff',
+    borderWidth: 0.5,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 16 },
     shadowOpacity: 0.6,
@@ -1033,13 +1031,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 12,
     elevation: 3,
-  },
-  notificationIconContainer: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   notificationTextContainer: {
     flex: 1,
