@@ -115,7 +115,7 @@ export default function AccountScreen() {
           </View>
         </LinearGradient>
 
-        <View style={styles.section}>
+        <View style={[styles.section, { marginTop: 32 }]}>
           <Text style={styles.sectionTitle}>Connected Accounts</Text>
           <View style={styles.platformsGrid}>
             {SOCIAL_PLATFORMS.map((platform) => (
