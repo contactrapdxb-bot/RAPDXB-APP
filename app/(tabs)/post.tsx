@@ -386,7 +386,12 @@ export default function PostScreen() {
             style={styles.uploadCard}
           >
             <View style={styles.inputGroup}>
-              <Text style={styles.labelDark}>Upload Media</Text>
+              <View style={styles.labelRow}>
+                <Text style={styles.labelDark}>Upload Media</Text>
+                <View style={styles.labelBadgeDark}>
+                  <Text style={styles.labelBadgeTextDark}>Required</Text>
+                </View>
+              </View>
               <TouchableOpacity activeOpacity={0.7} style={styles.uploadButton} onPress={handleUploadFile}>
                 <Upload color="#000000" size={20} strokeWidth={2.5} />
                 <Text style={styles.uploadButtonText}>Upload File</Text>
@@ -440,7 +445,12 @@ export default function PostScreen() {
             style={styles.tagsCard}
           >
             <View style={styles.inputGroup}>
-              <Text style={styles.labelDark}>Tags</Text>
+              <View style={styles.labelRow}>
+                <Text style={styles.labelDark}>Tags</Text>
+                <View style={styles.labelBadgeOptionalDark}>
+                  <Text style={styles.labelBadgeTextOptionalDark}>Optional</Text>
+                </View>
+              </View>
               <View style={styles.tagInputContainer}>
                 <View style={styles.glassTagInputDark}>
                   <Text style={styles.atSymbol}>@</Text>
@@ -1203,7 +1213,6 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     paddingBottom: 34,
-    maxHeight: 480,
   },
   modalHeader: {
     flexDirection: 'row',
@@ -1231,7 +1240,7 @@ const styles = StyleSheet.create({
     fontFamily: 'Archivo-Bold',
   },
   datePicker: {
-    height: 180,
+    height: 160,
   },
   createButtonText: {
     color: '#000000',
