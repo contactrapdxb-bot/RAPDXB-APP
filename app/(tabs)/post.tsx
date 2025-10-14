@@ -380,7 +380,6 @@ export default function PostScreen() {
                 </LinearGradient>
               </View>
             </LinearGradient>
-          </View>
 
           <LinearGradient
             colors={['rgba(251, 191, 36, 0.12)', 'rgba(245, 158, 11, 0.08)']}
@@ -432,7 +431,6 @@ export default function PostScreen() {
                 </LinearGradient>
               </View>
             </LinearGradient>
-          </View>
 
           <LinearGradient
             colors={['rgba(163, 230, 53, 0.12)', 'rgba(132, 204, 22, 0.08)']}
@@ -490,7 +488,6 @@ export default function PostScreen() {
                 )}
               </View>
             </LinearGradient>
-          </View>
 
           <LinearGradient
             colors={['rgba(251, 146, 60, 0.12)', 'rgba(249, 115, 22, 0.08)']}
@@ -522,7 +519,6 @@ export default function PostScreen() {
                 </TouchableOpacity>
               </View>
             </LinearGradient>
-          </View>
 
           <View style={styles.platformsSection}>
             <View style={styles.platformsHeader}>
