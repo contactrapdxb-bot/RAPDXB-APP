@@ -445,9 +445,9 @@ export default function PostScreen() {
           >
             <View style={styles.createButtonBorder}>
               <LinearGradient
-                colors={!title
-                  ? ['rgba(139, 92, 246, 0.3)', 'rgba(124, 58, 237, 0.3)']
-                  : ['#8b5cf6', '#7c3aed']}
+                colors={contentType === 'post'
+                  ? ['#fbbf24', '#f59e0b']
+                  : ['#60a5fa', '#3b82f6']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.createButtonGradient}
@@ -953,27 +953,28 @@ const styles = StyleSheet.create({
   },
   createButtonBorder: {
     borderRadius: 32,
-    padding: 3,
-    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    padding: 2.5,
+    background: 'linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.3) 100%)',
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
     shadowColor: '#ffffff',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.3,
-    shadowRadius: 16,
-    elevation: 10,
-  },
-  createButtonGradient: {
-    paddingVertical: 24,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: 29,
-    shadowColor: '#8b5cf6',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.5,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.4,
     shadowRadius: 12,
     elevation: 8,
   },
+  createButtonGradient: {
+    paddingVertical: 22,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 29.5,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+  },
   createButtonText: {
-    color: '#ffffff',
+    color: '#000000',
     fontSize: 19,
     fontFamily: 'Archivo-Bold',
     letterSpacing: -0.4,
