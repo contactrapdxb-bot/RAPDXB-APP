@@ -348,8 +348,22 @@ export default function HomeScreen() {
                     return (
                       <View key={data.month} style={styles.barColumn}>
                         <View style={styles.barPair}>
-                          <Animated.View style={[styles.barInstagram, { height: instagramHeight }]} />
-                          <Animated.View style={[styles.barOthers, { height: othersHeight }]} />
+                          <Animated.View style={[{ height: instagramHeight }, styles.barWrapper]}>
+                            <LinearGradient
+                              colors={['#ffffff', '#e0e7ff', '#c7d2fe']}
+                              start={{ x: 0.5, y: 0 }}
+                              end={{ x: 0.5, y: 1 }}
+                              style={styles.barInstagram}
+                            />
+                          </Animated.View>
+                          <Animated.View style={[{ height: othersHeight }, styles.barWrapper]}>
+                            <LinearGradient
+                              colors={['rgba(255, 255, 255, 0.5)', 'rgba(255, 255, 255, 0.3)', 'rgba(255, 255, 255, 0.2)']}
+                              start={{ x: 0.5, y: 0 }}
+                              end={{ x: 0.5, y: 1 }}
+                              style={styles.barOthers}
+                            />
+                          </Animated.View>
                         </View>
                         <Text style={styles.xAxisLabel}>{data.month}</Text>
                       </View>
@@ -707,28 +721,38 @@ const styles = StyleSheet.create({
     gap: 3,
     height: 120,
   },
-  barInstagram: {
+  barWrapper: {
     width: 12,
-    backgroundColor: '#ffffff',
-    borderRadius: 8,
     minHeight: 2,
     shadowColor: '#ffffff',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.6,
+    shadowOffset: { width: 0, height: 0 },
+    shadowOpacity: 0.9,
+    shadowRadius: 16,
+    elevation: 15,
+  },
+  barInstagram: {
+    flex: 1,
+    width: '100%',
+    borderRadius: 10,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    shadowColor: '#c7d2fe',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.8,
     shadowRadius: 12,
     elevation: 12,
   },
   barOthers: {
-    width: 12,
-    backgroundColor: '#ffffff',
-    opacity: 0.35,
-    borderRadius: 8,
-    minHeight: 2,
-    shadowColor: '#ffffff',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
+    flex: 1,
+    width: '100%',
+    borderRadius: 10,
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+    shadowColor: 'rgba(255, 255, 255, 0.4)',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.6,
     shadowRadius: 8,
-    elevation: 6,
+    elevation: 8,
   },
   xAxisLabel: {
     fontSize: 8,
