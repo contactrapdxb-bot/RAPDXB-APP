@@ -17,9 +17,10 @@ const PLATFORM_DATA = [
 ];
 
 const MONTHLY_DATA = [
-  { month: 'Aug', instagram: 82, others: 45 },
-  { month: 'Sep', instagram: 68, others: 58 },
-  { month: 'Oct', instagram: 91, others: 38 },
+  { month: 'Sep', instagram: 82, others: 45 },
+  { month: 'Oct', instagram: 68, others: 58 },
+  { month: 'Nov', instagram: 91, others: 38 },
+  { month: 'Dec', instagram: 75, others: 52 },
 ];
 
 const GROWTH_CHART_POINTS = [
@@ -320,36 +321,27 @@ export default function HomeScreen() {
             </View>
 
             <View style={styles.chartWrapper}>
-              <View style={styles.yAxisLabels}>
-                <Text style={styles.yAxisLabel}>4M</Text>
-                <Text style={styles.yAxisLabel}>3M</Text>
-                <Text style={styles.yAxisLabel}>2M</Text>
-                <Text style={styles.yAxisLabel}>1M</Text>
-              </View>
-
               <View style={styles.chartArea}>
-                <View style={styles.chartBackground}>
-                  {[...Array(5)].map((_, i) => (
-                    <View key={i} style={styles.gridLineHorizontal} />
-                  ))}
-                </View>
-
                 <View style={styles.barsContainer}>
                   {MONTHLY_DATA.map((data, index) => {
                     const instagramHeight = barAnimations[index].instagram.interpolate({
                       inputRange: [0, 100],
-                      outputRange: [2, 120],
+                      outputRange: ['0%', '100%'],
                     });
                     const othersHeight = barAnimations[index].others.interpolate({
                       inputRange: [0, 100],
-                      outputRange: [2, 120],
+                      outputRange: ['0%', '100%'],
                     });
 
                     return (
                       <View key={data.month} style={styles.barColumn}>
                         <View style={styles.barPair}>
-                          <Animated.View style={[styles.barInstagram, { height: instagramHeight }]} />
-                          <Animated.View style={[styles.barOthers, { height: othersHeight }]} />
+                          <View style={styles.barContainer}>
+                            <Animated.View style={[styles.barInstagram, { height: instagramHeight }]} />
+                          </View>
+                          <View style={styles.barContainer}>
+                            <Animated.View style={[styles.barOthers, { height: othersHeight }]} />
+                          </View>
                         </View>
                         <Text style={styles.xAxisLabel}>{data.month}</Text>
                       </View>
@@ -657,84 +649,61 @@ const styles = StyleSheet.create({
     paddingTop: 8,
   },
   chartWrapper: {
-    flexDirection: 'row',
-    height: 120,
-    gap: 4,
-  },
-  yAxisLabels: {
-    justifyContent: 'space-between',
-    paddingVertical: 2,
-    paddingTop: 25,
-  },
-  yAxisLabel: {
-    fontSize: 10,
-    fontFamily: 'Inter-SemiBold',
-    color: '#ffffff',
-    opacity: 0.8,
+    height: 140,
+    paddingHorizontal: 8,
   },
   chartArea: {
     flex: 1,
     position: 'relative',
-  },
-  chartBackground: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 14,
-    justifyContent: 'space-between',
-  },
-  gridLineHorizontal: {
-    height: 1,
-    backgroundColor: 'rgba(255,255,255,0.06)',
-    width: '100%',
   },
   barsContainer: {
     flex: 1,
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'flex-end',
-    paddingTop: 140,
-    paddingBottom: 0,
+    gap: 12,
   },
   barColumn: {
+    flex: 1,
     alignItems: 'center',
-    gap: 3,
+    gap: 8,
+    height: '100%',
   },
   barPair: {
     flexDirection: 'row',
     alignItems: 'flex-end',
-    gap: 3,
-    height: 120,
+    gap: 6,
+    flex: 1,
+    width: '100%',
+  },
+  barContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    borderRadius: 8,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.12)',
+    justifyContent: 'flex-end',
   },
   barInstagram: {
-    width: 12,
+    width: '100%',
     backgroundColor: '#ffffff',
-    borderRadius: 8,
-    minHeight: 2,
-    shadowColor: '#ffffff',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.6,
-    shadowRadius: 12,
-    elevation: 12,
+    borderBottomLeftRadius: 7,
+    borderBottomRightRadius: 7,
   },
   barOthers: {
-    width: 12,
+    width: '100%',
     backgroundColor: '#ffffff',
-    opacity: 0.35,
-    borderRadius: 8,
-    minHeight: 2,
-    shadowColor: '#ffffff',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 6,
+    opacity: 0.4,
+    borderBottomLeftRadius: 7,
+    borderBottomRightRadius: 7,
   },
   xAxisLabel: {
-    fontSize: 8,
+    fontSize: 9,
     fontFamily: 'Inter-SemiBold',
     color: '#ffffff',
-    opacity: 0.6,
+    opacity: 0.7,
+    letterSpacing: 0.2,
   },
   legendRow: {
     flexDirection: 'row',
