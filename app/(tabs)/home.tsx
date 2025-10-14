@@ -673,7 +673,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'flex-end',
     gap: 8,
-    marginBottom: 30,
+    paddingBottom: 30,
   },
   barColumn: {
     flex: 1,
