@@ -7,8 +7,8 @@ import Svg, { Path, Circle, Defs, Pattern, Rect, Line, RadialGradient as SvgRadi
 import * as Haptics from 'expo-haptics';
 import { useState, useRef, useEffect } from 'react';
 
-const PLATFORMS_POST = ['Instagram', 'Facebook', 'Twitter'];
-const PLATFORMS_REEL = ['Instagram Reels', 'YouTube Shorts', 'TikTok', 'Facebook Reels', 'Snapchat'];
+const PLATFORMS_POST = ['Instagram', 'Facebook', 'Twitter', 'All'];
+const PLATFORMS_REEL = ['Instagram Reels', 'YouTube Shorts', 'TikTok', 'Facebook Reels', 'Snapchat', 'All'];
 
 export default function PostScreen() {
   const insets = useSafeAreaInsets();
@@ -134,11 +134,24 @@ export default function PostScreen() {
     if (Platform.OS !== 'web') {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
-    setSelectedPlatforms(prev =>
-      prev.includes(platform)
-        ? prev.filter(p => p !== platform)
-        : [...prev, platform]
-    );
+
+    if (platform === 'All') {
+      const allPlatforms = contentType === 'post'
+        ? ['Instagram', 'Facebook', 'Twitter']
+        : ['Instagram Reels', 'YouTube Shorts', 'TikTok', 'Facebook Reels', 'Snapchat'];
+
+      if (selectedPlatforms.length === allPlatforms.length) {
+        setSelectedPlatforms([]);
+      } else {
+        setSelectedPlatforms(allPlatforms);
+      }
+    } else {
+      setSelectedPlatforms(prev =>
+        prev.includes(platform)
+          ? prev.filter(p => p !== platform)
+          : [...prev, platform]
+      );
+    }
   };
 
   const handleCreate = () => {
@@ -152,7 +165,7 @@ export default function PostScreen() {
 
   const slideTranslate = slideAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [4, 134],
+    outputRange: [4, 138],
   });
 
   const sparkleOpacity = sparkleAnim.interpolate({
@@ -190,6 +203,7 @@ export default function PostScreen() {
       'YouTube Shorts': ['#FF0000', '#cc0000'],
       'TikTok': ['#000000', '#25F4EE'],
       'Snapchat': ['#FFFC00', '#FFA500'],
+      'All': ['#8b5cf6', '#7c3aed'],
     };
     return colorMap[platform] || ['#8b5cf6', '#7c3aed'];
   };
@@ -258,18 +272,10 @@ export default function PostScreen() {
         <View style={styles.titleSection}>
           <Text style={styles.pageTitle}>Create </Text>
           <Text style={styles.pageTitleBold}>Content</Text>
-          <Animated.View style={[styles.sparkleIcon, { opacity: sparkleOpacity, transform: [{ rotate: sparkleRotate }] }]}>
-            <Sparkles color="#fbbf24" size={32} strokeWidth={2} />
-          </Animated.View>
         </View>
 
         <View style={styles.toggleContainer}>
-          <LinearGradient
-            colors={['rgba(139, 92, 246, 0.15)', 'rgba(96, 165, 250, 0.15)']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 0 }}
-            style={styles.toggleBackground}
-          >
+          <View style={styles.toggleBackground}>
             <Svg style={StyleSheet.absoluteFill} viewBox="0 0 100 100">
               <Defs>
                 <Pattern
@@ -289,16 +295,11 @@ export default function PostScreen() {
               style={[
                 styles.toggleSlider,
                 {
-                  transform: [{ translateX: slideTranslate }, { scale: pulseAnim }],
+                  transform: [{ translateX: slideTranslate }],
                 },
               ]}
             >
-              <LinearGradient
-                colors={contentType === 'post' ? ['#8b5cf6', '#7c3aed'] : ['#60a5fa', '#3b82f6']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.toggleSliderGradient}
-              />
+              <View style={styles.toggleSliderInner} />
             </Animated.View>
             <TouchableOpacity
               style={styles.toggleOption}
@@ -320,33 +321,16 @@ export default function PostScreen() {
                 Reel
               </Text>
             </TouchableOpacity>
-          </LinearGradient>
+          </View>
         </View>
 
         <View style={styles.inputSection}>
-          <View style={styles.inputCardWrapper}>
-            <Svg style={StyleSheet.absoluteFill} viewBox="0 0 100 100">
-              <Defs>
-                <Pattern
-                  id="purplePattern"
-                  x="0"
-                  y="0"
-                  width="20"
-                  height="20"
-                  patternUnits="userSpaceOnUse"
-                  patternTransform="rotate(45)"
-                >
-                  <Line x1="0" y1="10" x2="20" y2="10" stroke="rgba(139, 92, 246, 0.15)" strokeWidth="0.5" />
-                </Pattern>
-              </Defs>
-              <Rect width="100" height="100" fill="url(#purplePattern)" />
-            </Svg>
-            <LinearGradient
-              colors={['rgba(139, 92, 246, 0.08)', 'rgba(124, 58, 237, 0.05)']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 0, y: 1 }}
-              style={styles.inputCard}
-            >
+          <LinearGradient
+            colors={['rgba(96, 165, 250, 0.08)', 'rgba(59, 130, 246, 0.05)']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={styles.inputCard}
+          >
               <View style={styles.inputGroup}>
                 <View style={styles.labelRow}>
                   <Text style={styles.label}>Title</Text>
@@ -398,28 +382,12 @@ export default function PostScreen() {
             </LinearGradient>
           </View>
 
-          <View style={styles.uploadCardWrapper}>
-            <Svg style={StyleSheet.absoluteFill} viewBox="0 0 100 100">
-              <Defs>
-                <Pattern
-                  id="yellowPattern"
-                  x="0"
-                  y="0"
-                  width="15"
-                  height="15"
-                  patternUnits="userSpaceOnUse"
-                >
-                  <Circle cx="7.5" cy="7.5" r="1.5" fill="rgba(251, 191, 36, 0.15)" />
-                </Pattern>
-              </Defs>
-              <Rect width="100" height="100" fill="url(#yellowPattern)" />
-            </Svg>
-            <LinearGradient
-              colors={['rgba(251, 191, 36, 0.12)', 'rgba(245, 158, 11, 0.08)']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.uploadCard}
-            >
+          <LinearGradient
+            colors={['rgba(251, 191, 36, 0.12)', 'rgba(245, 158, 11, 0.08)']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.uploadCard}
+          >
               <View style={styles.inputGroup}>
                 <Text style={styles.label}>Upload Media</Text>
                 <TouchableOpacity activeOpacity={0.7}>
@@ -466,29 +434,12 @@ export default function PostScreen() {
             </LinearGradient>
           </View>
 
-          <View style={styles.tagsCardWrapper}>
-            <Svg style={StyleSheet.absoluteFill} viewBox="0 0 100 100">
-              <Defs>
-                <Pattern
-                  id="greenPattern"
-                  x="0"
-                  y="0"
-                  width="25"
-                  height="25"
-                  patternUnits="userSpaceOnUse"
-                  patternTransform="rotate(-30)"
-                >
-                  <Path d="M 0 12.5 L 25 12.5" stroke="rgba(163, 230, 53, 0.15)" strokeWidth="1" />
-                </Pattern>
-              </Defs>
-              <Rect width="100" height="100" fill="url(#greenPattern)" />
-            </Svg>
-            <LinearGradient
-              colors={['rgba(163, 230, 53, 0.12)', 'rgba(132, 204, 22, 0.08)']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.tagsCard}
-            >
+          <LinearGradient
+            colors={['rgba(163, 230, 53, 0.12)', 'rgba(132, 204, 22, 0.08)']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.tagsCard}
+          >
               <View style={styles.inputGroup}>
                 <Text style={styles.label}>Tags</Text>
                 <View style={styles.tagInputContainer}>
@@ -541,28 +492,12 @@ export default function PostScreen() {
             </LinearGradient>
           </View>
 
-          <View style={styles.scheduleCardWrapper}>
-            <Svg style={StyleSheet.absoluteFill} viewBox="0 0 100 100">
-              <Defs>
-                <Pattern
-                  id="orangePattern"
-                  x="0"
-                  y="0"
-                  width="20"
-                  height="20"
-                  patternUnits="userSpaceOnUse"
-                >
-                  <Rect x="8" y="8" width="4" height="4" fill="rgba(251, 146, 60, 0.1)" />
-                </Pattern>
-              </Defs>
-              <Rect width="100" height="100" fill="url(#orangePattern)" />
-            </Svg>
-            <LinearGradient
-              colors={['rgba(251, 146, 60, 0.12)', 'rgba(249, 115, 22, 0.08)']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.scheduleCard}
-            >
+          <LinearGradient
+            colors={['rgba(251, 146, 60, 0.12)', 'rgba(249, 115, 22, 0.08)']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.scheduleCard}
+          >
               <View style={styles.inputGroup}>
                 <View style={styles.labelRow}>
                   <Text style={styles.label}>Schedule</Text>
@@ -598,7 +533,11 @@ export default function PostScreen() {
             </View>
             <View style={styles.platformGrid}>
               {platforms.map((platform) => {
-                const isSelected = selectedPlatforms.includes(platform);
+                const allPlatforms = contentType === 'post'
+                  ? ['Instagram', 'Facebook', 'Twitter']
+                  : ['Instagram Reels', 'YouTube Shorts', 'TikTok', 'Facebook Reels', 'Snapchat'];
+                const isAllSelected = platform === 'All' && selectedPlatforms.length === allPlatforms.length;
+                const isSelected = platform === 'All' ? isAllSelected : selectedPlatforms.includes(platform);
                 const colors = getPlatformColors(platform);
                 return (
                   <TouchableOpacity
@@ -652,7 +591,6 @@ export default function PostScreen() {
               end={{ x: 1, y: 1 }}
               style={styles.createButtonGradient}
             >
-              <Sparkles color="#ffffff" size={20} strokeWidth={2} />
               <Text style={styles.createButtonText}>
                 {contentType === 'post' ? 'Create Post' : 'Create Reel'}
               </Text>
@@ -757,22 +695,21 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 16,
     elevation: 8,
+    backgroundColor: 'rgba(96, 165, 250, 0.15)',
   },
   toggleSlider: {
     position: 'absolute',
     top: 4,
     bottom: 4,
-    width: 126,
+    left: 4,
+    right: '50%',
     borderRadius: 20,
     overflow: 'hidden',
   },
-  toggleSliderGradient: {
+  toggleSliderInner: {
     flex: 1,
-    shadowColor: '#8b5cf6',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.6,
-    shadowRadius: 16,
-    elevation: 10,
+    backgroundColor: '#000000',
+    borderRadius: 20,
   },
   toggleOption: {
     flex: 1,
@@ -795,33 +732,13 @@ const styles = StyleSheet.create({
   inputSection: {
     gap: 20,
   },
-  inputCardWrapper: {
-    position: 'relative',
-    borderRadius: 32,
-    overflow: 'hidden',
-  },
-  uploadCardWrapper: {
-    position: 'relative',
-    borderRadius: 32,
-    overflow: 'hidden',
-  },
-  tagsCardWrapper: {
-    position: 'relative',
-    borderRadius: 32,
-    overflow: 'hidden',
-  },
-  scheduleCardWrapper: {
-    position: 'relative',
-    borderRadius: 32,
-    overflow: 'hidden',
-  },
   inputCard: {
     borderRadius: 32,
     padding: 24,
     borderWidth: 1.5,
-    borderColor: 'rgba(139, 92, 246, 0.3)',
+    borderColor: 'rgba(96, 165, 250, 0.3)',
     gap: 24,
-    shadowColor: '#8b5cf6',
+    shadowColor: '#60a5fa',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.2,
     shadowRadius: 20,
@@ -876,15 +793,15 @@ const styles = StyleSheet.create({
     letterSpacing: -0.4,
   },
   labelBadge: {
-    backgroundColor: 'rgba(139, 92, 246, 0.3)',
+    backgroundColor: 'rgba(96, 165, 250, 0.3)',
     paddingHorizontal: 10,
     paddingVertical: 4,
     borderRadius: 8,
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.5)',
+    borderColor: 'rgba(96, 165, 250, 0.5)',
   },
   labelBadgeText: {
-    color: '#8b5cf6',
+    color: '#60a5fa',
     fontSize: 11,
     fontFamily: 'Archivo-Bold',
     letterSpacing: 0.5,
@@ -908,7 +825,7 @@ const styles = StyleSheet.create({
   inputWrapper: {
     borderRadius: 20,
     borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.15)',
+    borderColor: 'rgba(96, 165, 250, 0.3)',
   },
   input: {
     paddingHorizontal: 20,
@@ -1135,8 +1052,6 @@ const styles = StyleSheet.create({
     paddingVertical: 24,
     alignItems: 'center',
     justifyContent: 'center',
-    flexDirection: 'row',
-    gap: 10,
     shadowColor: '#8b5cf6',
     shadowOffset: { width: 0, height: 12 },
     shadowOpacity: 0.5,
