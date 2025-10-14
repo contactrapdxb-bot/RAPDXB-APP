@@ -1,11 +1,13 @@
-import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, TextInput, Animated, Dimensions, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, TextInput, Animated, Dimensions, RefreshControl, Image, Modal } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ArrowLeft, Upload, Link, Calendar, X, Image as ImageIcon, Video } from 'lucide-react-native';
+import { ArrowLeft, Upload, Link, Calendar, X, Image as ImageIcon, Video, Check } from 'lucide-react-native';
 import Svg, { Circle, Defs, RadialGradient as SvgRadialGradient, Stop } from 'react-native-svg';
 import * as Haptics from 'expo-haptics';
 import { useState, useRef, useEffect } from 'react';
+import * as ImagePicker from 'expo-image-picker';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const { width } = Dimensions.get('window');
 
@@ -18,10 +20,13 @@ export default function PostScreen() {
   const [title, setTitle] = useState('');
   const [caption, setCaption] = useState('');
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
-  const [scheduleDate, setScheduleDate] = useState('');
+  const [scheduleDate, setScheduleDate] = useState<Date | null>(null);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
   const [tagInput, setTagInput] = useState('');
   const [tags, setTags] = useState<string[]>([]);
   const [mediaLink, setMediaLink] = useState('');
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -89,16 +94,89 @@ export default function PostScreen() {
     setTags([]);
     setTagInput('');
     setMediaLink('');
+    setUploadedImage(null);
+    setScheduleDate(null);
   };
 
   const handleAddTag = () => {
-    if (tagInput.trim() && !tags.includes(tagInput.trim())) {
+    if (tagInput.trim() && !tags.includes(tagInput.trim()) && tags.length < 3) {
       if (Platform.OS !== 'web') {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
       }
       setTags([...tags, tagInput.trim()]);
       setTagInput('');
     }
+  };
+
+  const handleUploadFile = async () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: contentType === 'post' ? ImagePicker.MediaTypeOptions.Images : ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setUploadedImage(result.assets[0].uri);
+    }
+  };
+
+  const handleDateChange = (event: any, selectedDate?: Date) => {
+    if (Platform.OS === 'android') {
+      setShowDatePicker(false);
+    }
+    if (selectedDate) {
+      const currentDate = scheduleDate || new Date();
+      currentDate.setFullYear(selectedDate.getFullYear());
+      currentDate.setMonth(selectedDate.getMonth());
+      currentDate.setDate(selectedDate.getDate());
+      setScheduleDate(currentDate);
+      if (Platform.OS === 'android') {
+        setShowTimePicker(true);
+      }
+    }
+  };
+
+  const handleTimeChange = (event: any, selectedTime?: Date) => {
+    setShowTimePicker(false);
+    if (selectedTime) {
+      const currentDate = scheduleDate || new Date();
+      currentDate.setHours(selectedTime.getHours());
+      currentDate.setMinutes(selectedTime.getMinutes());
+      setScheduleDate(currentDate);
+    }
+  };
+
+  const handleSchedulePress = () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    if (!scheduleDate) {
+      setScheduleDate(new Date());
+    }
+    setShowDatePicker(true);
+  };
+
+  const formatDateTime = (date: Date | null) => {
+    if (!date) return 'Select date & time';
+    const options: Intl.DateTimeFormatOptions = {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+    };
+    return date.toLocaleString('en-US', options);
   };
 
   const handleRemoveTag = (tagToRemove: string) => {
@@ -309,10 +387,18 @@ export default function PostScreen() {
           >
             <View style={styles.inputGroup}>
               <Text style={styles.labelDark}>Upload Media</Text>
-              <TouchableOpacity activeOpacity={0.7} style={styles.uploadButton}>
+              <TouchableOpacity activeOpacity={0.7} style={styles.uploadButton} onPress={handleUploadFile}>
                 <Upload color="#000000" size={20} strokeWidth={2.5} />
                 <Text style={styles.uploadButtonText}>Upload File</Text>
               </TouchableOpacity>
+              {uploadedImage && (
+                <View style={styles.uploadedImageContainer}>
+                  <Image source={{ uri: uploadedImage }} style={styles.uploadedImage} />
+                  <View style={styles.uploadedCheckmark}>
+                    <Check color="#000000" size={16} strokeWidth={3} />
+                  </View>
+                </View>
+              )}
             </View>
 
             <View style={styles.dividerContainer}>
@@ -347,6 +433,7 @@ export default function PostScreen() {
               <Text style={styles.labelDark}>Tags</Text>
               <View style={styles.tagInputContainer}>
                 <View style={styles.glassTagInputDark}>
+                  <Text style={styles.atSymbol}>@</Text>
                   <TextInput
                     style={styles.tagInputFieldDark}
                     placeholder="Add a tag..."
@@ -355,28 +442,24 @@ export default function PostScreen() {
                     onChangeText={setTagInput}
                     onSubmitEditing={handleAddTag}
                     returnKeyType="done"
+                    editable={tags.length < 3}
                   />
                 </View>
                 <TouchableOpacity
                   onPress={handleAddTag}
                   activeOpacity={0.7}
-                  style={styles.addTagButtonDark}
+                  style={[styles.addTagButtonDark, tags.length >= 3 && styles.addTagButtonDisabled]}
+                  disabled={tags.length >= 3}
                 >
                   <Text style={styles.addTagButtonTextDark}>Add</Text>
                 </TouchableOpacity>
               </View>
               {tags.length > 0 && (
-                <View style={styles.tagsContainer}>
+                <View style={styles.addedTagsContainer}>
                   {tags.map((tag) => (
-                    <View key={tag} style={styles.tag}>
-                      <Text style={styles.tagText}>#{tag}</Text>
-                      <TouchableOpacity
-                        onPress={() => handleRemoveTag(tag)}
-                        activeOpacity={0.7}
-                        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                      >
-                        <X color="#000000" size={14} strokeWidth={2.5} />
-                      </TouchableOpacity>
+                    <View key={tag} style={styles.addedTag}>
+                      <Check color="#000000" size={16} strokeWidth={3} />
+                      <Text style={styles.addedTagText}>@{tag}</Text>
                     </View>
                   ))}
                 </View>
@@ -397,10 +480,10 @@ export default function PostScreen() {
                   <Text style={styles.labelBadgeTextOptionalDark}>Optional</Text>
                 </View>
               </View>
-              <TouchableOpacity activeOpacity={0.7} style={styles.scheduleButtonDark}>
+              <TouchableOpacity activeOpacity={0.7} style={styles.scheduleButtonDark} onPress={handleSchedulePress}>
                 <Calendar color="#000000" size={18} strokeWidth={2} />
                 <Text style={styles.scheduleButtonTextDark}>
-                  {scheduleDate || 'Select date & time'}
+                  {formatDateTime(scheduleDate)}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -460,23 +543,74 @@ export default function PostScreen() {
             activeOpacity={0.8}
             disabled={!title}
           >
-            <View style={styles.createButtonBorder}>
-              <LinearGradient
-                colors={contentType === 'post'
-                  ? ['#60a5fa', '#3b82f6']
-                  : ['#fbbf24', '#f59e0b']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.createButtonGradient}
-              >
-                <Text style={styles.createButtonText}>
-                  {contentType === 'post' ? 'Create Post' : 'Create Reel'}
-                </Text>
-              </LinearGradient>
-            </View>
+            <LinearGradient
+              colors={contentType === 'post'
+                ? ['#60a5fa', '#3b82f6']
+                : ['#fbbf24', '#f59e0b']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.createButtonGradient}
+            >
+              <Text style={styles.createButtonText}>
+                {contentType === 'post' ? 'Create Post' : 'Create Reel'}
+              </Text>
+            </LinearGradient>
           </TouchableOpacity>
         </View>
       </ScrollView>
+      {Platform.OS === 'ios' && showDatePicker && (
+        <Modal
+          visible={showDatePicker}
+          transparent={true}
+          animationType="slide"
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <View style={styles.modalHeader}>
+                <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+                  <Text style={styles.modalCancelText}>Cancel</Text>
+                </TouchableOpacity>
+                <Text style={styles.modalTitle}>Select Date & Time</Text>
+                <TouchableOpacity onPress={() => setShowDatePicker(false)}>
+                  <Text style={styles.modalDoneText}>Done</Text>
+                </TouchableOpacity>
+              </View>
+              <DateTimePicker
+                value={scheduleDate || new Date()}
+                mode="date"
+                display="spinner"
+                onChange={handleDateChange}
+                textColor="#000000"
+                style={styles.datePicker}
+              />
+              <DateTimePicker
+                value={scheduleDate || new Date()}
+                mode="time"
+                display="spinner"
+                onChange={handleTimeChange}
+                textColor="#000000"
+                style={styles.datePicker}
+              />
+            </View>
+          </View>
+        </Modal>
+      )}
+      {Platform.OS === 'android' && showDatePicker && (
+        <DateTimePicker
+          value={scheduleDate || new Date()}
+          mode="date"
+          display="default"
+          onChange={handleDateChange}
+        />
+      )}
+      {Platform.OS === 'android' && showTimePicker && (
+        <DateTimePicker
+          value={scheduleDate || new Date()}
+          mode="time"
+          display="default"
+          onChange={handleTimeChange}
+        />
+      )}
     </View>
   );
 }
@@ -805,13 +939,45 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
     borderColor: 'rgba(0, 0, 0, 0.15)',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  atSymbol: {
+    paddingLeft: 20,
+    color: '#000000',
+    fontSize: 16,
+    fontFamily: 'Archivo-Bold',
   },
   tagInputFieldDark: {
-    paddingHorizontal: 20,
+    flex: 1,
+    paddingHorizontal: 8,
     paddingVertical: 18,
     color: '#000000',
     fontSize: 16,
     fontFamily: 'Inter-Regular',
+  },
+  addTagButtonDisabled: {
+    opacity: 0.5,
+  },
+  addedTagsContainer: {
+    gap: 12,
+  },
+  addedTag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
+    borderRadius: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  addedTagText: {
+    color: '#000000',
+    fontSize: 15,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.3,
   },
   addTagButtonDark: {
     backgroundColor: 'rgba(0, 0, 0, 0.15)',
@@ -971,29 +1137,76 @@ const styles = StyleSheet.create({
   createButtonDisabled: {
     opacity: 0.5,
   },
-  createButtonBorder: {
-    borderRadius: 32,
-    padding: 2.5,
-    background: 'linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.3) 100%)',
-    backgroundColor: '#ffffff',
-    borderWidth: 0,
-    borderColor: '#ffffff',
-    shadowColor: '#ffffff',
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.4,
-    shadowRadius: 12,
-    elevation: 8,
-  },
   createButtonGradient: {
     paddingVertical: 22,
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 29.5,
+    borderRadius: 32,
     shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 6,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.4,
+    shadowRadius: 20,
+    elevation: 10,
+  },
+  uploadedImageContainer: {
+    position: 'relative',
+    width: 100,
+    height: 100,
+    borderRadius: 16,
+    overflow: 'hidden',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  uploadedImage: {
+    width: '100%',
+    height: '100%',
+  },
+  uploadedCheckmark: {
+    position: 'absolute',
+    top: 8,
+    right: 8,
+    backgroundColor: '#a3e635',
+    borderRadius: 12,
+    padding: 4,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: '#ffffff',
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
+    paddingBottom: 34,
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(0, 0, 0, 0.1)',
+  },
+  modalCancelText: {
+    color: '#000000',
+    fontSize: 16,
+    fontFamily: 'Inter-Regular',
+  },
+  modalTitle: {
+    color: '#000000',
+    fontSize: 17,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.4,
+  },
+  modalDoneText: {
+    color: '#3b82f6',
+    fontSize: 16,
+    fontFamily: 'Archivo-Bold',
+  },
+  datePicker: {
+    height: 200,
   },
   createButtonText: {
     color: '#000000',
