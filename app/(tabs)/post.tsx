@@ -219,7 +219,7 @@ export default function PostScreen() {
               onPress={() => handleToggle('post')}
               activeOpacity={0.8}
             >
-              <ImageIcon color={contentType === 'post' ? '#000000' : 'rgba(0, 0, 0, 0.4)'} size={18} strokeWidth={2.5} />
+              <ImageIcon color={contentType === 'post' ? '#fbbf24' : 'rgba(0, 0, 0, 0.4)'} size={18} strokeWidth={3} />
               <Text style={[styles.toggleText, contentType === 'post' && styles.toggleTextActivePost]}>
                 Post
               </Text>
@@ -229,7 +229,7 @@ export default function PostScreen() {
               onPress={() => handleToggle('reel')}
               activeOpacity={0.8}
             >
-              <Video color={contentType === 'reel' ? '#000000' : 'rgba(0, 0, 0, 0.4)'} size={18} strokeWidth={2.5} />
+              <Video color={contentType === 'reel' ? '#60a5fa' : 'rgba(0, 0, 0, 0.4)'} size={18} strokeWidth={3} />
               <Text style={[styles.toggleText, contentType === 'reel' && styles.toggleTextActiveReel]}>
                 Reel
               </Text>
@@ -567,13 +567,16 @@ const styles = StyleSheet.create({
     color: 'rgba(0, 0, 0, 0.4)',
     fontSize: 16,
     fontFamily: 'Archivo-Bold',
+    fontWeight: '700',
     letterSpacing: -0.4,
   },
   toggleTextActivePost: {
     color: '#fbbf24',
+    fontWeight: '900',
   },
   toggleTextActiveReel: {
     color: '#60a5fa',
+    fontWeight: '900',
   },
   inputSection: {
     gap: 20,
@@ -977,6 +980,7 @@ const styles = StyleSheet.create({
     color: '#000000',
     fontSize: 19,
     fontFamily: 'Archivo-Bold',
+    fontWeight: '900',
     letterSpacing: -0.4,
   },
 });
