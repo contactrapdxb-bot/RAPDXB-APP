@@ -24,6 +24,8 @@ export default function PostScreen() {
   const floatAnim1 = useRef(new Animated.Value(0)).current;
   const floatAnim2 = useRef(new Animated.Value(0)).current;
   const floatAnim3 = useRef(new Animated.Value(0)).current;
+  const slideAnim = useRef(new Animated.Value(0)).current;
+  const indicatorAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     Animated.loop(
@@ -69,6 +71,20 @@ export default function PostScreen() {
     setTags([]);
     setTagInput('');
     setMediaLink('');
+
+    Animated.spring(slideAnim, {
+      toValue: type === 'post' ? 0 : 1,
+      useNativeDriver: false,
+      tension: 80,
+      friction: 10,
+    }).start();
+
+    Animated.spring(indicatorAnim, {
+      toValue: type === 'post' ? 0 : 1,
+      useNativeDriver: false,
+      tension: 80,
+      friction: 10,
+    }).start();
   };
 
   const handleAddTag = () => {
@@ -198,15 +214,17 @@ export default function PostScreen() {
           <TouchableOpacity
             style={styles.backButton}
             onPress={handleBack}
-            activeOpacity={0.6}
+            activeOpacity={0.7}
           >
             <LinearGradient
-              colors={['rgba(139, 92, 246, 0.2)', 'rgba(96, 165, 250, 0.2)']}
+              colors={['#8b5cf6', '#7c3aed']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.backButtonGradient}
             >
-              <ArrowLeft color="#ffffff" size={22} strokeWidth={2} />
+              <View style={styles.backButtonInner}>
+                <ArrowLeft color="#ffffff" size={20} strokeWidth={2.5} />
+              </View>
             </LinearGradient>
           </TouchableOpacity>
           <View style={styles.placeholder} />
@@ -215,13 +233,35 @@ export default function PostScreen() {
         <View style={styles.titleSection}>
           <Text style={styles.pageTitle}>Create </Text>
           <Text style={styles.pageTitleBold}>Content</Text>
+          <View style={styles.contentTypeIndicator}>
+            <Animated.View style={[
+              styles.indicatorDot,
+              {
+                backgroundColor: indicatorAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: ['#60a5fa', '#8b5cf6'],
+                }),
+              }
+            ]} />
+            <Text style={styles.indicatorText}>
+              {contentType === 'post' ? 'Post Mode' : 'Reel Mode'}
+            </Text>
+          </View>
         </View>
 
         <View style={styles.toggleContainer}>
           <View style={styles.toggleBackground}>
-            <View style={[styles.toggleSlider, contentType === 'post' ? styles.toggleSliderLeft : styles.toggleSliderRight]}>
+            <Animated.View style={[
+              styles.toggleSlider,
+              {
+                left: slideAnim.interpolate({
+                  inputRange: [0, 1],
+                  outputRange: [4, '50%'],
+                }),
+              }
+            ]}>
               <View style={styles.toggleSliderInner} />
-            </View>
+            </Animated.View>
             <TouchableOpacity
               style={styles.toggleOption}
               onPress={() => handleToggle('post')}
@@ -448,20 +488,29 @@ export default function PostScreen() {
               !title && styles.createButtonDisabled,
             ]}
             onPress={handleCreate}
-            activeOpacity={0.8}
+            activeOpacity={0.85}
             disabled={!title}
           >
             <LinearGradient
               colors={!title
                 ? ['rgba(139, 92, 246, 0.3)', 'rgba(124, 58, 237, 0.3)']
-                : ['#8b5cf6', '#7c3aed']}
+                : ['#a855f7', '#8b5cf6', '#7c3aed']}
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 1 }}
               style={styles.createButtonGradient}
             >
-              <Text style={styles.createButtonText}>
-                {contentType === 'post' ? 'Create Post' : 'Create Reel'}
-              </Text>
+              <View style={styles.createButtonContent}>
+                <View style={styles.createButtonIconWrapper}>
+                  {contentType === 'post' ? (
+                    <ImageIcon color="#ffffff" size={22} strokeWidth={2.5} />
+                  ) : (
+                    <Video color="#ffffff" size={22} strokeWidth={2.5} />
+                  )}
+                </View>
+                <Text style={styles.createButtonText}>
+                  {contentType === 'post' ? 'Create Post' : 'Create Reel'}
+                </Text>
+              </View>
             </LinearGradient>
           </TouchableOpacity>
         </View>
@@ -506,19 +555,30 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   backButton: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 52,
+    height: 52,
+    borderRadius: 26,
     overflow: 'hidden',
+    shadowColor: '#8b5cf6',
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.5,
+    shadowRadius: 12,
+    elevation: 8,
   },
   backButtonGradient: {
     width: '100%',
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.3)',
-    borderRadius: 24,
+    borderRadius: 26,
+  },
+  backButtonInner: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   placeholder: {
     width: 48,
@@ -528,6 +588,29 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap',
     marginBottom: 24,
     alignItems: 'center',
+    gap: 12,
+  },
+  contentTypeIndicator: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.3)',
+  },
+  indicatorDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+  },
+  indicatorText: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.2,
   },
   pageTitle: {
     fontSize: 44,
@@ -567,12 +650,6 @@ const styles = StyleSheet.create({
     bottom: 4,
     width: '50%',
     borderRadius: 20,
-  },
-  toggleSliderLeft: {
-    left: 4,
-  },
-  toggleSliderRight: {
-    right: 4,
   },
   toggleSliderInner: {
     flex: 1,
@@ -869,23 +946,36 @@ const styles = StyleSheet.create({
     borderRadius: 32,
     overflow: 'hidden',
     marginTop: 12,
+    shadowColor: '#8b5cf6',
+    shadowOffset: { width: 0, height: 16 },
+    shadowOpacity: 0.6,
+    shadowRadius: 28,
+    elevation: 16,
   },
   createButtonDisabled: {
     opacity: 0.5,
   },
   createButtonGradient: {
-    paddingVertical: 24,
+    paddingVertical: 26,
+    paddingHorizontal: 24,
+  },
+  createButtonContent: {
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#8b5cf6',
-    shadowOffset: { width: 0, height: 12 },
-    shadowOpacity: 0.5,
-    shadowRadius: 24,
-    elevation: 12,
+    gap: 14,
+  },
+  createButtonIconWrapper: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: 'rgba(0, 0, 0, 0.25)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   createButtonText: {
     color: '#ffffff',
-    fontSize: 19,
+    fontSize: 20,
     fontFamily: 'Archivo-Bold',
     letterSpacing: -0.4,
   },
