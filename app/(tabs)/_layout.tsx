@@ -243,6 +243,7 @@ export default function TabLayout() {
         name="post"
         options={{
           tabBarIcon: () => <PostButton />,
+          unmountOnBlur: true,
         }}
       />
       <Tabs.Screen
