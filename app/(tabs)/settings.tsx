@@ -454,6 +454,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     paddingHorizontal: 10,
     alignSelf: 'center',
+    marginBottom: 4,
   },
   connectedText: {
     fontSize: 10,
