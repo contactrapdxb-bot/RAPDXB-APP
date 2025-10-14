@@ -27,42 +27,31 @@ export default function StatsScreen() {
         <Text style={styles.title}>Stats</Text>
         <View style={styles.placeholder} />
       </View>
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
         <View style={styles.chartSection}>
-          <Text style={styles.sectionTitle}>Monthly Overview</Text>
+          <Text style={styles.sectionTitle}>Activity</Text>
           <View style={styles.chartContainer}>
             <View style={styles.barGroup}>
-              <View style={styles.barWrapper}>
-                <View style={styles.barBackground}>
-                  <View style={[styles.barFill, { height: '65%' }]} />
-                </View>
+              <View style={styles.barContainer}>
+                <View style={[styles.barFill, { height: '65%' }]} />
               </View>
               <Text style={styles.barLabel}>Sep</Text>
             </View>
-
             <View style={styles.barGroup}>
-              <View style={styles.barWrapper}>
-                <View style={styles.barBackground}>
-                  <View style={[styles.barFill, { height: '82%' }]} />
-                </View>
+              <View style={styles.barContainer}>
+                <View style={[styles.barFill, { height: '82%' }]} />
               </View>
               <Text style={styles.barLabel}>Oct</Text>
             </View>
-
             <View style={styles.barGroup}>
-              <View style={styles.barWrapper}>
-                <View style={styles.barBackground}>
-                  <View style={[styles.barFill, { height: '48%' }]} />
-                </View>
+              <View style={styles.barContainer}>
+                <View style={[styles.barFill, { height: '48%' }]} />
               </View>
               <Text style={styles.barLabel}>Nov</Text>
             </View>
-
             <View style={styles.barGroup}>
-              <View style={styles.barWrapper}>
-                <View style={styles.barBackground}>
-                  <View style={[styles.barFill, { height: '91%' }]} />
-                </View>
+              <View style={styles.barContainer}>
+                <View style={[styles.barFill, { height: '91%' }]} />
               </View>
               <Text style={styles.barLabel}>Dec</Text>
             </View>
@@ -70,40 +59,29 @@ export default function StatsScreen() {
         </View>
 
         <View style={styles.chartSection}>
-          <Text style={styles.sectionTitle}>Engagement Rate</Text>
+          <Text style={styles.sectionTitle}>Engagement</Text>
           <View style={styles.chartContainer}>
             <View style={styles.barGroup}>
-              <View style={styles.barWrapper}>
-                <View style={styles.barBackground}>
-                  <View style={[styles.barFill, { height: '72%', backgroundColor: '#10b981' }]} />
-                </View>
+              <View style={styles.barContainer}>
+                <View style={[styles.barFill, { height: '72%', backgroundColor: '#10b981' }]} />
               </View>
               <Text style={styles.barLabel}>Sep</Text>
             </View>
-
             <View style={styles.barGroup}>
-              <View style={styles.barWrapper}>
-                <View style={styles.barBackground}>
-                  <View style={[styles.barFill, { height: '58%', backgroundColor: '#10b981' }]} />
-                </View>
+              <View style={styles.barContainer}>
+                <View style={[styles.barFill, { height: '58%', backgroundColor: '#10b981' }]} />
               </View>
               <Text style={styles.barLabel}>Oct</Text>
             </View>
-
             <View style={styles.barGroup}>
-              <View style={styles.barWrapper}>
-                <View style={styles.barBackground}>
-                  <View style={[styles.barFill, { height: '85%', backgroundColor: '#10b981' }]} />
-                </View>
+              <View style={styles.barContainer}>
+                <View style={[styles.barFill, { height: '85%', backgroundColor: '#10b981' }]} />
               </View>
               <Text style={styles.barLabel}>Nov</Text>
             </View>
-
             <View style={styles.barGroup}>
-              <View style={styles.barWrapper}>
-                <View style={styles.barBackground}>
-                  <View style={[styles.barFill, { height: '78%', backgroundColor: '#10b981' }]} />
-                </View>
+              <View style={styles.barContainer}>
+                <View style={[styles.barFill, { height: '78%', backgroundColor: '#10b981' }]} />
               </View>
               <Text style={styles.barLabel}>Dec</Text>
             </View>
@@ -111,40 +89,29 @@ export default function StatsScreen() {
         </View>
 
         <View style={styles.chartSection}>
-          <Text style={styles.sectionTitle}>Growth Trends</Text>
+          <Text style={styles.sectionTitle}>Growth</Text>
           <View style={styles.chartContainer}>
             <View style={styles.barGroup}>
-              <View style={styles.barWrapper}>
-                <View style={styles.barBackground}>
-                  <View style={[styles.barFill, { height: '55%', backgroundColor: '#f59e0b' }]} />
-                </View>
+              <View style={styles.barContainer}>
+                <View style={[styles.barFill, { height: '55%', backgroundColor: '#f59e0b' }]} />
               </View>
               <Text style={styles.barLabel}>Sep</Text>
             </View>
-
             <View style={styles.barGroup}>
-              <View style={styles.barWrapper}>
-                <View style={styles.barBackground}>
-                  <View style={[styles.barFill, { height: '68%', backgroundColor: '#f59e0b' }]} />
-                </View>
+              <View style={styles.barContainer}>
+                <View style={[styles.barFill, { height: '68%', backgroundColor: '#f59e0b' }]} />
               </View>
               <Text style={styles.barLabel}>Oct</Text>
             </View>
-
             <View style={styles.barGroup}>
-              <View style={styles.barWrapper}>
-                <View style={styles.barBackground}>
-                  <View style={[styles.barFill, { height: '73%', backgroundColor: '#f59e0b' }]} />
-                </View>
+              <View style={styles.barContainer}>
+                <View style={[styles.barFill, { height: '73%', backgroundColor: '#f59e0b' }]} />
               </View>
               <Text style={styles.barLabel}>Nov</Text>
             </View>
-
             <View style={styles.barGroup}>
-              <View style={styles.barWrapper}>
-                <View style={styles.barBackground}>
-                  <View style={[styles.barFill, { height: '88%', backgroundColor: '#f59e0b' }]} />
-                </View>
+              <View style={styles.barContainer}>
+                <View style={[styles.barFill, { height: '88%', backgroundColor: '#f59e0b' }]} />
               </View>
               <Text style={styles.barLabel}>Dec</Text>
             </View>
@@ -152,40 +119,29 @@ export default function StatsScreen() {
         </View>
 
         <View style={styles.chartSection}>
-          <Text style={styles.sectionTitle}>Performance Score</Text>
+          <Text style={styles.sectionTitle}>Performance</Text>
           <View style={styles.chartContainer}>
             <View style={styles.barGroup}>
-              <View style={styles.barWrapper}>
-                <View style={styles.barBackground}>
-                  <View style={[styles.barFill, { height: '62%', backgroundColor: '#ef4444' }]} />
-                </View>
+              <View style={styles.barContainer}>
+                <View style={[styles.barFill, { height: '62%', backgroundColor: '#ef4444' }]} />
               </View>
               <Text style={styles.barLabel}>Sep</Text>
             </View>
-
             <View style={styles.barGroup}>
-              <View style={styles.barWrapper}>
-                <View style={styles.barBackground}>
-                  <View style={[styles.barFill, { height: '75%', backgroundColor: '#ef4444' }]} />
-                </View>
+              <View style={styles.barContainer}>
+                <View style={[styles.barFill, { height: '75%', backgroundColor: '#ef4444' }]} />
               </View>
               <Text style={styles.barLabel}>Oct</Text>
             </View>
-
             <View style={styles.barGroup}>
-              <View style={styles.barWrapper}>
-                <View style={styles.barBackground}>
-                  <View style={[styles.barFill, { height: '81%', backgroundColor: '#ef4444' }]} />
-                </View>
+              <View style={styles.barContainer}>
+                <View style={[styles.barFill, { height: '81%', backgroundColor: '#ef4444' }]} />
               </View>
               <Text style={styles.barLabel}>Nov</Text>
             </View>
-
             <View style={styles.barGroup}>
-              <View style={styles.barWrapper}>
-                <View style={styles.barBackground}>
-                  <View style={[styles.barFill, { height: '69%', backgroundColor: '#ef4444' }]} />
-                </View>
+              <View style={styles.barContainer}>
+                <View style={[styles.barFill, { height: '69%', backgroundColor: '#ef4444' }]} />
               </View>
               <Text style={styles.barLabel}>Dec</Text>
             </View>
@@ -229,58 +185,56 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 24,
+  },
+  scrollContent: {
+    paddingHorizontal: 24,
+    paddingVertical: 32,
   },
   chartSection: {
-    marginBottom: 40,
+    marginBottom: 56,
   },
   sectionTitle: {
     color: '#ffffff',
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: 'Archivo-Bold',
-    marginBottom: 20,
-    letterSpacing: -0.3,
+    marginBottom: 24,
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+    opacity: 0.6,
   },
   chartContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
-    height: 180,
-    paddingHorizontal: 8,
+    height: 200,
+    gap: 16,
   },
   barGroup: {
     flex: 1,
     alignItems: 'center',
-    justifyContent: 'flex-end',
-    marginHorizontal: 6,
-  },
-  barWrapper: {
-    width: '100%',
-    height: 140,
-    justifyContent: 'flex-end',
-    marginBottom: 8,
-  },
-  barBackground: {
-    width: '100%',
     height: '100%',
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderRadius: 8,
+  },
+  barContainer: {
+    width: '100%',
+    flex: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    borderRadius: 12,
     overflow: 'hidden',
+    marginBottom: 12,
+    justifyContent: 'flex-end',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
+    borderColor: 'rgba(255, 255, 255, 0.06)',
   },
   barFill: {
     width: '100%',
     backgroundColor: '#3b82f6',
-    borderRadius: 6,
-    position: 'absolute',
-    bottom: 0,
+    borderBottomLeftRadius: 11,
+    borderBottomRightRadius: 11,
   },
   barLabel: {
-    color: 'rgba(255, 255, 255, 0.5)',
-    fontSize: 12,
+    color: 'rgba(255, 255, 255, 0.4)',
+    fontSize: 11,
     fontFamily: 'Inter-Regular',
-    marginTop: 4,
+    letterSpacing: 0.3,
   },
 });
