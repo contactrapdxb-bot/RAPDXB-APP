@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, TextInput, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeft, Upload, Link, Calendar, X } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 import { useState, useRef, useEffect } from 'react';
@@ -80,38 +81,39 @@ export default function PostScreen() {
     if (Platform.OS !== 'web') {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     }
-    // Handle create logic here
-    console.log('Creating', contentType, { title, caption, selectedPlatforms, scheduleDate });
+    console.log('Creating', contentType, { title, caption, selectedPlatforms, scheduleDate, tags });
   };
 
   const platforms = contentType === 'post' ? PLATFORMS_POST : PLATFORMS_REEL;
 
   const slideTranslate = slideAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [0, 120],
+    outputRange: [4, 134],
   });
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={handleBack}
-          activeOpacity={0.6}
-        >
-          <ArrowLeft color="#ffffff" size={24} strokeWidth={2} />
-        </TouchableOpacity>
-        <Text style={styles.title}>Create Content</Text>
-        <View style={styles.placeholder} />
-      </View>
-
+    <View style={[styles.container, { paddingTop: insets.top + 8 }]}>
       <ScrollView
         style={styles.scrollContainer}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 100 }]}
         showsVerticalScrollIndicator={false}
       >
-        {/* Toggle */}
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={handleBack}
+            activeOpacity={0.6}
+          >
+            <ArrowLeft color="#ffffff" size={22} strokeWidth={2} />
+          </TouchableOpacity>
+          <View style={styles.placeholder} />
+        </View>
+
+        <View style={styles.titleSection}>
+          <Text style={styles.pageTitle}>Create </Text>
+          <Text style={styles.pageTitleBold}>Content</Text>
+        </View>
+
         <View style={styles.toggleContainer}>
           <View style={styles.toggleBackground}>
             <Animated.View
@@ -143,130 +145,126 @@ export default function PostScreen() {
           </View>
         </View>
 
-        {/* Input Fields */}
-        <View style={styles.inputSection}>
-          {/* Title */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Title</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter title..."
-              placeholderTextColor="rgba(255, 255, 255, 0.3)"
-              value={title}
-              onChangeText={setTitle}
-            />
-          </View>
-
-          {/* Caption */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Caption</Text>
-            <TextInput
-              style={[styles.input, styles.textArea]}
-              placeholder="Write your caption..."
-              placeholderTextColor="rgba(255, 255, 255, 0.3)"
-              value={caption}
-              onChangeText={setCaption}
-              multiline
-              numberOfLines={4}
-              textAlignVertical="top"
-            />
-          </View>
-
-          {/* Upload or Paste Link */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Media</Text>
-            <View style={styles.mediaButtons}>
-              <TouchableOpacity style={styles.mediaButton} activeOpacity={0.7}>
-                <Upload color="#ffffff" size={20} />
-                <Text style={styles.mediaButtonText}>Upload</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.mediaButton} activeOpacity={0.7}>
-                <Link color="#ffffff" size={20} />
-                <Text style={styles.mediaButtonText}>Paste Link</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-
-          {/* Platform Selection */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Platforms</Text>
-            <View style={styles.platformGrid}>
-              {platforms.map((platform) => (
-                <TouchableOpacity
-                  key={platform}
-                  style={[
-                    styles.platformChip,
-                    selectedPlatforms.includes(platform) && styles.platformChipActive,
-                  ]}
-                  onPress={() => handlePlatformToggle(platform)}
-                  activeOpacity={0.7}
-                >
-                  <Text
-                    style={[
-                      styles.platformChipText,
-                      selectedPlatforms.includes(platform) && styles.platformChipTextActive,
-                    ]}
-                  >
-                    {platform}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-
-          {/* Tags */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Tags</Text>
-            <View style={styles.tagInputContainer}>
+        <View style={styles.mainCard}>
+          <View style={styles.inputSection}>
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Title</Text>
               <TextInput
-                style={styles.tagInput}
-                placeholder="Add a tag..."
-                placeholderTextColor="rgba(255, 255, 255, 0.3)"
-                value={tagInput}
-                onChangeText={setTagInput}
-                onSubmitEditing={handleAddTag}
-                returnKeyType="done"
+                style={styles.input}
+                placeholder="Enter title..."
+                placeholderTextColor="rgba(255, 255, 255, 0.25)"
+                value={title}
+                onChangeText={setTitle}
               />
-              <TouchableOpacity
-                style={styles.addTagButton}
-                onPress={handleAddTag}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.addTagButtonText}>Add</Text>
-              </TouchableOpacity>
             </View>
-            {tags.length > 0 && (
-              <View style={styles.tagsContainer}>
-                {tags.map((tag) => (
-                  <View key={tag} style={styles.tag}>
-                    <Text style={styles.tagText}>#{tag}</Text>
-                    <TouchableOpacity
-                      onPress={() => handleRemoveTag(tag)}
-                      activeOpacity={0.7}
-                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Caption</Text>
+              <TextInput
+                style={[styles.input, styles.textArea]}
+                placeholder="Write your caption..."
+                placeholderTextColor="rgba(255, 255, 255, 0.25)"
+                value={caption}
+                onChangeText={setCaption}
+                multiline
+                numberOfLines={5}
+                textAlignVertical="top"
+              />
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Media</Text>
+              <View style={styles.mediaButtons}>
+                <TouchableOpacity style={styles.mediaButton} activeOpacity={0.7}>
+                  <Upload color="#ffffff" size={20} strokeWidth={2} />
+                  <Text style={styles.mediaButtonText}>Upload</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.mediaButton} activeOpacity={0.7}>
+                  <Link color="#ffffff" size={20} strokeWidth={2} />
+                  <Text style={styles.mediaButtonText}>Paste Link</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Platforms</Text>
+              <View style={styles.platformGrid}>
+                {platforms.map((platform) => (
+                  <TouchableOpacity
+                    key={platform}
+                    style={[
+                      styles.platformChip,
+                      selectedPlatforms.includes(platform) && styles.platformChipActive,
+                    ]}
+                    onPress={() => handlePlatformToggle(platform)}
+                    activeOpacity={0.7}
+                  >
+                    <Text
+                      style={[
+                        styles.platformChipText,
+                        selectedPlatforms.includes(platform) && styles.platformChipTextActive,
+                      ]}
                     >
-                      <X color="#ffffff" size={14} strokeWidth={2.5} />
-                    </TouchableOpacity>
-                  </View>
+                      {platform}
+                    </Text>
+                  </TouchableOpacity>
                 ))}
               </View>
-            )}
-          </View>
+            </View>
 
-          {/* Schedule */}
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Schedule (Optional)</Text>
-            <TouchableOpacity style={styles.scheduleButton} activeOpacity={0.7}>
-              <Calendar color="#ffffff" size={20} />
-              <Text style={styles.scheduleButtonText}>
-                {scheduleDate || 'Select date & time'}
-              </Text>
-            </TouchableOpacity>
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Tags</Text>
+              <View style={styles.tagInputContainer}>
+                <TextInput
+                  style={styles.tagInput}
+                  placeholder="Add a tag..."
+                  placeholderTextColor="rgba(255, 255, 255, 0.25)"
+                  value={tagInput}
+                  onChangeText={setTagInput}
+                  onSubmitEditing={handleAddTag}
+                  returnKeyType="done"
+                />
+                <TouchableOpacity
+                  style={styles.addTagButton}
+                  onPress={handleAddTag}
+                  activeOpacity={0.7}
+                >
+                  <Text style={styles.addTagButtonText}>Add</Text>
+                </TouchableOpacity>
+              </View>
+              {tags.length > 0 && (
+                <View style={styles.tagsContainer}>
+                  {tags.map((tag) => (
+                    <View key={tag} style={styles.tag}>
+                      <Text style={styles.tagText}>#{tag}</Text>
+                      <TouchableOpacity
+                        onPress={() => handleRemoveTag(tag)}
+                        activeOpacity={0.7}
+                        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                      >
+                        <X color="#ffffff" size={14} strokeWidth={2.5} />
+                      </TouchableOpacity>
+                    </View>
+                  ))}
+                </View>
+              )}
+            </View>
+
+            <View style={styles.inputGroup}>
+              <Text style={styles.label}>Schedule (Optional)</Text>
+              <TouchableOpacity style={styles.scheduleButton} activeOpacity={0.7}>
+                <View style={styles.scheduleIconWrapper}>
+                  <Calendar color="#ffffff" size={18} strokeWidth={2} />
+                </View>
+                <Text style={styles.scheduleButtonText}>
+                  {scheduleDate || 'Select date & time'}
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </ScrollView>
 
-      {/* Create Button */}
       <View style={[styles.bottomBar, { paddingBottom: insets.bottom + 16 }]}>
         <TouchableOpacity
           style={[
@@ -277,9 +275,18 @@ export default function PostScreen() {
           activeOpacity={0.8}
           disabled={!title || !caption || selectedPlatforms.length === 0}
         >
-          <Text style={styles.createButtonText}>
-            {contentType === 'post' ? 'Create Post' : 'Create Reel'}
-          </Text>
+          <LinearGradient
+            colors={(!title || !caption || selectedPlatforms.length === 0)
+              ? ['rgba(139, 92, 246, 0.3)', 'rgba(124, 58, 237, 0.3)']
+              : ['#8b5cf6', '#7c3aed']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.createButtonGradient}
+          >
+            <Text style={styles.createButtonText}>
+              {contentType === 'post' ? 'Create Post' : 'Create Reel'}
+            </Text>
+          </LinearGradient>
         </TouchableOpacity>
       </View>
     </View>
@@ -291,94 +298,118 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000000',
   },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  title: {
-    color: '#ffffff',
-    fontSize: 20,
-    fontFamily: 'Archivo-Bold',
-    letterSpacing: -0.5,
-  },
-  placeholder: {
-    width: 40,
-  },
   scrollContainer: {
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 20,
+    paddingHorizontal: 16,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  backButton: {
+    width: 48,
+    height: 48,
+    backgroundColor: '#1a1a1a',
+    borderRadius: 24,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  placeholder: {
+    width: 48,
+  },
+  titleSection: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginBottom: 24,
+  },
+  pageTitle: {
+    fontSize: 44,
+    fontFamily: 'Inter-Thin',
+    color: '#ffffff',
+    letterSpacing: -1.2,
+    lineHeight: 50,
+  },
+  pageTitleBold: {
+    fontSize: 44,
+    fontFamily: 'Archivo-Bold',
+    color: '#ffffff',
+    letterSpacing: -1.2,
+    lineHeight: 50,
   },
   toggleContainer: {
-    paddingHorizontal: 20,
-    paddingTop: 24,
-    paddingBottom: 8,
+    marginBottom: 24,
   },
   toggleBackground: {
     flexDirection: 'row',
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderRadius: 16,
+    borderRadius: 20,
     padding: 4,
     position: 'relative',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
   },
   toggleSlider: {
     position: 'absolute',
-    left: 4,
     top: 4,
     bottom: 4,
-    width: 120,
+    width: 126,
     backgroundColor: '#8b5cf6',
-    borderRadius: 12,
+    borderRadius: 16,
+    shadowColor: '#8b5cf6',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.4,
+    shadowRadius: 12,
+    elevation: 8,
   },
   toggleOption: {
     flex: 1,
-    paddingVertical: 12,
+    paddingVertical: 14,
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 1,
   },
   toggleText: {
-    color: 'rgba(255, 255, 255, 0.5)',
-    fontSize: 16,
+    color: 'rgba(255, 255, 255, 0.4)',
+    fontSize: 17,
     fontFamily: 'Archivo-Bold',
-    letterSpacing: -0.3,
+    letterSpacing: -0.4,
   },
   toggleTextActive: {
     color: '#ffffff',
   },
+  mainCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    borderRadius: 38,
+    padding: 24,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 24,
+    elevation: 10,
+  },
   inputSection: {
-    paddingHorizontal: 20,
-    paddingTop: 24,
-    gap: 24,
+    gap: 28,
   },
   inputGroup: {
     gap: 12,
   },
   label: {
     color: '#ffffff',
-    fontSize: 16,
+    fontSize: 17,
     fontFamily: 'Archivo-Bold',
-    letterSpacing: -0.3,
+    letterSpacing: -0.4,
   },
   input: {
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
+    borderRadius: 20,
+    paddingHorizontal: 18,
+    paddingVertical: 16,
     color: '#ffffff',
     fontSize: 16,
     fontFamily: 'Inter-Regular',
@@ -386,8 +417,8 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255, 255, 255, 0.1)',
   },
   textArea: {
-    minHeight: 120,
-    paddingTop: 14,
+    minHeight: 140,
+    paddingTop: 16,
   },
   mediaButtons: {
     flexDirection: 'row',
@@ -398,10 +429,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
+    gap: 10,
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderRadius: 16,
-    paddingVertical: 16,
+    borderRadius: 20,
+    paddingVertical: 18,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.1)',
   },
@@ -414,44 +445,33 @@ const styles = StyleSheet.create({
   platformGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 12,
+    gap: 10,
   },
   platformChip: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 18,
     paddingVertical: 12,
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderRadius: 12,
+    borderRadius: 16,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.1)',
   },
   platformChipActive: {
-    backgroundColor: 'rgba(139, 92, 246, 0.2)',
-    borderColor: '#8b5cf6',
+    backgroundColor: 'rgba(139, 92, 246, 0.15)',
+    borderColor: 'rgba(139, 92, 246, 0.6)',
+    shadowColor: '#8b5cf6',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
   },
   platformChipText: {
-    color: 'rgba(255, 255, 255, 0.6)',
+    color: 'rgba(255, 255, 255, 0.5)',
     fontSize: 14,
     fontFamily: 'Archivo-Bold',
     letterSpacing: -0.3,
   },
   platformChipTextActive: {
     color: '#ffffff',
-  },
-  scheduleButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
-  },
-  scheduleButtonText: {
-    color: 'rgba(255, 255, 255, 0.6)',
-    fontSize: 15,
-    fontFamily: 'Inter-Regular',
   },
   tagInputContainer: {
     flexDirection: 'row',
@@ -460,9 +480,9 @@ const styles = StyleSheet.create({
   tagInput: {
     flex: 1,
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderRadius: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 14,
+    borderRadius: 20,
+    paddingHorizontal: 18,
+    paddingVertical: 16,
     color: '#ffffff',
     fontSize: 16,
     fontFamily: 'Inter-Regular',
@@ -471,11 +491,16 @@ const styles = StyleSheet.create({
   },
   addTagButton: {
     backgroundColor: '#8b5cf6',
-    borderRadius: 16,
-    paddingHorizontal: 24,
-    paddingVertical: 14,
+    borderRadius: 20,
+    paddingHorizontal: 28,
+    paddingVertical: 16,
     justifyContent: 'center',
     alignItems: 'center',
+    shadowColor: '#8b5cf6',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 6,
   },
   addTagButtonText: {
     color: '#ffffff',
@@ -486,19 +511,19 @@ const styles = StyleSheet.create({
   tagsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
+    gap: 10,
     marginTop: 4,
   },
   tag: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    backgroundColor: 'rgba(139, 92, 246, 0.2)',
+    backgroundColor: 'rgba(139, 92, 246, 0.15)',
     borderWidth: 1,
-    borderColor: '#8b5cf6',
-    borderRadius: 10,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    borderColor: 'rgba(139, 92, 246, 0.5)',
+    borderRadius: 14,
+    paddingVertical: 10,
+    paddingHorizontal: 14,
   },
   tagText: {
     color: '#ffffff',
@@ -506,27 +531,57 @@ const styles = StyleSheet.create({
     fontFamily: 'Archivo-Bold',
     letterSpacing: -0.3,
   },
+  scheduleButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 20,
+    paddingHorizontal: 18,
+    paddingVertical: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  scheduleIconWrapper: {
+    width: 32,
+    height: 32,
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    borderRadius: 16,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  scheduleButtonText: {
+    color: 'rgba(255, 255, 255, 0.5)',
+    fontSize: 15,
+    fontFamily: 'Inter-Regular',
+  },
   bottomBar: {
-    paddingHorizontal: 20,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 16,
     paddingTop: 16,
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.1)',
     backgroundColor: '#000000',
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255, 255, 255, 0.08)',
   },
   createButton: {
-    backgroundColor: '#8b5cf6',
-    borderRadius: 16,
-    paddingVertical: 18,
-    alignItems: 'center',
-    justifyContent: 'center',
+    borderRadius: 28,
+    overflow: 'hidden',
   },
   createButtonDisabled: {
-    backgroundColor: 'rgba(139, 92, 246, 0.3)',
+    opacity: 0.5,
+  },
+  createButtonGradient: {
+    paddingVertical: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   createButtonText: {
     color: '#ffffff',
     fontSize: 18,
     fontFamily: 'Archivo-Bold',
-    letterSpacing: -0.3,
+    letterSpacing: -0.4,
   },
 });
