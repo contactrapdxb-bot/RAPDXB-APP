@@ -324,6 +324,15 @@ export default function HomeScreen() {
               <View style={styles.chartArea}>
                 <View style={styles.barsContainer}>
                   {MONTHLY_DATA.map((data, index) => {
+                    const instagramHeight = barAnimations[index].instagram.interpolate({
+                      inputRange: [0, 100],
+                      outputRange: [0, 110],
+                    });
+                    const othersHeight = barAnimations[index].others.interpolate({
+                      inputRange: [0, 100],
+                      outputRange: [0, 110],
+                    });
+
                     return (
                       <View key={data.month} style={styles.barColumn}>
                         <View style={styles.barPair}>
@@ -331,12 +340,7 @@ export default function HomeScreen() {
                             <Animated.View
                               style={[
                                 styles.barInstagram,
-                                {
-                                  height: barAnimations[index].instagram.interpolate({
-                                    inputRange: [0, 100],
-                                    outputRange: ['0%', '100%'],
-                                  })
-                                }
+                                { height: instagramHeight }
                               ]}
                             />
                           </View>
@@ -344,12 +348,7 @@ export default function HomeScreen() {
                             <Animated.View
                               style={[
                                 styles.barOthers,
-                                {
-                                  height: barAnimations[index].others.interpolate({
-                                    inputRange: [0, 100],
-                                    outputRange: ['0%', '100%'],
-                                  })
-                                }
+                                { height: othersHeight }
                               ]}
                             />
                           </View>
@@ -672,23 +671,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-around',
     alignItems: 'flex-end',
-    gap: 12,
+    gap: 8,
   },
   barColumn: {
     flex: 1,
     alignItems: 'center',
-    gap: 8,
-    height: '100%',
+    gap: 6,
   },
   barPair: {
     flexDirection: 'row',
     alignItems: 'flex-end',
-    gap: 6,
-    flex: 1,
-    width: '100%',
+    gap: 4,
+    height: 110,
   },
   barContainer: {
-    flex: 1,
+    width: 14,
+    height: 110,
     backgroundColor: 'rgba(255, 255, 255, 0.08)',
     borderRadius: 8,
     overflow: 'hidden',
