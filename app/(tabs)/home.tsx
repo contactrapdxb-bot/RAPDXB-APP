@@ -661,7 +661,7 @@ const styles = StyleSheet.create({
   chartWrapper: {
     height: 140,
     paddingHorizontal: 8,
-    paddingTop: 64,
+    paddingTop: 8,
   },
   chartArea: {
     flex: 1,
@@ -673,12 +673,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-around',
     alignItems: 'flex-end',
     gap: 8,
-    paddingBottom: 30,
   },
   barColumn: {
     flex: 1,
     alignItems: 'center',
     gap: 6,
+    paddingTop: 50,
   },
   barPair: {
     flexDirection: 'row',
