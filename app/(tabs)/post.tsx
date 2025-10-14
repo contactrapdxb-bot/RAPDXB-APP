@@ -275,34 +275,32 @@ export default function PostScreen() {
                 ))}
               </View>
             </View>
+
+            <TouchableOpacity
+              style={[
+                styles.createButton,
+                (!title || !caption || selectedPlatforms.length === 0) && styles.createButtonDisabled,
+              ]}
+              onPress={handleCreate}
+              activeOpacity={0.8}
+              disabled={!title || !caption || selectedPlatforms.length === 0}
+            >
+              <LinearGradient
+                colors={(!title || !caption || selectedPlatforms.length === 0)
+                  ? ['rgba(139, 92, 246, 0.3)', 'rgba(124, 58, 237, 0.3)']
+                  : ['#8b5cf6', '#7c3aed']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.createButtonGradient}
+              >
+                <Text style={styles.createButtonText}>
+                  {contentType === 'post' ? 'Create Post' : 'Create Reel'}
+                </Text>
+              </LinearGradient>
+            </TouchableOpacity>
           </View>
         </View>
       </ScrollView>
-
-      <View style={[styles.bottomBar, { paddingBottom: insets.bottom + 16 }]}>
-        <TouchableOpacity
-          style={[
-            styles.createButton,
-            (!title || !caption || selectedPlatforms.length === 0) && styles.createButtonDisabled,
-          ]}
-          onPress={handleCreate}
-          activeOpacity={0.8}
-          disabled={!title || !caption || selectedPlatforms.length === 0}
-        >
-          <LinearGradient
-            colors={(!title || !caption || selectedPlatforms.length === 0)
-              ? ['rgba(139, 92, 246, 0.3)', 'rgba(124, 58, 237, 0.3)']
-              : ['#8b5cf6', '#7c3aed']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.createButtonGradient}
-          >
-            <Text style={styles.createButtonText}>
-              {contentType === 'post' ? 'Create Post' : 'Create Reel'}
-            </Text>
-          </LinearGradient>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 }
@@ -590,20 +588,10 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: 'Inter-Regular',
   },
-  bottomBar: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    paddingHorizontal: 16,
-    paddingTop: 16,
-    backgroundColor: '#000000',
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(255, 255, 255, 0.08)',
-  },
   createButton: {
     borderRadius: 28,
     overflow: 'hidden',
+    marginTop: 8,
   },
   createButtonDisabled: {
     opacity: 0.5,
