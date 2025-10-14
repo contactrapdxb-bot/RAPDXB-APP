@@ -169,42 +169,6 @@ export default function PostScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top + 8 }]}>
-      <Animated.View style={[styles.floatingOrb, styles.orb1, { transform: [{ translateY: float1Y }] }]}>
-        <Svg width="100%" height="100%" viewBox="0 0 100 100">
-          <Defs>
-            <SvgRadialGradient id="orbGlow1">
-              <Stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.4" />
-              <Stop offset="100%" stopColor="#8b5cf6" stopOpacity="0" />
-            </SvgRadialGradient>
-          </Defs>
-          <Circle cx="50" cy="50" r="50" fill="url(#orbGlow1)" />
-        </Svg>
-      </Animated.View>
-
-      <Animated.View style={[styles.floatingOrb, styles.orb2, { transform: [{ translateY: float2Y }] }]}>
-        <Svg width="100%" height="100%" viewBox="0 0 100 100">
-          <Defs>
-            <SvgRadialGradient id="orbGlow2">
-              <Stop offset="0%" stopColor="#fbbf24" stopOpacity="0.4" />
-              <Stop offset="100%" stopColor="#fbbf24" stopOpacity="0" />
-            </SvgRadialGradient>
-          </Defs>
-          <Circle cx="50" cy="50" r="50" fill="url(#orbGlow2)" />
-        </Svg>
-      </Animated.View>
-
-      <Animated.View style={[styles.floatingOrb, styles.orb3, { transform: [{ translateY: float3Y }] }]}>
-        <Svg width="100%" height="100%" viewBox="0 0 100 100">
-          <Defs>
-            <SvgRadialGradient id="orbGlow3">
-              <Stop offset="0%" stopColor="#60a5fa" stopOpacity="0.4" />
-              <Stop offset="100%" stopColor="#60a5fa" stopOpacity="0" />
-            </SvgRadialGradient>
-          </Defs>
-          <Circle cx="50" cy="50" r="50" fill="url(#orbGlow3)" />
-        </Svg>
-      </Animated.View>
-
       <ScrollView
         style={styles.scrollContainer}
         contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 120 }]}
@@ -216,14 +180,9 @@ export default function PostScreen() {
             onPress={handleBack}
             activeOpacity={0.6}
           >
-            <LinearGradient
-              colors={['rgba(139, 92, 246, 0.2)', 'rgba(96, 165, 250, 0.2)']}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-              style={styles.backButtonGradient}
-            >
+            <View style={styles.backButtonGradient}>
               <ArrowLeft color="#ffffff" size={22} strokeWidth={2} />
-            </LinearGradient>
+            </View>
           </TouchableOpacity>
           <View style={styles.placeholder} />
         </View>
@@ -514,24 +473,6 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 16,
   },
-  floatingOrb: {
-    position: 'absolute',
-    width: 150,
-    height: 150,
-    pointerEvents: 'none',
-  },
-  orb1: {
-    top: 100,
-    right: -50,
-  },
-  orb2: {
-    top: 400,
-    left: -70,
-  },
-  orb3: {
-    top: 700,
-    right: -30,
-  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -550,8 +491,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.3)',
+    borderColor: 'rgba(255, 255, 255, 0.2)',
     borderRadius: 24,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
   placeholder: {
     width: 48,
