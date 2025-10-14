@@ -603,6 +603,8 @@ const styles = StyleSheet.create({
   },
   cardPurple: {
     width: 145,
+    minWidth: 120,
+    maxWidth: 145,
     height: 145,
     borderTopLeftRadius: 0,
     borderTopRightRadius: 38,
@@ -850,11 +852,13 @@ const styles = StyleSheet.create({
   },
   circleCardWrapper: {
     width: 160,
+    minWidth: 120,
+    maxWidth: 160,
     height: 160,
   },
   cardGreen: {
-    width: 160,
-    height: 160,
+    width: '100%',
+    aspectRatio: 1,
     borderRadius: 80,
     padding: 18,
     position: 'relative',
