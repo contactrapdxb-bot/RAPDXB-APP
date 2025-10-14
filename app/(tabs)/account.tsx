@@ -1,9 +1,12 @@
-import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, Image, Alert, ActivityIndicator } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ArrowLeft, User, Bell, Lock, CreditCard, LogOut, Check, Plus } from 'lucide-react-native';
+import { ArrowLeft, User, Bell, Lock, CreditCard, LogOut, Check, Plus, Camera } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
+import * as ImagePicker from 'expo-image-picker';
+import { useState } from 'react';
+import { supabase } from '../../lib/supabase';
 
 const SOCIAL_PLATFORMS = [
   { id: 'instagram', name: 'Instagram', connected: true, icon: 'https://i.imgur.com/vkcuEzE.png', color: ['#E1306C', '#C13584'] },
@@ -23,12 +26,73 @@ const SETTINGS_OPTIONS = [
 
 export default function AccountScreen() {
   const insets = useSafeAreaInsets();
+  const [profileImage, setProfileImage] = useState('https://i.imgur.com/vhILBC1.png');
+  const [uploading, setUploading] = useState(false);
 
   const handleBack = () => {
     if (Platform.OS !== 'web') {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     }
     router.replace('/(tabs)/home');
+  };
+
+  const handleImagePicker = async () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (permissionResult.granted === false) {
+      Alert.alert('Permission Required', 'Please allow access to your photo library to change your profile picture.');
+      return;
+    }
+
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 0.8,
+    });
+
+    if (!result.canceled && result.assets[0]) {
+      const imageUri = result.assets[0].uri;
+      await uploadImage(imageUri);
+    }
+  };
+
+  const uploadImage = async (uri: string) => {
+    try {
+      setUploading(true);
+
+      const response = await fetch(uri);
+      const blob = await response.blob();
+
+      const fileName = `profile-${Date.now()}.jpg`;
+      const filePath = `profile-images/${fileName}`;
+
+      const { data, error } = await supabase.storage
+        .from('avatars')
+        .upload(filePath, blob, {
+          contentType: 'image/jpeg',
+          upsert: false,
+        });
+
+      if (error) {
+        throw error;
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(filePath);
+
+      setProfileImage(publicUrl);
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      Alert.alert('Upload Failed', 'Failed to upload image. Please try again.');
+    } finally {
+      setUploading(false);
+    }
   };
 
   const handleConnect = (platformId: string) => {
@@ -84,10 +148,21 @@ export default function AccountScreen() {
           style={styles.profileCard}
         >
           <View style={styles.profileContent}>
-            <Image
-              source={{ uri: 'https://i.imgur.com/vhILBC1.png' }}
-              style={styles.profileImage}
-            />
+            <TouchableOpacity onPress={handleImagePicker} activeOpacity={0.8} disabled={uploading}>
+              <View style={styles.profileImageContainer}>
+                <Image
+                  source={{ uri: profileImage }}
+                  style={styles.profileImage}
+                />
+                <View style={styles.cameraOverlay}>
+                  {uploading ? (
+                    <ActivityIndicator size="small" color="#ffffff" />
+                  ) : (
+                    <Camera color="#ffffff" size={20} strokeWidth={2} />
+                  )}
+                </View>
+              </View>
+            </TouchableOpacity>
             <View style={styles.profileInfo}>
               <Text style={styles.profileName}>RAPDXB</Text>
               <Image
@@ -276,12 +351,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 16,
   },
+  profileImageContainer: {
+    position: 'relative',
+  },
   profileImage: {
     width: 80,
     height: 80,
     borderRadius: 40,
     borderWidth: 3,
     borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  cameraOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#8b5cf6',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#ffffff',
   },
   profileInfo: {
     flexDirection: 'row',
