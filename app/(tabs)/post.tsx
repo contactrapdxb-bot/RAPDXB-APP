@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, TextInput, Animated, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, TextInput, Animated, Dimensions, RefreshControl } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -23,10 +23,19 @@ export default function PostScreen() {
   const [tags, setTags] = useState<string[]>([]);
   const [mediaLink, setMediaLink] = useState('');
 
+  const [refreshing, setRefreshing] = useState(false);
+
   const floatAnim1 = useRef(new Animated.Value(0)).current;
   const floatAnim2 = useRef(new Animated.Value(0)).current;
   const floatAnim3 = useRef(new Animated.Value(0)).current;
   const sliderAnim = useRef(new Animated.Value(0)).current;
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
+  };
 
   useEffect(() => {
     Animated.loop(
@@ -173,6 +182,14 @@ export default function PostScreen() {
         style={styles.scrollContainer}
         contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 120 }]}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#ffffff"
+            colors={['#ffffff']}
+          />
+        }
       >
         <View style={styles.header}>
           <TouchableOpacity
