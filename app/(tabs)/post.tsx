@@ -446,8 +446,8 @@ export default function PostScreen() {
             <View style={styles.createButtonBorder}>
               <LinearGradient
                 colors={contentType === 'post'
-                  ? ['#fbbf24', '#f59e0b']
-                  : ['#60a5fa', '#3b82f6']}
+                  ? ['#60a5fa', '#3b82f6']
+                  : ['#fbbf24', '#f59e0b']}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
                 style={styles.createButtonGradient}
