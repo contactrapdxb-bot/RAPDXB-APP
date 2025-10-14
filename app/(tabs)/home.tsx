@@ -532,6 +532,7 @@ const styles = StyleSheet.create({
   logo: {
     width: 48,
     height: 48,
+    alignSelf: 'center',
   },
   headerIcons: {
     flexDirection: 'row',
