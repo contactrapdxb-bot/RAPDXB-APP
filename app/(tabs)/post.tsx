@@ -337,52 +337,6 @@ export default function PostScreen() {
             colors={['#60a5fa', '#3b82f6']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
-            style={styles.inputCard}
-          >
-            <View style={styles.inputGroup}>
-              <View style={styles.labelRow}>
-                <Text style={styles.labelDark}>Title</Text>
-                <View style={styles.labelBadgeDark}>
-                  <Text style={styles.labelBadgeTextDark}>Required</Text>
-                </View>
-              </View>
-              <View style={styles.glassInputWrapperDark}>
-                <TextInput
-                  style={styles.inputDark}
-                  placeholder="Enter title..."
-                  placeholderTextColor="rgba(0, 0, 0, 0.4)"
-                  value={title}
-                  onChangeText={setTitle}
-                />
-              </View>
-            </View>
-
-            <View style={styles.inputGroup}>
-              <View style={styles.labelRow}>
-                <Text style={styles.labelDark}>Caption</Text>
-                <View style={styles.labelBadgeOptionalDark}>
-                  <Text style={styles.labelBadgeTextOptionalDark}>Optional</Text>
-                </View>
-              </View>
-              <View style={styles.glassInputWrapperDark}>
-                <TextInput
-                  style={[styles.inputDark, styles.textArea]}
-                  placeholder="Write your caption..."
-                  placeholderTextColor="rgba(0, 0, 0, 0.4)"
-                  value={caption}
-                  onChangeText={setCaption}
-                  multiline
-                  numberOfLines={5}
-                  textAlignVertical="top"
-                />
-              </View>
-            </View>
-          </LinearGradient>
-
-          <LinearGradient
-            colors={['#fbbf24', '#f59e0b']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
             style={styles.uploadCard}
           >
             <View style={styles.inputGroup}>
@@ -433,6 +387,52 @@ export default function PostScreen() {
                   onChangeText={setMediaLink}
                   autoCapitalize="none"
                   autoCorrect={false}
+                />
+              </View>
+            </View>
+          </LinearGradient>
+
+          <LinearGradient
+            colors={['#fbbf24', '#f59e0b']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.inputCard}
+          >
+            <View style={styles.inputGroup}>
+              <View style={styles.labelRow}>
+                <Text style={styles.labelDark}>Title</Text>
+                <View style={styles.labelBadgeDark}>
+                  <Text style={styles.labelBadgeTextDark}>Required</Text>
+                </View>
+              </View>
+              <View style={styles.glassInputWrapperDark}>
+                <TextInput
+                  style={styles.inputDark}
+                  placeholder="Enter title..."
+                  placeholderTextColor="rgba(0, 0, 0, 0.4)"
+                  value={title}
+                  onChangeText={setTitle}
+                />
+              </View>
+            </View>
+
+            <View style={styles.inputGroup}>
+              <View style={styles.labelRow}>
+                <Text style={styles.labelDark}>Caption</Text>
+                <View style={styles.labelBadgeOptionalDark}>
+                  <Text style={styles.labelBadgeTextOptionalDark}>Optional</Text>
+                </View>
+              </View>
+              <View style={styles.glassInputWrapperDark}>
+                <TextInput
+                  style={[styles.inputDark, styles.textArea]}
+                  placeholder="Write your caption..."
+                  placeholderTextColor="rgba(0, 0, 0, 0.4)"
+                  value={caption}
+                  onChangeText={setCaption}
+                  multiline
+                  numberOfLines={5}
+                  textAlignVertical="top"
                 />
               </View>
             </View>
