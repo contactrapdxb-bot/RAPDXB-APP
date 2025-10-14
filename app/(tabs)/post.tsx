@@ -959,7 +959,7 @@ const styles = StyleSheet.create({
     padding: 2.5,
     background: 'linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.3) 100%)',
     backgroundColor: '#ffffff',
-    borderWidth: 3,
+    borderWidth: 0.5,
     borderColor: '#ffffff',
     shadowColor: '#ffffff',
     shadowOffset: { width: 0, height: 6 },
