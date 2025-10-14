@@ -34,7 +34,7 @@ export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const scrollAnim = useRef(new Animated.Value(0)).current;
   const barAnimations = useRef(
-    MONTHLY_DATA.map(() => ({
+    [...Array(4)].map(() => ({
       instagram: new Animated.Value(0),
       others: new Animated.Value(0),
     }))
@@ -324,23 +324,34 @@ export default function HomeScreen() {
               <View style={styles.chartArea}>
                 <View style={styles.barsContainer}>
                   {MONTHLY_DATA.map((data, index) => {
-                    const instagramHeight = barAnimations[index].instagram.interpolate({
-                      inputRange: [0, 100],
-                      outputRange: ['0%', '100%'],
-                    });
-                    const othersHeight = barAnimations[index].others.interpolate({
-                      inputRange: [0, 100],
-                      outputRange: ['0%', '100%'],
-                    });
-
                     return (
                       <View key={data.month} style={styles.barColumn}>
                         <View style={styles.barPair}>
                           <View style={styles.barContainer}>
-                            <Animated.View style={[styles.barInstagram, { height: instagramHeight }]} />
+                            <Animated.View
+                              style={[
+                                styles.barInstagram,
+                                {
+                                  height: barAnimations[index].instagram.interpolate({
+                                    inputRange: [0, 100],
+                                    outputRange: ['0%', '100%'],
+                                  })
+                                }
+                              ]}
+                            />
                           </View>
                           <View style={styles.barContainer}>
-                            <Animated.View style={[styles.barOthers, { height: othersHeight }]} />
+                            <Animated.View
+                              style={[
+                                styles.barOthers,
+                                {
+                                  height: barAnimations[index].others.interpolate({
+                                    inputRange: [0, 100],
+                                    outputRange: ['0%', '100%'],
+                                  })
+                                }
+                              ]}
+                            />
                           </View>
                         </View>
                         <Text style={styles.xAxisLabel}>{data.month}</Text>
