@@ -41,35 +41,45 @@ export default function AccountScreen() {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
 
-    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    try {
+      if (Platform.OS !== 'web') {
+        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-    if (permissionResult.granted === false) {
-      Alert.alert('Permission Required', 'Please allow access to your photo library to change your profile picture.');
-      return;
-    }
+        if (permissionResult.granted === false) {
+          Alert.alert('Permission Required', 'Please allow access to your photo library to change your profile picture.');
+          return;
+        }
+      }
 
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 0.8,
-    });
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+      });
 
-    if (!result.canceled && result.assets[0]) {
-      const imageUri = result.assets[0].uri;
-      await uploadImage(imageUri);
+      if (!result.canceled && result.assets[0]) {
+        const imageUri = result.assets[0].uri;
+        await uploadImage(imageUri);
+      }
+    } catch (error) {
+      console.error('Error picking image:', error);
+      Alert.alert('Error', 'Failed to pick image. Please try again.');
     }
   };
 
   const uploadImage = async (uri: string) => {
     try {
       setUploading(true);
+      console.log('Starting upload for:', uri);
 
       const response = await fetch(uri);
       const blob = await response.blob();
+      console.log('Blob created:', blob.type, blob.size);
 
       const fileName = `profile-${Date.now()}.jpg`;
       const filePath = `profile-images/${fileName}`;
+      console.log('Uploading to:', filePath);
 
       const { data, error } = await supabase.storage
         .from('avatars')
@@ -79,17 +89,30 @@ export default function AccountScreen() {
         });
 
       if (error) {
+        console.error('Supabase upload error:', error);
         throw error;
       }
+
+      console.log('Upload successful:', data);
 
       const { data: { publicUrl } } = supabase.storage
         .from('avatars')
         .getPublicUrl(filePath);
 
+      console.log('Public URL:', publicUrl);
       setProfileImage(publicUrl);
+
+      if (Platform.OS === 'web') {
+        alert('Profile image updated successfully!');
+      }
     } catch (error) {
       console.error('Error uploading image:', error);
-      Alert.alert('Upload Failed', 'Failed to upload image. Please try again.');
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      if (Platform.OS === 'web') {
+        alert(`Upload failed: ${errorMessage}`);
+      } else {
+        Alert.alert('Upload Failed', `Failed to upload image: ${errorMessage}`);
+      }
     } finally {
       setUploading(false);
     }
