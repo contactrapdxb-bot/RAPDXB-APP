@@ -2,7 +2,8 @@ import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, TextInp
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ArrowLeft, Upload, Link, Calendar, X, Image as ImageIcon, Video } from 'lucide-react-native';
+import { ArrowLeft, Upload, Link, Calendar, X, Image as ImageIcon, Video, Sparkles } from 'lucide-react-native';
+import Svg, { Path, Circle, Defs, Pattern, Rect, Line, RadialGradient as SvgRadialGradient, Stop } from 'react-native-svg';
 import * as Haptics from 'expo-haptics';
 import { useState, useRef, useEffect } from 'react';
 
@@ -21,6 +22,11 @@ export default function PostScreen() {
   const [mediaLink, setMediaLink] = useState('');
 
   const slideAnim = useRef(new Animated.Value(0)).current;
+  const sparkleAnim = useRef(new Animated.Value(0)).current;
+  const pulseAnim = useRef(new Animated.Value(1)).current;
+  const floatAnim1 = useRef(new Animated.Value(0)).current;
+  const floatAnim2 = useRef(new Animated.Value(0)).current;
+  const floatAnim3 = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     Animated.spring(slideAnim, {
@@ -30,6 +36,62 @@ export default function PostScreen() {
       friction: 10,
     }).start();
   }, [contentType]);
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(sparkleAnim, {
+          toValue: 1,
+          duration: 2000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(sparkleAnim, {
+          toValue: 0,
+          duration: 2000,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, {
+          toValue: 1.05,
+          duration: 1500,
+          useNativeDriver: true,
+        }),
+        Animated.timing(pulseAnim, {
+          toValue: 1,
+          duration: 1500,
+          useNativeDriver: true,
+        }),
+      ])
+    ).start();
+
+    Animated.loop(
+      Animated.timing(floatAnim1, {
+        toValue: 1,
+        duration: 3000,
+        useNativeDriver: true,
+      })
+    ).start();
+
+    Animated.loop(
+      Animated.timing(floatAnim2, {
+        toValue: 1,
+        duration: 4000,
+        useNativeDriver: true,
+      })
+    ).start();
+
+    Animated.loop(
+      Animated.timing(floatAnim3, {
+        toValue: 1,
+        duration: 5000,
+        useNativeDriver: true,
+      })
+    ).start();
+  }, []);
 
   const handleBack = () => {
     if (Platform.OS !== 'web') {
@@ -93,6 +155,31 @@ export default function PostScreen() {
     outputRange: [4, 134],
   });
 
+  const sparkleOpacity = sparkleAnim.interpolate({
+    inputRange: [0, 0.5, 1],
+    outputRange: [0.3, 1, 0.3],
+  });
+
+  const sparkleRotate = sparkleAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
+  });
+
+  const float1Y = floatAnim1.interpolate({
+    inputRange: [0, 0.5, 1],
+    outputRange: [0, -15, 0],
+  });
+
+  const float2Y = floatAnim2.interpolate({
+    inputRange: [0, 0.5, 1],
+    outputRange: [0, -20, 0],
+  });
+
+  const float3Y = floatAnim3.interpolate({
+    inputRange: [0, 0.5, 1],
+    outputRange: [0, -10, 0],
+  });
+
   const getPlatformColors = (platform: string) => {
     const colorMap: Record<string, string[]> = {
       'Instagram': ['#f09433', '#e6683c', '#dc2743', '#cc2366', '#bc1888'],
@@ -109,6 +196,42 @@ export default function PostScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top + 8 }]}>
+      <Animated.View style={[styles.floatingOrb, styles.orb1, { transform: [{ translateY: float1Y }] }]}>
+        <Svg width="100%" height="100%" viewBox="0 0 100 100">
+          <Defs>
+            <SvgRadialGradient id="orbGlow1">
+              <Stop offset="0%" stopColor="#8b5cf6" stopOpacity="0.4" />
+              <Stop offset="100%" stopColor="#8b5cf6" stopOpacity="0" />
+            </SvgRadialGradient>
+          </Defs>
+          <Circle cx="50" cy="50" r="50" fill="url(#orbGlow1)" />
+        </Svg>
+      </Animated.View>
+
+      <Animated.View style={[styles.floatingOrb, styles.orb2, { transform: [{ translateY: float2Y }] }]}>
+        <Svg width="100%" height="100%" viewBox="0 0 100 100">
+          <Defs>
+            <SvgRadialGradient id="orbGlow2">
+              <Stop offset="0%" stopColor="#fbbf24" stopOpacity="0.4" />
+              <Stop offset="100%" stopColor="#fbbf24" stopOpacity="0" />
+            </SvgRadialGradient>
+          </Defs>
+          <Circle cx="50" cy="50" r="50" fill="url(#orbGlow2)" />
+        </Svg>
+      </Animated.View>
+
+      <Animated.View style={[styles.floatingOrb, styles.orb3, { transform: [{ translateY: float3Y }] }]}>
+        <Svg width="100%" height="100%" viewBox="0 0 100 100">
+          <Defs>
+            <SvgRadialGradient id="orbGlow3">
+              <Stop offset="0%" stopColor="#60a5fa" stopOpacity="0.4" />
+              <Stop offset="100%" stopColor="#60a5fa" stopOpacity="0" />
+            </SvgRadialGradient>
+          </Defs>
+          <Circle cx="50" cy="50" r="50" fill="url(#orbGlow3)" />
+        </Svg>
+      </Animated.View>
+
       <ScrollView
         style={styles.scrollContainer}
         contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 120 }]}
@@ -120,7 +243,14 @@ export default function PostScreen() {
             onPress={handleBack}
             activeOpacity={0.6}
           >
-            <ArrowLeft color="#ffffff" size={22} strokeWidth={2} />
+            <LinearGradient
+              colors={['rgba(139, 92, 246, 0.2)', 'rgba(96, 165, 250, 0.2)']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.backButtonGradient}
+            >
+              <ArrowLeft color="#ffffff" size={22} strokeWidth={2} />
+            </LinearGradient>
           </TouchableOpacity>
           <View style={styles.placeholder} />
         </View>
@@ -128,20 +258,38 @@ export default function PostScreen() {
         <View style={styles.titleSection}>
           <Text style={styles.pageTitle}>Create </Text>
           <Text style={styles.pageTitleBold}>Content</Text>
+          <Animated.View style={[styles.sparkleIcon, { opacity: sparkleOpacity, transform: [{ rotate: sparkleRotate }] }]}>
+            <Sparkles color="#fbbf24" size={32} strokeWidth={2} />
+          </Animated.View>
         </View>
 
         <View style={styles.toggleContainer}>
           <LinearGradient
-            colors={['rgba(139, 92, 246, 0.08)', 'rgba(96, 165, 250, 0.08)']}
+            colors={['rgba(139, 92, 246, 0.15)', 'rgba(96, 165, 250, 0.15)']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 0 }}
             style={styles.toggleBackground}
           >
+            <Svg style={StyleSheet.absoluteFill} viewBox="0 0 100 100">
+              <Defs>
+                <Pattern
+                  id="togglePattern"
+                  x="0"
+                  y="0"
+                  width="10"
+                  height="10"
+                  patternUnits="userSpaceOnUse"
+                >
+                  <Circle cx="5" cy="5" r="1" fill="rgba(255, 255, 255, 0.1)" />
+                </Pattern>
+              </Defs>
+              <Rect width="100" height="100" fill="url(#togglePattern)" />
+            </Svg>
             <Animated.View
               style={[
                 styles.toggleSlider,
                 {
-                  transform: [{ translateX: slideTranslate }],
+                  transform: [{ translateX: slideTranslate }, { scale: pulseAnim }],
                 },
               ]}
             >
@@ -176,182 +324,278 @@ export default function PostScreen() {
         </View>
 
         <View style={styles.inputSection}>
-          <LinearGradient
-            colors={['rgba(139, 92, 246, 0.05)', 'rgba(139, 92, 246, 0.02)']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 0, y: 1 }}
-            style={styles.inputCard}
-          >
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Title</Text>
-              <LinearGradient
-                colors={['rgba(139, 92, 246, 0.1)', 'rgba(124, 58, 237, 0.05)']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.inputWrapper}
-              >
-                <TextInput
-                  style={styles.input}
-                  placeholder="Enter title..."
-                  placeholderTextColor="rgba(255, 255, 255, 0.3)"
-                  value={title}
-                  onChangeText={setTitle}
-                />
-              </LinearGradient>
-            </View>
-
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Caption</Text>
-              <LinearGradient
-                colors={['rgba(96, 165, 250, 0.1)', 'rgba(59, 130, 246, 0.05)']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.inputWrapper}
-              >
-                <TextInput
-                  style={[styles.input, styles.textArea]}
-                  placeholder="Write your caption..."
-                  placeholderTextColor="rgba(255, 255, 255, 0.3)"
-                  value={caption}
-                  onChangeText={setCaption}
-                  multiline
-                  numberOfLines={5}
-                  textAlignVertical="top"
-                />
-              </LinearGradient>
-            </View>
-          </LinearGradient>
-
-          <LinearGradient
-            colors={['rgba(251, 191, 36, 0.1)', 'rgba(245, 158, 11, 0.05)']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.uploadCard}
-          >
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Upload Media</Text>
-              <TouchableOpacity activeOpacity={0.7}>
+          <View style={styles.inputCardWrapper}>
+            <Svg style={StyleSheet.absoluteFill} viewBox="0 0 100 100">
+              <Defs>
+                <Pattern
+                  id="purplePattern"
+                  x="0"
+                  y="0"
+                  width="20"
+                  height="20"
+                  patternUnits="userSpaceOnUse"
+                  patternTransform="rotate(45)"
+                >
+                  <Line x1="0" y1="10" x2="20" y2="10" stroke="rgba(139, 92, 246, 0.15)" strokeWidth="0.5" />
+                </Pattern>
+              </Defs>
+              <Rect width="100" height="100" fill="url(#purplePattern)" />
+            </Svg>
+            <LinearGradient
+              colors={['rgba(139, 92, 246, 0.08)', 'rgba(124, 58, 237, 0.05)']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 0, y: 1 }}
+              style={styles.inputCard}
+            >
+              <View style={styles.inputGroup}>
+                <View style={styles.labelRow}>
+                  <Text style={styles.label}>Title</Text>
+                  <View style={styles.labelBadge}>
+                    <Text style={styles.labelBadgeText}>Required</Text>
+                  </View>
+                </View>
                 <LinearGradient
-                  colors={['#fbbf24', '#f59e0b']}
+                  colors={['rgba(139, 92, 246, 0.15)', 'rgba(124, 58, 237, 0.08)']}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
-                  style={styles.uploadButton}
+                  style={styles.inputWrapper}
                 >
-                  <Upload color="#000000" size={20} strokeWidth={2.5} />
-                  <Text style={styles.uploadButtonText}>Upload File</Text>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Enter title..."
+                    placeholderTextColor="rgba(255, 255, 255, 0.3)"
+                    value={title}
+                    onChangeText={setTitle}
+                  />
                 </LinearGradient>
-              </TouchableOpacity>
-            </View>
+              </View>
 
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Or Paste Media Link</Text>
-              <LinearGradient
-                colors={['rgba(251, 191, 36, 0.15)', 'rgba(245, 158, 11, 0.08)']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.linkInputContainer}
-              >
-                <View style={styles.linkIconWrapper}>
-                  <Link color="#fbbf24" size={18} strokeWidth={2} />
+              <View style={styles.inputGroup}>
+                <View style={styles.labelRow}>
+                  <Text style={styles.label}>Caption</Text>
+                  <View style={styles.labelBadge}>
+                    <Text style={styles.labelBadgeText}>Required</Text>
+                  </View>
                 </View>
-                <TextInput
-                  style={styles.linkInput}
-                  placeholder="https://..."
-                  placeholderTextColor="rgba(255, 255, 255, 0.3)"
-                  value={mediaLink}
-                  onChangeText={setMediaLink}
-                  autoCapitalize="none"
-                  autoCorrect={false}
-                />
-              </LinearGradient>
-            </View>
-          </LinearGradient>
-
-          <LinearGradient
-            colors={['rgba(163, 230, 53, 0.1)', 'rgba(132, 204, 22, 0.05)']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.tagsCard}
-          >
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Tags</Text>
-              <View style={styles.tagInputContainer}>
-                <TextInput
-                  style={styles.tagInput}
-                  placeholder="Add a tag..."
-                  placeholderTextColor="rgba(255, 255, 255, 0.3)"
-                  value={tagInput}
-                  onChangeText={setTagInput}
-                  onSubmitEditing={handleAddTag}
-                  returnKeyType="done"
-                />
-                <TouchableOpacity
-                  onPress={handleAddTag}
-                  activeOpacity={0.7}
+                <LinearGradient
+                  colors={['rgba(96, 165, 250, 0.15)', 'rgba(59, 130, 246, 0.08)']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.inputWrapper}
                 >
+                  <TextInput
+                    style={[styles.input, styles.textArea]}
+                    placeholder="Write your caption..."
+                    placeholderTextColor="rgba(255, 255, 255, 0.3)"
+                    value={caption}
+                    onChangeText={setCaption}
+                    multiline
+                    numberOfLines={5}
+                    textAlignVertical="top"
+                  />
+                </LinearGradient>
+              </View>
+            </LinearGradient>
+          </View>
+
+          <View style={styles.uploadCardWrapper}>
+            <Svg style={StyleSheet.absoluteFill} viewBox="0 0 100 100">
+              <Defs>
+                <Pattern
+                  id="yellowPattern"
+                  x="0"
+                  y="0"
+                  width="15"
+                  height="15"
+                  patternUnits="userSpaceOnUse"
+                >
+                  <Circle cx="7.5" cy="7.5" r="1.5" fill="rgba(251, 191, 36, 0.15)" />
+                </Pattern>
+              </Defs>
+              <Rect width="100" height="100" fill="url(#yellowPattern)" />
+            </Svg>
+            <LinearGradient
+              colors={['rgba(251, 191, 36, 0.12)', 'rgba(245, 158, 11, 0.08)']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.uploadCard}
+            >
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Upload Media</Text>
+                <TouchableOpacity activeOpacity={0.7}>
                   <LinearGradient
-                    colors={['#a3e635', '#84cc16']}
+                    colors={['#fbbf24', '#f59e0b']}
                     start={{ x: 0, y: 0 }}
                     end={{ x: 1, y: 1 }}
-                    style={styles.addTagButton}
+                    style={styles.uploadButton}
                   >
-                    <Text style={styles.addTagButtonText}>Add</Text>
+                    <Upload color="#000000" size={20} strokeWidth={2.5} />
+                    <Text style={styles.uploadButtonText}>Upload File</Text>
                   </LinearGradient>
                 </TouchableOpacity>
               </View>
-              {tags.length > 0 && (
-                <View style={styles.tagsContainer}>
-                  {tags.map((tag, index) => (
-                    <LinearGradient
-                      key={tag}
-                      colors={['rgba(163, 230, 53, 0.2)', 'rgba(132, 204, 22, 0.15)']}
-                      start={{ x: 0, y: 0 }}
-                      end={{ x: 1, y: 1 }}
-                      style={styles.tag}
-                    >
-                      <Text style={styles.tagText}>#{tag}</Text>
-                      <TouchableOpacity
-                        onPress={() => handleRemoveTag(tag)}
-                        activeOpacity={0.7}
-                        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                      >
-                        <X color="#a3e635" size={14} strokeWidth={2.5} />
-                      </TouchableOpacity>
-                    </LinearGradient>
-                  ))}
-                </View>
-              )}
-            </View>
-          </LinearGradient>
 
-          <LinearGradient
-            colors={['rgba(251, 146, 60, 0.1)', 'rgba(249, 115, 22, 0.05)']}
-            start={{ x: 0, y: 0 }}
-            end={{ x: 1, y: 1 }}
-            style={styles.scheduleCard}
-          >
-            <View style={styles.inputGroup}>
-              <Text style={styles.label}>Schedule (Optional)</Text>
-              <TouchableOpacity activeOpacity={0.7}>
+              <View style={styles.dividerContainer}>
+                <View style={styles.dividerLine} />
+                <Text style={styles.dividerText}>OR</Text>
+                <View style={styles.dividerLine} />
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Paste Media Link</Text>
                 <LinearGradient
-                  colors={['rgba(251, 146, 60, 0.15)', 'rgba(249, 115, 22, 0.08)']}
+                  colors={['rgba(251, 191, 36, 0.2)', 'rgba(245, 158, 11, 0.12)']}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
-                  style={styles.scheduleButton}
+                  style={styles.linkInputContainer}
                 >
-                  <View style={styles.scheduleIconWrapper}>
-                    <Calendar color="#fb923c" size={18} strokeWidth={2} />
+                  <View style={styles.linkIconWrapper}>
+                    <Link color="#fbbf24" size={18} strokeWidth={2} />
                   </View>
-                  <Text style={styles.scheduleButtonText}>
-                    {scheduleDate || 'Select date & time'}
-                  </Text>
+                  <TextInput
+                    style={styles.linkInput}
+                    placeholder="https://..."
+                    placeholderTextColor="rgba(255, 255, 255, 0.3)"
+                    value={mediaLink}
+                    onChangeText={setMediaLink}
+                    autoCapitalize="none"
+                    autoCorrect={false}
+                  />
                 </LinearGradient>
-              </TouchableOpacity>
-            </View>
-          </LinearGradient>
+              </View>
+            </LinearGradient>
+          </View>
+
+          <View style={styles.tagsCardWrapper}>
+            <Svg style={StyleSheet.absoluteFill} viewBox="0 0 100 100">
+              <Defs>
+                <Pattern
+                  id="greenPattern"
+                  x="0"
+                  y="0"
+                  width="25"
+                  height="25"
+                  patternUnits="userSpaceOnUse"
+                  patternTransform="rotate(-30)"
+                >
+                  <Path d="M 0 12.5 L 25 12.5" stroke="rgba(163, 230, 53, 0.15)" strokeWidth="1" />
+                </Pattern>
+              </Defs>
+              <Rect width="100" height="100" fill="url(#greenPattern)" />
+            </Svg>
+            <LinearGradient
+              colors={['rgba(163, 230, 53, 0.12)', 'rgba(132, 204, 22, 0.08)']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.tagsCard}
+            >
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Tags</Text>
+                <View style={styles.tagInputContainer}>
+                  <TextInput
+                    style={styles.tagInput}
+                    placeholder="Add a tag..."
+                    placeholderTextColor="rgba(255, 255, 255, 0.3)"
+                    value={tagInput}
+                    onChangeText={setTagInput}
+                    onSubmitEditing={handleAddTag}
+                    returnKeyType="done"
+                  />
+                  <TouchableOpacity
+                    onPress={handleAddTag}
+                    activeOpacity={0.7}
+                  >
+                    <LinearGradient
+                      colors={['#a3e635', '#84cc16']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={styles.addTagButton}
+                    >
+                      <Text style={styles.addTagButtonText}>Add</Text>
+                    </LinearGradient>
+                  </TouchableOpacity>
+                </View>
+                {tags.length > 0 && (
+                  <View style={styles.tagsContainer}>
+                    {tags.map((tag) => (
+                      <LinearGradient
+                        key={tag}
+                        colors={['rgba(163, 230, 53, 0.25)', 'rgba(132, 204, 22, 0.2)']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        style={styles.tag}
+                      >
+                        <Text style={styles.tagText}>#{tag}</Text>
+                        <TouchableOpacity
+                          onPress={() => handleRemoveTag(tag)}
+                          activeOpacity={0.7}
+                          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                        >
+                          <X color="#a3e635" size={14} strokeWidth={2.5} />
+                        </TouchableOpacity>
+                      </LinearGradient>
+                    ))}
+                  </View>
+                )}
+              </View>
+            </LinearGradient>
+          </View>
+
+          <View style={styles.scheduleCardWrapper}>
+            <Svg style={StyleSheet.absoluteFill} viewBox="0 0 100 100">
+              <Defs>
+                <Pattern
+                  id="orangePattern"
+                  x="0"
+                  y="0"
+                  width="20"
+                  height="20"
+                  patternUnits="userSpaceOnUse"
+                >
+                  <Rect x="8" y="8" width="4" height="4" fill="rgba(251, 146, 60, 0.1)" />
+                </Pattern>
+              </Defs>
+              <Rect width="100" height="100" fill="url(#orangePattern)" />
+            </Svg>
+            <LinearGradient
+              colors={['rgba(251, 146, 60, 0.12)', 'rgba(249, 115, 22, 0.08)']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.scheduleCard}
+            >
+              <View style={styles.inputGroup}>
+                <View style={styles.labelRow}>
+                  <Text style={styles.label}>Schedule</Text>
+                  <View style={styles.labelBadgeOptional}>
+                    <Text style={styles.labelBadgeTextOptional}>Optional</Text>
+                  </View>
+                </View>
+                <TouchableOpacity activeOpacity={0.7}>
+                  <LinearGradient
+                    colors={['rgba(251, 146, 60, 0.2)', 'rgba(249, 115, 22, 0.15)']}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                    style={styles.scheduleButton}
+                  >
+                    <View style={styles.scheduleIconWrapper}>
+                      <Calendar color="#fb923c" size={18} strokeWidth={2} />
+                    </View>
+                    <Text style={styles.scheduleButtonText}>
+                      {scheduleDate || 'Select date & time'}
+                    </Text>
+                  </LinearGradient>
+                </TouchableOpacity>
+              </View>
+            </LinearGradient>
+          </View>
 
           <View style={styles.platformsSection}>
-            <Text style={styles.platformsTitle}>Select Platforms</Text>
+            <View style={styles.platformsHeader}>
+              <Text style={styles.platformsTitle}>Select Platforms</Text>
+              <View style={styles.platformsBadge}>
+                <Text style={styles.platformsBadgeText}>{selectedPlatforms.length} selected</Text>
+              </View>
+            </View>
             <View style={styles.platformGrid}>
               {platforms.map((platform) => {
                 const isSelected = selectedPlatforms.includes(platform);
@@ -375,7 +619,7 @@ export default function PostScreen() {
                       </LinearGradient>
                     ) : (
                       <LinearGradient
-                        colors={['rgba(255, 255, 255, 0.05)', 'rgba(255, 255, 255, 0.02)']}
+                        colors={['rgba(255, 255, 255, 0.08)', 'rgba(255, 255, 255, 0.04)']}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 1 }}
                         style={styles.platformChip}
@@ -408,6 +652,7 @@ export default function PostScreen() {
               end={{ x: 1, y: 1 }}
               style={styles.createButtonGradient}
             >
+              <Sparkles color="#ffffff" size={20} strokeWidth={2} />
               <Text style={styles.createButtonText}>
                 {contentType === 'post' ? 'Create Post' : 'Create Reel'}
               </Text>
@@ -430,6 +675,24 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingHorizontal: 16,
   },
+  floatingOrb: {
+    position: 'absolute',
+    width: 150,
+    height: 150,
+    pointerEvents: 'none',
+  },
+  orb1: {
+    top: 100,
+    right: -50,
+  },
+  orb2: {
+    top: 400,
+    left: -70,
+  },
+  orb3: {
+    top: 700,
+    right: -30,
+  },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -439,10 +702,17 @@ const styles = StyleSheet.create({
   backButton: {
     width: 48,
     height: 48,
-    backgroundColor: '#1a1a1a',
     borderRadius: 24,
+    overflow: 'hidden',
+  },
+  backButtonGradient: {
+    width: '100%',
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(139, 92, 246, 0.3)',
+    borderRadius: 24,
   },
   placeholder: {
     width: 48,
@@ -451,6 +721,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginBottom: 24,
+    alignItems: 'center',
   },
   pageTitle: {
     fontSize: 44,
@@ -466,36 +737,46 @@ const styles = StyleSheet.create({
     letterSpacing: -1.2,
     lineHeight: 50,
   },
+  sparkleIcon: {
+    marginLeft: 12,
+    marginTop: 8,
+  },
   toggleContainer: {
     marginBottom: 24,
   },
   toggleBackground: {
     flexDirection: 'row',
-    borderRadius: 20,
+    borderRadius: 24,
     padding: 4,
     position: 'relative',
-    borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.2)',
+    borderWidth: 1.5,
+    borderColor: 'rgba(139, 92, 246, 0.3)',
+    overflow: 'hidden',
+    shadowColor: '#8b5cf6',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 16,
+    elevation: 8,
   },
   toggleSlider: {
     position: 'absolute',
     top: 4,
     bottom: 4,
     width: 126,
-    borderRadius: 16,
+    borderRadius: 20,
     overflow: 'hidden',
   },
   toggleSliderGradient: {
     flex: 1,
     shadowColor: '#8b5cf6',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.5,
-    shadowRadius: 12,
-    elevation: 8,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.6,
+    shadowRadius: 16,
+    elevation: 10,
   },
   toggleOption: {
     flex: 1,
-    paddingVertical: 14,
+    paddingVertical: 16,
     alignItems: 'center',
     justifyContent: 'center',
     zIndex: 1,
@@ -512,99 +793,191 @@ const styles = StyleSheet.create({
     color: '#ffffff',
   },
   inputSection: {
-    gap: 16,
+    gap: 20,
+  },
+  inputCardWrapper: {
+    position: 'relative',
+    borderRadius: 32,
+    overflow: 'hidden',
+  },
+  uploadCardWrapper: {
+    position: 'relative',
+    borderRadius: 32,
+    overflow: 'hidden',
+  },
+  tagsCardWrapper: {
+    position: 'relative',
+    borderRadius: 32,
+    overflow: 'hidden',
+  },
+  scheduleCardWrapper: {
+    position: 'relative',
+    borderRadius: 32,
+    overflow: 'hidden',
   },
   inputCard: {
-    borderRadius: 28,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(139, 92, 246, 0.2)',
-    gap: 20,
+    borderRadius: 32,
+    padding: 24,
+    borderWidth: 1.5,
+    borderColor: 'rgba(139, 92, 246, 0.3)',
+    gap: 24,
+    shadowColor: '#8b5cf6',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 20,
+    elevation: 6,
   },
   uploadCard: {
-    borderRadius: 28,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(251, 191, 36, 0.2)',
+    borderRadius: 32,
+    padding: 24,
+    borderWidth: 1.5,
+    borderColor: 'rgba(251, 191, 36, 0.3)',
     gap: 20,
+    shadowColor: '#fbbf24',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 20,
+    elevation: 6,
   },
   tagsCard: {
-    borderRadius: 28,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(163, 230, 53, 0.2)',
+    borderRadius: 32,
+    padding: 24,
+    borderWidth: 1.5,
+    borderColor: 'rgba(163, 230, 53, 0.3)',
+    shadowColor: '#a3e635',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 20,
+    elevation: 6,
   },
   scheduleCard: {
-    borderRadius: 28,
-    padding: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(251, 146, 60, 0.2)',
+    borderRadius: 32,
+    padding: 24,
+    borderWidth: 1.5,
+    borderColor: 'rgba(251, 146, 60, 0.3)',
+    shadowColor: '#fb923c',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.2,
+    shadowRadius: 20,
+    elevation: 6,
   },
   inputGroup: {
-    gap: 12,
+    gap: 14,
+  },
+  labelRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
   },
   label: {
     color: '#ffffff',
-    fontSize: 16,
+    fontSize: 17,
     fontFamily: 'Archivo-Bold',
     letterSpacing: -0.4,
   },
-  inputWrapper: {
-    borderRadius: 18,
+  labelBadge: {
+    backgroundColor: 'rgba(139, 92, 246, 0.3)',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    borderColor: 'rgba(139, 92, 246, 0.5)',
+  },
+  labelBadgeText: {
+    color: '#8b5cf6',
+    fontSize: 11,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+  },
+  labelBadgeOptional: {
+    backgroundColor: 'rgba(251, 146, 60, 0.2)',
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(251, 146, 60, 0.4)',
+  },
+  labelBadgeTextOptional: {
+    color: '#fb923c',
+    fontSize: 11,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: 0.5,
+    textTransform: 'uppercase',
+  },
+  inputWrapper: {
+    borderRadius: 20,
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.15)',
   },
   input: {
-    paddingHorizontal: 18,
-    paddingVertical: 16,
+    paddingHorizontal: 20,
+    paddingVertical: 18,
     color: '#ffffff',
     fontSize: 16,
     fontFamily: 'Inter-Regular',
   },
   textArea: {
     minHeight: 140,
-    paddingTop: 16,
+    paddingTop: 18,
+  },
+  dividerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+    marginVertical: 4,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1.5,
+    backgroundColor: 'rgba(251, 191, 36, 0.3)',
+  },
+  dividerText: {
+    color: 'rgba(255, 255, 255, 0.5)',
+    fontSize: 13,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: 2,
   },
   uploadButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 10,
-    borderRadius: 18,
-    paddingVertical: 18,
+    gap: 12,
+    borderRadius: 20,
+    paddingVertical: 20,
     shadowColor: '#fbbf24',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 6,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.4,
+    shadowRadius: 16,
+    elevation: 8,
   },
   uploadButtonText: {
     color: '#000000',
-    fontSize: 15,
+    fontSize: 16,
     fontFamily: 'Archivo-Bold',
     letterSpacing: -0.3,
   },
   linkInputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: 'rgba(251, 191, 36, 0.2)',
-    paddingLeft: 18,
+    borderRadius: 20,
+    borderWidth: 1.5,
+    borderColor: 'rgba(251, 191, 36, 0.3)',
+    paddingLeft: 20,
   },
   linkIconWrapper: {
-    width: 32,
-    height: 32,
-    backgroundColor: 'rgba(251, 191, 36, 0.15)',
-    borderRadius: 16,
+    width: 36,
+    height: 36,
+    backgroundColor: 'rgba(251, 191, 36, 0.2)',
+    borderRadius: 18,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
   },
   linkInput: {
     flex: 1,
-    paddingVertical: 16,
-    paddingRight: 18,
+    paddingVertical: 18,
+    paddingRight: 20,
     color: '#ffffff',
     fontSize: 16,
     fontFamily: 'Inter-Regular',
@@ -615,31 +988,31 @@ const styles = StyleSheet.create({
   },
   tagInput: {
     flex: 1,
-    backgroundColor: 'rgba(163, 230, 53, 0.08)',
-    borderRadius: 18,
-    paddingHorizontal: 18,
-    paddingVertical: 16,
+    backgroundColor: 'rgba(163, 230, 53, 0.1)',
+    borderRadius: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 18,
     color: '#ffffff',
     fontSize: 16,
     fontFamily: 'Inter-Regular',
-    borderWidth: 1,
-    borderColor: 'rgba(163, 230, 53, 0.2)',
+    borderWidth: 1.5,
+    borderColor: 'rgba(163, 230, 53, 0.3)',
   },
   addTagButton: {
-    borderRadius: 18,
-    paddingHorizontal: 28,
-    paddingVertical: 16,
+    borderRadius: 20,
+    paddingHorizontal: 32,
+    paddingVertical: 18,
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#a3e635',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 6,
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.4,
+    shadowRadius: 16,
+    elevation: 8,
   },
   addTagButtonText: {
     color: '#000000',
-    fontSize: 15,
+    fontSize: 16,
     fontFamily: 'Archivo-Bold',
     letterSpacing: -0.3,
   },
@@ -647,67 +1020,96 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 10,
-    marginTop: 4,
+    marginTop: 6,
   },
   tag: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
-    borderWidth: 1,
-    borderColor: 'rgba(163, 230, 53, 0.3)',
-    borderRadius: 14,
-    paddingVertical: 10,
-    paddingHorizontal: 14,
+    gap: 10,
+    borderWidth: 1.5,
+    borderColor: 'rgba(163, 230, 53, 0.4)',
+    borderRadius: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    shadowColor: '#a3e635',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 4,
   },
   tagText: {
     color: '#ffffff',
-    fontSize: 14,
+    fontSize: 15,
     fontFamily: 'Archivo-Bold',
     letterSpacing: -0.3,
   },
   scheduleButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    borderRadius: 18,
-    paddingHorizontal: 18,
-    paddingVertical: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(251, 146, 60, 0.2)',
+    gap: 14,
+    borderRadius: 20,
+    paddingHorizontal: 20,
+    paddingVertical: 18,
+    borderWidth: 1.5,
+    borderColor: 'rgba(251, 146, 60, 0.3)',
   },
   scheduleIconWrapper: {
-    width: 32,
-    height: 32,
-    backgroundColor: 'rgba(251, 146, 60, 0.15)',
-    borderRadius: 16,
+    width: 36,
+    height: 36,
+    backgroundColor: 'rgba(251, 146, 60, 0.2)',
+    borderRadius: 18,
     justifyContent: 'center',
     alignItems: 'center',
   },
   scheduleButtonText: {
-    color: 'rgba(255, 255, 255, 0.6)',
-    fontSize: 15,
+    color: 'rgba(255, 255, 255, 0.7)',
+    fontSize: 16,
     fontFamily: 'Inter-Regular',
   },
   platformsSection: {
     gap: 16,
   },
+  platformsHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
   platformsTitle: {
     color: '#ffffff',
-    fontSize: 19,
+    fontSize: 20,
     fontFamily: 'Archivo-Bold',
     letterSpacing: -0.4,
+  },
+  platformsBadge: {
+    backgroundColor: 'rgba(96, 165, 250, 0.2)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(96, 165, 250, 0.4)',
+  },
+  platformsBadgeText: {
+    color: '#60a5fa',
+    fontSize: 12,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: 0.5,
   },
   platformGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 10,
+    gap: 12,
   },
   platformChip: {
-    paddingHorizontal: 18,
-    paddingVertical: 12,
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.1)',
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+    borderRadius: 18,
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.15)',
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 5,
   },
   platformChipText: {
     color: 'rgba(255, 255, 255, 0.5)',
@@ -722,26 +1124,28 @@ const styles = StyleSheet.create({
     letterSpacing: -0.3,
   },
   createButtonWrapper: {
-    borderRadius: 28,
+    borderRadius: 32,
     overflow: 'hidden',
-    marginTop: 8,
+    marginTop: 12,
   },
   createButtonDisabled: {
     opacity: 0.5,
   },
   createButtonGradient: {
-    paddingVertical: 20,
+    paddingVertical: 24,
     alignItems: 'center',
     justifyContent: 'center',
+    flexDirection: 'row',
+    gap: 10,
     shadowColor: '#8b5cf6',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.4,
-    shadowRadius: 16,
-    elevation: 10,
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.5,
+    shadowRadius: 24,
+    elevation: 12,
   },
   createButtonText: {
     color: '#ffffff',
-    fontSize: 18,
+    fontSize: 19,
     fontFamily: 'Archivo-Bold',
     letterSpacing: -0.4,
   },
