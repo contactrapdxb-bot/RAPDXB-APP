@@ -332,26 +332,26 @@ export default function PostScreen() {
             style={styles.uploadCard}
           >
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Upload Media</Text>
+              <Text style={styles.labelDark}>Upload Media</Text>
               <TouchableOpacity activeOpacity={0.7} style={styles.uploadButton}>
-                <Upload color="#ffffff" size={20} strokeWidth={2.5} />
+                <Upload color="#000000" size={20} strokeWidth={2.5} />
                 <Text style={styles.uploadButtonText}>Upload File</Text>
               </TouchableOpacity>
             </View>
 
             <View style={styles.dividerContainer}>
-              <View style={styles.dividerLine} />
-              <Text style={styles.dividerText}>OR</Text>
-              <View style={styles.dividerLine} />
+              <View style={styles.dividerLineDark} />
+              <Text style={styles.dividerTextDark}>OR</Text>
+              <View style={styles.dividerLineDark} />
             </View>
 
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Paste Media Link</Text>
-              <View style={styles.glassInputWrapper}>
+              <Text style={styles.labelDark}>Paste Media Link</Text>
+              <View style={styles.glassInputWrapperDark}>
                 <TextInput
-                  style={styles.input}
+                  style={styles.inputDark}
                   placeholder="https://..."
-                  placeholderTextColor="rgba(255, 255, 255, 0.4)"
+                  placeholderTextColor="rgba(0, 0, 0, 0.4)"
                   value={mediaLink}
                   onChangeText={setMediaLink}
                   autoCapitalize="none"
@@ -368,13 +368,13 @@ export default function PostScreen() {
             style={styles.tagsCard}
           >
             <View style={styles.inputGroup}>
-              <Text style={styles.label}>Tags</Text>
+              <Text style={styles.labelDark}>Tags</Text>
               <View style={styles.tagInputContainer}>
-                <View style={styles.glassTagInput}>
+                <View style={styles.glassTagInputDark}>
                   <TextInput
-                    style={styles.tagInputField}
+                    style={styles.tagInputFieldDark}
                     placeholder="Add a tag..."
-                    placeholderTextColor="rgba(255, 255, 255, 0.4)"
+                    placeholderTextColor="rgba(0, 0, 0, 0.4)"
                     value={tagInput}
                     onChangeText={setTagInput}
                     onSubmitEditing={handleAddTag}
@@ -384,9 +384,9 @@ export default function PostScreen() {
                 <TouchableOpacity
                   onPress={handleAddTag}
                   activeOpacity={0.7}
-                  style={styles.addTagButton}
+                  style={styles.addTagButtonDark}
                 >
-                  <Text style={styles.addTagButtonText}>Add</Text>
+                  <Text style={styles.addTagButtonTextDark}>Add</Text>
                 </TouchableOpacity>
               </View>
               {tags.length > 0 && (
@@ -755,7 +755,67 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(255, 255, 255, 0.2)',
   },
   uploadButtonText: {
-    color: '#ffffff',
+    color: '#000000',
+    fontSize: 16,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.3,
+  },
+  labelDark: {
+    color: '#000000',
+    fontSize: 17,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.4,
+  },
+  glassInputWrapperDark: {
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.15)',
+  },
+  inputDark: {
+    paddingHorizontal: 20,
+    paddingVertical: 18,
+    color: '#000000',
+    fontSize: 16,
+    fontFamily: 'Inter-Regular',
+  },
+  dividerLineDark: {
+    flex: 1,
+    height: 1.5,
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+  },
+  dividerTextDark: {
+    color: '#000000',
+    fontSize: 13,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: 2,
+  },
+  glassTagInputDark: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.15)',
+  },
+  tagInputFieldDark: {
+    paddingHorizontal: 20,
+    paddingVertical: 18,
+    color: '#000000',
+    fontSize: 16,
+    fontFamily: 'Inter-Regular',
+  },
+  addTagButtonDark: {
+    backgroundColor: 'rgba(0, 0, 0, 0.15)',
+    borderRadius: 20,
+    paddingHorizontal: 32,
+    paddingVertical: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(0, 0, 0, 0.2)',
+  },
+  addTagButtonTextDark: {
+    color: '#000000',
     fontSize: 16,
     fontFamily: 'Archivo-Bold',
     letterSpacing: -0.3,
