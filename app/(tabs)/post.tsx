@@ -1218,6 +1218,8 @@ const styles = StyleSheet.create({
   },
   pickersContainer: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   modalHeader: {
     flexDirection: 'row',
