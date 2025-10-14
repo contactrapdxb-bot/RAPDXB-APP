@@ -458,8 +458,17 @@ export default function PostScreen() {
                 <View style={styles.addedTagsContainer}>
                   {tags.map((tag) => (
                     <View key={tag} style={styles.addedTag}>
-                      <Check color="#000000" size={16} strokeWidth={3} />
-                      <Text style={styles.addedTagText}>@{tag}</Text>
+                      <View style={styles.addedTagLeft}>
+                        <Check color="#000000" size={16} strokeWidth={3} />
+                        <Text style={styles.addedTagText}>@{tag}</Text>
+                      </View>
+                      <TouchableOpacity
+                        onPress={() => handleRemoveTag(tag)}
+                        activeOpacity={0.7}
+                        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                      >
+                        <X color="#000000" size={16} strokeWidth={2.5} />
+                      </TouchableOpacity>
                     </View>
                   ))}
                 </View>
@@ -965,13 +974,18 @@ const styles = StyleSheet.create({
   addedTag: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 10,
+    justifyContent: 'space-between',
     backgroundColor: 'rgba(255, 255, 255, 0.25)',
     borderRadius: 16,
     paddingVertical: 12,
     paddingHorizontal: 16,
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.3)',
+  },
+  addedTagLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
   },
   addedTagText: {
     color: '#000000',
@@ -1165,7 +1179,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 8,
     right: 8,
-    backgroundColor: '#a3e635',
+    backgroundColor: '#65a30d',
     borderRadius: 12,
     padding: 4,
   },
