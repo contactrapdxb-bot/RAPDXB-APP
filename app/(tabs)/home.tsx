@@ -678,7 +678,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     gap: 6,
-    paddingTop: 50,
+    paddingTop: 60,
   },
   barPair: {
     flexDirection: 'row',
