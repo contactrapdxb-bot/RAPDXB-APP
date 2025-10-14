@@ -17,18 +17,9 @@ const PLATFORM_DATA = [
 ];
 
 const MONTHLY_DATA = [
-  { month: 'Sep', values: [65, 45, 85, 55] },
-  { month: 'Oct', values: [45, 30, 70, 40] },
-  { month: 'Nov', values: [75, 55, 90, 65] },
-  { month: 'Dec', values: [60, 40, 75, 50] },
-  { month: 'Jan', values: [80, 60, 95, 70] },
-  { month: 'Feb', values: [50, 35, 65, 45] },
-  { month: 'Mar', values: [70, 50, 85, 60] },
-  { month: 'Apr', values: [55, 40, 75, 50] },
-  { month: 'May', values: [85, 65, 100, 75] },
-  { month: 'Jun', values: [65, 45, 80, 55] },
-  { month: 'Jul', values: [75, 55, 90, 65] },
-  { month: 'Aug', values: [70, 50, 85, 60] },
+  { month: 'Aug', instagram: 82, others: 45 },
+  { month: 'Sep', instagram: 68, others: 58 },
+  { month: 'Oct', instagram: 91, others: 38 },
 ];
 
 const GROWTH_CHART_POINTS = [
@@ -42,9 +33,10 @@ export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const scrollAnim = useRef(new Animated.Value(0)).current;
   const barAnimations = useRef(
-    MONTHLY_DATA.map(() =>
-      [0, 1, 2, 3].map(() => new Animated.Value(0))
-    )
+    MONTHLY_DATA.map(() => ({
+      instagram: new Animated.Value(0),
+      others: new Animated.Value(0),
+    }))
   ).current;
   const orbAnim = useRef(new Animated.Value(0)).current;
   const [refreshing, setRefreshing] = useState(false);
@@ -87,15 +79,20 @@ export default function HomeScreen() {
 
   useEffect(() => {
     MONTHLY_DATA.forEach((data, index) => {
-      const animations = data.values.map((value, barIndex) =>
-        Animated.timing(barAnimations[index][barIndex], {
-          toValue: value,
-          duration: 1000,
-          delay: index * 80 + barIndex * 50,
+      Animated.parallel([
+        Animated.timing(barAnimations[index].instagram, {
+          toValue: data.instagram,
+          duration: 1200,
+          delay: index * 150,
           useNativeDriver: false,
-        })
-      );
-      Animated.parallel(animations).start();
+        }),
+        Animated.timing(barAnimations[index].others, {
+          toValue: data.others,
+          duration: 1200,
+          delay: index * 150 + 100,
+          useNativeDriver: false,
+        }),
+      ]).start();
     });
   }, []);
 
@@ -339,21 +336,20 @@ export default function HomeScreen() {
 
                 <View style={styles.barsContainer}>
                   {MONTHLY_DATA.map((data, index) => {
+                    const instagramHeight = barAnimations[index].instagram.interpolate({
+                      inputRange: [0, 100],
+                      outputRange: [2, 120],
+                    });
+                    const othersHeight = barAnimations[index].others.interpolate({
+                      inputRange: [0, 100],
+                      outputRange: [2, 120],
+                    });
+
                     return (
                       <View key={data.month} style={styles.barColumn}>
-                        <View style={styles.barGroup}>
-                          {data.values.map((value, barIndex) => {
-                            const barHeight = barAnimations[index][barIndex].interpolate({
-                              inputRange: [0, 100],
-                              outputRange: [0, 120],
-                            });
-
-                            return (
-                              <View key={barIndex} style={styles.barContainer}>
-                                <Animated.View style={[styles.barFilled, { height: barHeight }]} />
-                              </View>
-                            );
-                          })}
+                        <View style={styles.barPair}>
+                          <Animated.View style={[styles.barInstagram, { height: instagramHeight }]} />
+                          <Animated.View style={[styles.barOthers, { height: othersHeight }]} />
                         </View>
                         <Text style={styles.xAxisLabel}>{data.month}</Text>
                       </View>
@@ -696,42 +692,49 @@ const styles = StyleSheet.create({
   barsContainer: {
     flex: 1,
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     alignItems: 'flex-end',
     paddingTop: 140,
     paddingBottom: 0,
-    paddingHorizontal: 4,
   },
   barColumn: {
     alignItems: 'center',
     gap: 3,
-    flex: 1,
   },
-  barGroup: {
+  barPair: {
     flexDirection: 'row',
     alignItems: 'flex-end',
-    gap: 1.5,
+    gap: 3,
     height: 120,
   },
-  barContainer: {
-    width: 7,
-    height: 120,
-    backgroundColor: 'rgba(255, 255, 255, 0.12)',
-    borderRadius: 16,
-    overflow: 'hidden',
-    justifyContent: 'flex-end',
+  barInstagram: {
+    width: 12,
+    backgroundColor: '#ffffff',
+    borderRadius: 8,
+    minHeight: 2,
+    shadowColor: '#ffffff',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.6,
+    shadowRadius: 12,
+    elevation: 12,
   },
-  barFilled: {
-    width: '100%',
-    backgroundColor: '#1f2937',
-    borderRadius: 16,
+  barOthers: {
+    width: 12,
+    backgroundColor: '#ffffff',
+    opacity: 0.35,
+    borderRadius: 8,
+    minHeight: 2,
+    shadowColor: '#ffffff',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
   },
   xAxisLabel: {
-    fontSize: 7,
+    fontSize: 8,
     fontFamily: 'Inter-SemiBold',
     color: '#ffffff',
-    opacity: 0.7,
-    letterSpacing: -0.2,
+    opacity: 0.6,
   },
   legendRow: {
     flexDirection: 'row',
