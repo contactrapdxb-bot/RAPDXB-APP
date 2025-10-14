@@ -1,20 +1,86 @@
-import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, Image } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { ArrowLeft } from 'lucide-react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { ArrowLeft, TrendingUp, Users, Award, ArrowUp, ArrowDown, MessageCircle, Heart, Share2 } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
-import { useState } from 'react';
+import Svg, { Path, Line } from 'react-native-svg';
+
+const KEY_METRICS = [
+  { label: 'Total Reach', value: '24.5K', change: '+12%', changeUp: true, icon: Users },
+  { label: 'Engagement', value: '4.2%', change: '+0.8%', changeUp: true, icon: TrendingUp },
+  { label: 'Top Platform', value: 'Instagram', change: '21.6K', changeUp: true, icon: Award },
+];
+
+const WEEKLY_DATA = [
+  { day: 'M', value: 65 },
+  { day: 'T', value: 82 },
+  { day: 'W', value: 91 },
+  { day: 'T', value: 78 },
+  { day: 'F', value: 85 },
+  { day: 'S', value: 95 },
+  { day: 'S', value: 88 },
+];
+
+const PLATFORM_STATS = [
+  {
+    name: 'Instagram',
+    followers: '21.6K',
+    growth: '+8%',
+    growthUp: true,
+    engagement: '12.3K',
+    icon: 'https://i.imgur.com/vkcuEzE.png',
+    color: ['#E1306C', '#C13584']
+  },
+  {
+    name: 'TikTok',
+    followers: '18.3K',
+    growth: '+5%',
+    growthUp: true,
+    engagement: '9.8K',
+    icon: 'https://i.imgur.com/K2FKVUP.png',
+    color: ['#000000', '#333333']
+  },
+  {
+    name: 'YouTube',
+    followers: '3.7K',
+    growth: '+2%',
+    growthUp: true,
+    engagement: '2.1K',
+    icon: 'https://i.imgur.com/8H35ptZ.png',
+    color: ['#FF0000', '#DC143C']
+  },
+  {
+    name: 'Snapchat',
+    followers: '8.7K',
+    growth: '+4%',
+    growthUp: true,
+    engagement: '1.5K',
+    icon: 'https://i.imgur.com/XF3FRka.png',
+    color: ['#FFFC00', '#FFA500']
+  },
+  {
+    name: 'Twitter',
+    followers: '1.2K',
+    growth: '-1%',
+    growthUp: false,
+    engagement: '890',
+    icon: 'https://i.imgur.com/fPOjKNr.png',
+    color: ['#1DA1F2', '#1a8cd8']
+  },
+  {
+    name: 'Facebook',
+    followers: '2.6K',
+    growth: '+3%',
+    growthUp: true,
+    engagement: '1.2K',
+    icon: 'https://i.imgur.com/zfY36en.png',
+    color: ['#1877F2', '#0a5fd1']
+  },
+];
 
 export default function StatsScreen() {
   const insets = useSafeAreaInsets();
-  const [refreshing, setRefreshing] = useState(false);
-
-  const onRefresh = () => {
-    setRefreshing(true);
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 1000);
-  };
 
   const handleBack = () => {
     if (Platform.OS !== 'web') {
@@ -23,145 +89,135 @@ export default function StatsScreen() {
     router.replace('/(tabs)/home');
   };
 
+  const handlePlatformPress = (platform: string) => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    console.log('View details for:', platform);
+  };
+
   return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      <View style={styles.header}>
-        <TouchableOpacity
-          style={styles.backButton}
-          onPress={handleBack}
-          activeOpacity={0.6}
-        >
-          <ArrowLeft color="#ffffff" size={24} strokeWidth={2} />
-        </TouchableOpacity>
-        <Text style={styles.title}>Stats</Text>
-        <View style={styles.placeholder} />
-      </View>
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent} refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor="#ffffff"
-            colors={['#ffffff']}
-          />
-        }>
+    <View style={[styles.container, { paddingTop: insets.top + 8 }]}>
+      <ScrollView
+        style={styles.scrollContainer}
+        contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 100 }]}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.header}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={handleBack}
+            activeOpacity={0.6}
+          >
+            <View style={styles.backButtonInner}>
+              <ArrowLeft color="#ffffff" size={18} strokeWidth={1.5} />
+            </View>
+          </TouchableOpacity>
+          <View style={styles.placeholder} />
+        </View>
+
+        <View style={styles.titleSection}>
+          <Text style={styles.pageTitle}>Your </Text>
+          <Text style={styles.pageTitleBold}>Analytics</Text>
+        </View>
+
+        <View style={styles.metricsGrid}>
+          {KEY_METRICS.map((metric, index) => {
+            const IconComponent = metric.icon;
+            return (
+              <View key={index} style={styles.metricCard}>
+                <View style={styles.metricIconContainer}>
+                  <IconComponent color="#60a5fa" size={20} strokeWidth={2} />
+                </View>
+                <Text style={styles.metricValue}>{metric.value}</Text>
+                <Text style={styles.metricLabel}>{metric.label}</Text>
+                <View style={styles.metricChange}>
+                  {metric.changeUp ? (
+                    <ArrowUp color="#10b981" size={12} strokeWidth={2.5} />
+                  ) : (
+                    <ArrowDown color="#ef4444" size={12} strokeWidth={2.5} />
+                  )}
+                  <Text style={[styles.metricChangeText, { color: metric.changeUp ? '#10b981' : '#ef4444' }]}>
+                    {metric.change}
+                  </Text>
+                </View>
+              </View>
+            );
+          })}
+        </View>
+
         <View style={styles.chartSection}>
-          <Text style={styles.sectionTitle}>Activity</Text>
-          <View style={styles.chartContainer}>
-            <View style={styles.barGroup}>
-              <View style={styles.barContainer}>
-                <View style={[styles.barFill, { height: '65%' }]} />
-              </View>
-              <Text style={styles.barLabel}>Sep</Text>
-            </View>
-            <View style={styles.barGroup}>
-              <View style={styles.barContainer}>
-                <View style={[styles.barFill, { height: '82%' }]} />
-              </View>
-              <Text style={styles.barLabel}>Oct</Text>
-            </View>
-            <View style={styles.barGroup}>
-              <View style={styles.barContainer}>
-                <View style={[styles.barFill, { height: '48%' }]} />
-              </View>
-              <Text style={styles.barLabel}>Nov</Text>
-            </View>
-            <View style={styles.barGroup}>
-              <View style={styles.barContainer}>
-                <View style={[styles.barFill, { height: '91%' }]} />
-              </View>
-              <Text style={styles.barLabel}>Dec</Text>
+          <Text style={styles.sectionTitle}>Last 7 Days Performance</Text>
+          <View style={styles.chartCard}>
+            <View style={styles.chartContainer}>
+              {WEEKLY_DATA.map((data, index) => (
+                <View key={index} style={styles.chartBarGroup}>
+                  <View style={styles.chartBarContainer}>
+                    <LinearGradient
+                      colors={['#60a5fa', '#3b82f6']}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 0, y: 1 }}
+                      style={[styles.chartBar, { height: `${data.value}%` }]}
+                    />
+                  </View>
+                  <Text style={styles.chartLabel}>{data.day}</Text>
+                </View>
+              ))}
             </View>
           </View>
         </View>
 
-        <View style={styles.chartSection}>
-          <Text style={styles.sectionTitle}>Engagement</Text>
-          <View style={styles.chartContainer}>
-            <View style={styles.barGroup}>
-              <View style={styles.barContainer}>
-                <View style={[styles.barFill, { height: '72%', backgroundColor: '#10b981' }]} />
-              </View>
-              <Text style={styles.barLabel}>Sep</Text>
-            </View>
-            <View style={styles.barGroup}>
-              <View style={styles.barContainer}>
-                <View style={[styles.barFill, { height: '58%', backgroundColor: '#10b981' }]} />
-              </View>
-              <Text style={styles.barLabel}>Oct</Text>
-            </View>
-            <View style={styles.barGroup}>
-              <View style={styles.barContainer}>
-                <View style={[styles.barFill, { height: '85%', backgroundColor: '#10b981' }]} />
-              </View>
-              <Text style={styles.barLabel}>Nov</Text>
-            </View>
-            <View style={styles.barGroup}>
-              <View style={styles.barContainer}>
-                <View style={[styles.barFill, { height: '78%', backgroundColor: '#10b981' }]} />
-              </View>
-              <Text style={styles.barLabel}>Dec</Text>
-            </View>
-          </View>
-        </View>
+        <View style={styles.platformSection}>
+          <Text style={styles.sectionTitle}>Platform Breakdown</Text>
+          {PLATFORM_STATS.map((platform, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.platformCard}
+              onPress={() => handlePlatformPress(platform.name)}
+              activeOpacity={0.7}
+            >
+              <LinearGradient
+                colors={[platform.color[0] + '20', platform.color[1] + '20']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.platformGradient}
+              >
+                <View style={styles.platformHeader}>
+                  <View style={styles.platformTitleRow}>
+                    <Image
+                      source={{ uri: platform.icon }}
+                      style={styles.platformIcon}
+                    />
+                    <Text style={styles.platformName}>{platform.name}</Text>
+                  </View>
+                  <View style={styles.growthBadge}>
+                    {platform.growthUp ? (
+                      <ArrowUp color="#10b981" size={14} strokeWidth={2.5} />
+                    ) : (
+                      <ArrowDown color="#ef4444" size={14} strokeWidth={2.5} />
+                    )}
+                    <Text style={[styles.growthText, { color: platform.growthUp ? '#10b981' : '#ef4444' }]}>
+                      {platform.growth}
+                    </Text>
+                  </View>
+                </View>
 
-        <View style={styles.chartSection}>
-          <Text style={styles.sectionTitle}>Growth</Text>
-          <View style={styles.chartContainer}>
-            <View style={styles.barGroup}>
-              <View style={styles.barContainer}>
-                <View style={[styles.barFill, { height: '55%', backgroundColor: '#f59e0b' }]} />
-              </View>
-              <Text style={styles.barLabel}>Sep</Text>
-            </View>
-            <View style={styles.barGroup}>
-              <View style={styles.barContainer}>
-                <View style={[styles.barFill, { height: '68%', backgroundColor: '#f59e0b' }]} />
-              </View>
-              <Text style={styles.barLabel}>Oct</Text>
-            </View>
-            <View style={styles.barGroup}>
-              <View style={styles.barContainer}>
-                <View style={[styles.barFill, { height: '73%', backgroundColor: '#f59e0b' }]} />
-              </View>
-              <Text style={styles.barLabel}>Nov</Text>
-            </View>
-            <View style={styles.barGroup}>
-              <View style={styles.barContainer}>
-                <View style={[styles.barFill, { height: '88%', backgroundColor: '#f59e0b' }]} />
-              </View>
-              <Text style={styles.barLabel}>Dec</Text>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.chartSection}>
-          <Text style={styles.sectionTitle}>Performance</Text>
-          <View style={styles.chartContainer}>
-            <View style={styles.barGroup}>
-              <View style={styles.barContainer}>
-                <View style={[styles.barFill, { height: '62%', backgroundColor: '#ef4444' }]} />
-              </View>
-              <Text style={styles.barLabel}>Sep</Text>
-            </View>
-            <View style={styles.barGroup}>
-              <View style={styles.barContainer}>
-                <View style={[styles.barFill, { height: '75%', backgroundColor: '#ef4444' }]} />
-              </View>
-              <Text style={styles.barLabel}>Oct</Text>
-            </View>
-            <View style={styles.barGroup}>
-              <View style={styles.barContainer}>
-                <View style={[styles.barFill, { height: '81%', backgroundColor: '#ef4444' }]} />
-              </View>
-              <Text style={styles.barLabel}>Nov</Text>
-            </View>
-            <View style={styles.barGroup}>
-              <View style={styles.barContainer}>
-                <View style={[styles.barFill, { height: '69%', backgroundColor: '#ef4444' }]} />
-              </View>
-              <Text style={styles.barLabel}>Dec</Text>
-            </View>
-          </View>
+                <View style={styles.platformStats}>
+                  <View style={styles.platformStatItem}>
+                    <Users color="rgba(255, 255, 255, 0.5)" size={16} strokeWidth={2} />
+                    <Text style={styles.platformStatValue}>{platform.followers}</Text>
+                    <Text style={styles.platformStatLabel}>Followers</Text>
+                  </View>
+                  <View style={styles.platformStatDivider} />
+                  <View style={styles.platformStatItem}>
+                    <Heart color="rgba(255, 255, 255, 0.5)" size={16} strokeWidth={2} />
+                    <Text style={styles.platformStatValue}>{platform.engagement}</Text>
+                    <Text style={styles.platformStatLabel}>Engagement</Text>
+                  </View>
+                </View>
+              </LinearGradient>
+            </TouchableOpacity>
+          ))}
         </View>
       </ScrollView>
     </View>
@@ -173,82 +229,222 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000000',
   },
+  scrollContainer: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingHorizontal: 20,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+    marginBottom: 32,
   },
   backButton: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    overflow: 'hidden',
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+  },
+  backButtonInner: {
+    flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
   },
-  title: {
+  placeholder: {
+    width: 44,
+  },
+  titleSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 32,
+  },
+  pageTitle: {
+    color: 'rgba(255, 255, 255, 0.5)',
+    fontSize: 36,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -1,
+  },
+  pageTitleBold: {
     color: '#ffffff',
-    fontSize: 20,
+    fontSize: 36,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -1,
+  },
+  metricsGrid: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 32,
+  },
+  metricCard: {
+    flex: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    borderRadius: 16,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.06)',
+    gap: 8,
+  },
+  metricIconContainer: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    backgroundColor: 'rgba(96, 165, 250, 0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  metricValue: {
+    color: '#ffffff',
+    fontSize: 24,
     fontFamily: 'Archivo-Bold',
     letterSpacing: -0.5,
   },
-  placeholder: {
-    width: 40,
+  metricLabel: {
+    color: 'rgba(255, 255, 255, 0.5)',
+    fontSize: 11,
+    fontFamily: 'Inter-Regular',
+    letterSpacing: 0.3,
   },
-  content: {
-    flex: 1,
+  metricChange: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    marginTop: 4,
   },
-  scrollContent: {
-    paddingHorizontal: 24,
-    paddingVertical: 32,
+  metricChangeText: {
+    fontSize: 12,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: 0.2,
   },
   chartSection: {
-    marginBottom: 56,
+    marginBottom: 32,
   },
   sectionTitle: {
     color: '#ffffff',
-    fontSize: 14,
+    fontSize: 18,
     fontFamily: 'Archivo-Bold',
-    marginBottom: 24,
-    letterSpacing: 0.5,
-    textTransform: 'uppercase',
-    opacity: 0.6,
+    letterSpacing: -0.5,
+    marginBottom: 16,
+  },
+  chartCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    borderRadius: 20,
+    padding: 24,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.06)',
   },
   chartContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-end',
-    height: 200,
-    gap: 16,
+    height: 140,
+    gap: 8,
   },
-  barGroup: {
+  chartBarGroup: {
     flex: 1,
-    alignItems: 'center',
     height: '100%',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
   },
-  barContainer: {
+  chartBarContainer: {
     width: '100%',
     flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.03)',
-    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 8,
     overflow: 'hidden',
-    marginBottom: 12,
     justifyContent: 'flex-end',
+    marginBottom: 8,
+  },
+  chartBar: {
+    width: '100%',
+    borderRadius: 8,
+  },
+  chartLabel: {
+    color: 'rgba(255, 255, 255, 0.4)',
+    fontSize: 11,
+    fontFamily: 'Inter-Regular',
+    letterSpacing: 0.3,
+  },
+  platformSection: {
+    marginBottom: 32,
+  },
+  platformCard: {
+    borderRadius: 20,
+    marginBottom: 12,
+    overflow: 'hidden',
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.06)',
   },
-  barFill: {
-    width: '100%',
-    backgroundColor: '#3b82f6',
-    borderBottomLeftRadius: 11,
-    borderBottomRightRadius: 11,
+  platformGradient: {
+    padding: 20,
+    gap: 16,
   },
-  barLabel: {
-    color: 'rgba(255, 255, 255, 0.4)',
+  platformHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  platformTitleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  platformIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 8,
+  },
+  platformName: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.3,
+  },
+  growthBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 12,
+  },
+  growthText: {
+    fontSize: 14,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: 0.2,
+  },
+  platformStats: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  platformStatItem: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    padding: 12,
+    borderRadius: 12,
+  },
+  platformStatDivider: {
+    width: 1,
+    height: 24,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  platformStatValue: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.3,
+  },
+  platformStatLabel: {
+    color: 'rgba(255, 255, 255, 0.5)',
     fontSize: 11,
     fontFamily: 'Inter-Regular',
     letterSpacing: 0.3,
