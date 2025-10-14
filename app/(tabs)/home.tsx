@@ -661,7 +661,7 @@ const styles = StyleSheet.create({
   chartWrapper: {
     height: 140,
     paddingHorizontal: 8,
-    paddingTop: 30,
+    paddingTop: 48,
   },
   chartArea: {
     flex: 1,
