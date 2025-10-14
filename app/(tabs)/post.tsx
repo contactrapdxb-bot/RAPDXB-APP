@@ -594,7 +594,7 @@ export default function PostScreen() {
           animationType="slide"
         >
           <View style={styles.modalContainer}>
-            <View style={[styles.modalContent, { paddingBottom: insets.bottom + 20 }]}>
+            <View style={styles.modalContent}>
               <View style={styles.modalHeader}>
                 <TouchableOpacity onPress={() => setShowDatePicker(false)}>
                   <Text style={styles.modalCancelText}>Cancel</Text>
@@ -604,22 +604,24 @@ export default function PostScreen() {
                   <Text style={styles.modalDoneText}>Done</Text>
                 </TouchableOpacity>
               </View>
-              <DateTimePicker
-                value={scheduleDate || new Date()}
-                mode="date"
-                display="spinner"
-                onChange={handleDateChange}
-                textColor="#000000"
-                style={styles.datePicker}
-              />
-              <DateTimePicker
-                value={scheduleDate || new Date()}
-                mode="time"
-                display="spinner"
-                onChange={handleTimeChange}
-                textColor="#000000"
-                style={styles.timePicker}
-              />
+              <View style={styles.pickersContainer}>
+                <DateTimePicker
+                  value={scheduleDate || new Date()}
+                  mode="date"
+                  display="spinner"
+                  onChange={handleDateChange}
+                  textColor="#000000"
+                  style={styles.datePicker}
+                />
+                <DateTimePicker
+                  value={scheduleDate || new Date()}
+                  mode="time"
+                  display="spinner"
+                  onChange={handleTimeChange}
+                  textColor="#000000"
+                  style={styles.timePicker}
+                />
+              </View>
             </View>
           </View>
         </Modal>
@@ -1213,6 +1215,9 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
   },
+  pickersContainer: {
+    paddingBottom: 20,
+  },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -1239,10 +1244,12 @@ const styles = StyleSheet.create({
     fontFamily: 'Archivo-Bold',
   },
   datePicker: {
-    flex: 1,
+    height: 200,
+    width: '100%',
   },
   timePicker: {
-    flex: 1,
+    height: 200,
+    width: '100%',
   },
   createButtonText: {
     color: '#000000',
