@@ -5,8 +5,8 @@ import { ArrowLeft, Upload, Link, Calendar, X } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 import { useState, useRef, useEffect } from 'react';
 
-const PLATFORMS_POST = ['Instagram', 'Facebook', 'Twitter', 'LinkedIn'];
-const PLATFORMS_REEL = ['Instagram Reels', 'YouTube Shorts', 'TikTok', 'Facebook Reels'];
+const PLATFORMS_POST = ['Instagram', 'Facebook', 'Twitter'];
+const PLATFORMS_REEL = ['Instagram Reels', 'YouTube Shorts', 'TikTok', 'Facebook Reels', 'Snapchat'];
 
 export default function PostScreen() {
   const insets = useSafeAreaInsets();
