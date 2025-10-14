@@ -1,10 +1,10 @@
-import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, Image, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, Image, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ArrowLeft, Link } from 'lucide-react-native';
+import { ArrowLeft, Link, Check } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 const FEED_DATA = [
   {
@@ -420,6 +420,10 @@ const FILTERS = [
 export default function FeedScreen() {
   const insets = useSafeAreaInsets();
   const [selectedFilter, setSelectedFilter] = useState('All');
+  const [showToast, setShowToast] = useState(false);
+  const [toastMessage, setToastMessage] = useState('');
+  const toastOpacity = useRef(new Animated.Value(0)).current;
+  const toastTranslateY = useRef(new Animated.Value(-20)).current;
 
   const handleBack = () => {
     if (Platform.OS !== 'web') {
@@ -435,11 +439,47 @@ export default function FeedScreen() {
     setSelectedFilter(filter);
   };
 
+  const showCustomToast = (message: string) => {
+    setToastMessage(message);
+    setShowToast(true);
+
+    Animated.parallel([
+      Animated.timing(toastOpacity, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.timing(toastTranslateY, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]).start();
+
+    setTimeout(() => {
+      Animated.parallel([
+        Animated.timing(toastOpacity, {
+          toValue: 0,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+        Animated.timing(toastTranslateY, {
+          toValue: -20,
+          duration: 300,
+          useNativeDriver: true,
+        }),
+      ]).start(() => {
+        setShowToast(false);
+        toastTranslateY.setValue(-20);
+      });
+    }, 2000);
+  };
+
   const handleCopyLink = (item: any) => {
     if (Platform.OS !== 'web') {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     }
-    Alert.alert('Link Copied', `Link to "${item.title}" has been copied to clipboard!`);
+    showCustomToast('Link copied to clipboard!');
   };
 
   const filteredFeed = FEED_DATA.filter(item => {
@@ -488,8 +528,8 @@ export default function FeedScreen() {
             <Text style={styles.statLabel}>Sources</Text>
           </View>
           <View style={styles.statBox}>
-            <Text style={styles.statValue}>24h</Text>
             <Text style={styles.statLabel}>Updated</Text>
+            <Text style={styles.statValue}>3h ago</Text>
           </View>
         </View>
 
@@ -522,7 +562,6 @@ export default function FeedScreen() {
         <View style={styles.feedList}>
           {filteredFeed.map((item, index) => (
             <View key={item.id} style={styles.feedCardWrapper}>
-              <View style={styles.cardAccent} />
               <LinearGradient
                 colors={['rgba(255, 255, 255, 0.08)', 'rgba(255, 255, 255, 0.02)']}
                 start={{ x: 0, y: 0 }}
@@ -583,6 +622,31 @@ export default function FeedScreen() {
           ))}
         </View>
       </ScrollView>
+
+      {showToast && (
+        <Animated.View
+          style={[
+            styles.toastContainer,
+            {
+              opacity: toastOpacity,
+              transform: [{ translateY: toastTranslateY }],
+              top: insets.top + 60,
+            },
+          ]}
+        >
+          <LinearGradient
+            colors={['rgba(16, 185, 129, 0.95)', 'rgba(5, 150, 105, 0.95)']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.toastGradient}
+          >
+            <View style={styles.toastIconContainer}>
+              <Check color="#ffffff" size={20} strokeWidth={3} />
+            </View>
+            <Text style={styles.toastText}>{toastMessage}</Text>
+          </LinearGradient>
+        </Animated.View>
+      )}
     </View>
   );
 }
@@ -687,17 +751,17 @@ const styles = StyleSheet.create({
   },
   statValue: {
     color: '#ffffff',
-    fontSize: 24,
+    fontSize: 22,
     fontFamily: 'Archivo-Bold',
     letterSpacing: -0.5,
-    marginBottom: 4,
   },
   statLabel: {
     color: 'rgba(255, 255, 255, 0.4)',
-    fontSize: 11,
+    fontSize: 10,
     fontFamily: 'Inter-Regular',
     letterSpacing: 0.3,
     textTransform: 'uppercase',
+    marginBottom: 4,
   },
   filterBar: {
     marginBottom: 24,
@@ -731,17 +795,17 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(255, 255, 255, 0.08)',
     position: 'relative',
-  },
-  cardAccent: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: 4,
-    height: '100%',
-    backgroundColor: '#60a5fa',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 5,
   },
   feedCard: {
-    padding: 16,
+    padding: 18,
     gap: 16,
   },
   cardTopSection: {
@@ -788,6 +852,8 @@ const styles = StyleSheet.create({
     height: 180,
     borderRadius: 16,
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.06)',
   },
   cardContent: {
     gap: 12,
@@ -820,6 +886,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 10,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.06)',
   },
   platformDot: {
     width: 6,
@@ -844,5 +912,43 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'rgba(96, 165, 250, 0.3)',
     borderRadius: 12,
+  },
+  toastContainer: {
+    position: 'absolute',
+    left: 20,
+    right: 20,
+    zIndex: 1000,
+    borderRadius: 16,
+    overflow: 'hidden',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 10,
+  },
+  toastGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    gap: 12,
+  },
+  toastIconContainer: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  toastText: {
+    color: '#ffffff',
+    fontSize: 15,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.3,
+    flex: 1,
   },
 });
