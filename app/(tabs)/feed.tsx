@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeft, Link, Check } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 import { useState, useRef } from 'react';
+import * as Clipboard from 'expo-clipboard';
 
 const FEED_DATA = [
   {
@@ -16,6 +17,7 @@ const FEED_DATA = [
     source: '@complexmusic',
     description: 'Drake reveals surprise album dropping next week with features from Travis Scott and 21 Savage. The Canadian rapper shared the news on his Instagram story late last night, sending fans into a frenzy.',
     timeAgo: '1h ago',
+    url: 'https://www.instagram.com/p/drake-announces-new-album',
   },
   {
     id: 2,
@@ -26,6 +28,7 @@ const FEED_DATA = [
     source: '@geniusofficial',
     description: 'Watch Kendrick deliver an electrifying performance at Rolling Loud. His stage presence and lyrical prowess continue to set him apart as one of the greatest performers of our generation.',
     timeAgo: '2h ago',
+    url: 'https://www.youtube.com/watch?v=kendrick-lamar-performance',
   },
   {
     id: 3,
@@ -36,6 +39,7 @@ const FEED_DATA = [
     source: '@rapvibes',
     description: 'Ice Spice breaks the internet with her latest drop. The Bronx rapper\'s infectious flow and catchy hooks have TikTok users creating thousands of videos to the track.',
     timeAgo: '3h ago',
+    url: 'https://www.tiktok.com/@rapvibes/video/ice-spice-viral',
   },
   {
     id: 4,
@@ -46,6 +50,7 @@ const FEED_DATA = [
     source: 'Complex Interview',
     description: 'In an exclusive interview, J. Cole opens up about his creative approach to making music. The North Carolina rapper discusses how he crafts his introspective lyrics and conceptual albums.',
     timeAgo: '4h ago',
+    url: 'https://www.complex.com/music/j-cole-songwriting-process-interview',
   },
   {
     id: 5,
@@ -56,6 +61,7 @@ const FEED_DATA = [
     source: '@billboard',
     description: 'Travis Scott surprises Coachella crowd with unreleased track. The Houston rapper brought out special guests and delivered one of the most talked-about performances of the festival.',
     timeAgo: '5h ago',
+    url: 'https://www.instagram.com/p/travis-scott-coachella',
   },
   {
     id: 6,
@@ -66,6 +72,7 @@ const FEED_DATA = [
     source: '@theshaderoom',
     description: 'Lil Baby discusses his journey from Atlanta streets to global stardom. The rapper shares insights on his work ethic, upcoming projects, and what drives him to keep pushing boundaries.',
     timeAgo: '6h ago',
+    url: 'https://www.youtube.com/watch?v=lil-baby-interview',
   },
   {
     id: 7,
@@ -76,6 +83,7 @@ const FEED_DATA = [
     source: '@hiphopnation',
     description: 'Cardi B\'s new dance challenge breaks records on TikTok. Celebrities and fans alike are participating in the viral trend, with the original video amassing over 50 million views.',
     timeAgo: '7h ago',
+    url: 'https://www.tiktok.com/@hiphopnation/video/cardi-b-dance-challenge',
   },
   {
     id: 8,
@@ -86,6 +94,7 @@ const FEED_DATA = [
     source: 'Rolling Stone',
     description: 'Hip-hop legend Nas celebrates three decades of influential music. The Queens rapper discusses his iconic albums, evolving sound, and impact on the culture in this exclusive feature.',
     timeAgo: '8h ago',
+    url: 'https://www.rollingstone.com/music/nas-30-years-hip-hop',
   },
   {
     id: 9,
@@ -96,6 +105,7 @@ const FEED_DATA = [
     source: '@recordingacademy',
     description: 'Hot Girl Meg takes home another Grammy for Best Rap Performance. The Houston rapper delivered an emotional acceptance speech, thanking her fans and late mother.',
     timeAgo: '9h ago',
+    url: 'https://www.instagram.com/p/megan-thee-stallion-grammy',
   },
   {
     id: 10,
@@ -106,6 +116,7 @@ const FEED_DATA = [
     source: '@xxlmag',
     description: 'The dynamic duo surprise fans with "We Trust You" album. Future and Metro Boomin continue their winning streak, delivering another project filled with hard-hitting beats and memorable hooks.',
     timeAgo: '10h ago',
+    url: 'https://www.youtube.com/watch?v=future-metro-boomin-album',
   },
   {
     id: 11,
@@ -116,6 +127,7 @@ const FEED_DATA = [
     source: '@dojacat',
     description: 'Doja Cat shares behind-the-scenes footage from upcoming visual. The versatile artist hints at a bold new direction, with fans speculating about potential collaborations.',
     timeAgo: '11h ago',
+    url: 'https://www.tiktok.com/@dojacat/video/new-music-video-teaser',
   },
   {
     id: 12,
@@ -126,6 +138,7 @@ const FEED_DATA = [
     source: 'Variety',
     description: 'Abel Tesfaye reveals massive world tour spanning 40 cities. The multi-platinum artist promises an unforgettable production featuring his biggest hits and new material.',
     timeAgo: '12h ago',
+    url: 'https://www.variety.com/music/the-weeknd-stadium-tour-announcement',
   },
   {
     id: 13,
@@ -136,6 +149,7 @@ const FEED_DATA = [
     source: '@golfwang',
     description: 'Tyler expands his Golf Wang empire with new clothing line. The creative mogul showcases his unique aesthetic with bold designs, proving his influence extends far beyond music.',
     timeAgo: '13h ago',
+    url: 'https://www.instagram.com/p/tyler-creator-new-brand',
   },
   {
     id: 14,
@@ -146,6 +160,7 @@ const FEED_DATA = [
     source: '@asaprocky',
     description: 'Get an inside look at Rocky\'s creative process in the studio. The Harlem rapper works on his highly anticipated album, experimenting with new sounds and production techniques.',
     timeAgo: '14h ago',
+    url: 'https://www.youtube.com/watch?v=asap-rocky-studio-session',
   },
   {
     id: 15,
@@ -156,6 +171,7 @@ const FEED_DATA = [
     source: '@liluzivert',
     description: 'Uzi sends fans into a frenzy with snippet of new music. The Philadelphia rapper\'s unique style and energy have followers eagerly awaiting the full release.',
     timeAgo: '15h ago',
+    url: 'https://www.tiktok.com/@liluzivert/video/unreleased-track-preview',
   },
   {
     id: 16,
@@ -166,6 +182,7 @@ const FEED_DATA = [
     source: 'Rock & Roll Hall of Fame',
     description: 'Hov receives one of music\'s highest honors at star-studded ceremony. Jay-Z\'s induction celebrates his decades-long influence on hip-hop and popular culture worldwide.',
     timeAgo: '16h ago',
+    url: 'https://www.rockhall.com/inductees/jay-z',
   },
   {
     id: 17,
@@ -176,6 +193,7 @@ const FEED_DATA = [
     source: '@playboicarti',
     description: 'Carti shocks fans with unexpected midnight release. The Atlanta rapper\'s experimental sound continues to push boundaries, dividing critics while thrilling his devoted fanbase.',
     timeAgo: '17h ago',
+    url: 'https://www.instagram.com/p/playboicarti-surprise-single',
   },
   {
     id: 18,
@@ -186,6 +204,7 @@ const FEED_DATA = [
     source: '@jackharlow',
     description: 'Documentary explores Jack Harlow\'s rise to fame. The Kentucky native shares personal stories, struggles, and triumphs on his journey to becoming one of rap\'s brightest stars.',
     timeAgo: '18h ago',
+    url: 'https://www.youtube.com/watch?v=jack-harlow-documentary',
   },
   {
     id: 19,
@@ -196,6 +215,7 @@ const FEED_DATA = [
     source: '@sza',
     description: 'Fans get rare glimpse into SZA\'s pre-show preparation. The R&B/rap artist demonstrates her vocal exercises, offering insight into maintaining her signature smooth sound.',
     timeAgo: '19h ago',
+    url: 'https://www.tiktok.com/@sza/video/vocal-warmup-routine',
   },
   {
     id: 20,
@@ -206,6 +226,7 @@ const FEED_DATA = [
     source: 'Hollywood Reporter',
     description: 'Curtis Jackson expands his television empire with new show. The hip-hop mogul continues his success in entertainment, bringing authentic street stories to mainstream audiences.',
     timeAgo: '20h ago',
+    url: 'https://www.hollywoodreporter.com/tv/50-cent-new-crime-drama',
   },
   {
     id: 21,
@@ -216,6 +237,7 @@ const FEED_DATA = [
     source: '@gunna',
     description: 'Atlanta rapper announces return to music after legal troubles. Gunna expresses gratitude to fans and promises new music that reflects his personal growth and experiences.',
     timeAgo: '21h ago',
+    url: 'https://www.instagram.com/p/gunna-comeback-announcement',
   },
   {
     id: 22,
@@ -226,6 +248,7 @@ const FEED_DATA = [
     source: '@dababy',
     description: 'Charlotte rapper goes global with new international features. DaBaby\'s infectious energy and versatile flow make him the perfect collaborator for artists across different markets.',
     timeAgo: '22h ago',
+    url: 'https://www.youtube.com/watch?v=dababy-international-collab',
   },
   {
     id: 23,
@@ -236,6 +259,7 @@ const FEED_DATA = [
     source: '@latto',
     description: 'Atlanta\'s Latto proves why she\'s one of the hottest rappers out. Her impromptu freestyle showcases her lyrical ability and commanding presence, racking up millions of plays.',
     timeAgo: '23h ago',
+    url: 'https://www.tiktok.com/@latto/video/freestyle-platinum',
   },
   {
     id: 24,
@@ -246,6 +270,7 @@ const FEED_DATA = [
     source: 'Pitchfork',
     description: 'Marshall Mathers drops unexpected project without warning. The Detroit legend reminds everyone why he\'s considered one of the greatest, delivering technical prowess and raw emotion.',
     timeAgo: '1d ago',
+    url: 'https://pitchfork.com/news/eminem-surprise-ep',
   },
   {
     id: 25,
@@ -256,6 +281,7 @@ const FEED_DATA = [
     source: '@nickiminaj',
     description: 'The Queen of Rap achieves another milestone on Spotify. Nicki\'s latest album surpasses 500 million streams in record time, cementing her status as a streaming powerhouse.',
     timeAgo: '1d ago',
+    url: 'https://www.instagram.com/p/nickiminaj-streaming-record',
   },
   {
     id: 26,
@@ -266,6 +292,7 @@ const FEED_DATA = [
     source: '@polo.capalot',
     description: 'Chicago rapper shares emotional story of his rise. Polo G opens up about losing friends, overcoming adversity, and using music as therapy to process his experiences.',
     timeAgo: '1d ago',
+    url: 'https://www.youtube.com/watch?v=polo-g-documentary',
   },
   {
     id: 27,
@@ -276,6 +303,7 @@ const FEED_DATA = [
     source: '@glorillapimp',
     description: 'Memphis rapper\'s signature moves become viral sensation. GloRilla\'s authentic personality and infectious energy have users everywhere recreating her iconic dance routines.',
     timeAgo: '1d ago',
+    url: 'https://www.tiktok.com/@glorillapimp/video/dance-moves-viral',
   },
   {
     id: 28,
@@ -286,6 +314,7 @@ const FEED_DATA = [
     source: 'Billboard',
     description: 'Rapper comes out of retirement with new album announcement. Logic promises a return to the sound that made him famous, addressing fan concerns and reigniting excitement.',
     timeAgo: '1d ago',
+    url: 'https://www.billboard.com/music/logic-return-announcement',
   },
   {
     id: 29,
@@ -296,6 +325,7 @@ const FEED_DATA = [
     source: '@wsj',
     description: 'New information emerges in high-profile RICO case. The Atlanta rapper\'s legal team presents compelling arguments as the hip-hop community watches closely.',
     timeAgo: '1d ago',
+    url: 'https://www.instagram.com/p/young-thug-trial-update',
   },
   {
     id: 30,
@@ -306,6 +336,7 @@ const FEED_DATA = [
     source: '@roddyricch',
     description: 'Compton rapper shares snippets of upcoming project. Roddy Ricch\'s melodic style and authentic storytelling have fans counting down the days until the official release.',
     timeAgo: '1d ago',
+    url: 'https://www.youtube.com/watch?v=roddy-ricch-album-preview',
   },
   {
     id: 31,
@@ -316,6 +347,7 @@ const FEED_DATA = [
     source: '@saweetie',
     description: 'Bay Area rapper combines music with culinary content. Saweetie\'s unique personality shines through as she shares her famous recipes, connecting with fans in unexpected ways.',
     timeAgo: '2d ago',
+    url: 'https://www.tiktok.com/@saweetie/video/cooking-series',
   },
   {
     id: 32,
@@ -326,6 +358,7 @@ const FEED_DATA = [
     source: 'Complex',
     description: 'Hip-hop legend hints at one last project before retirement. Dr. Dre teases collaborations with both veteran artists and new talent, promising a fitting end to his legendary career.',
     timeAgo: '2d ago',
+    url: 'https://www.complex.com/music/dr-dre-final-album',
   },
   {
     id: 33,
@@ -336,6 +369,7 @@ const FEED_DATA = [
     source: '@offsetyrn',
     description: 'Migos member proves his solo star power. Offset\'s debut solo project showcases his versatility and growth as an artist, earning critical acclaim and commercial success.',
     timeAgo: '2d ago',
+    url: 'https://www.instagram.com/p/offset-solo-album-charts',
   },
   {
     id: 34,
@@ -346,6 +380,7 @@ const FEED_DATA = [
     source: '@babykeem',
     description: 'Cousins reunite for highly anticipated collaboration. Baby Keem and Kendrick Lamar\'s creative chemistry produces magic, with fans eagerly awaiting the final product.',
     timeAgo: '2d ago',
+    url: 'https://www.youtube.com/watch?v=baby-keem-kendrick-studio',
   },
   {
     id: 35,
@@ -475,10 +510,11 @@ export default function FeedScreen() {
     }, 2000);
   };
 
-  const handleCopyLink = (item: any) => {
+  const handleCopyLink = async (item: any) => {
     if (Platform.OS !== 'web') {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     }
+    await Clipboard.setStringAsync(item.url);
     showCustomToast('Link copied to clipboard!');
   };
 
