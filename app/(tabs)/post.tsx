@@ -394,9 +394,19 @@ export default function PostScreen() {
               {uploadedImage && (
                 <View style={styles.uploadedImageContainer}>
                   <Image source={{ uri: uploadedImage }} style={styles.uploadedImage} />
-                  <View style={styles.uploadedCheckmark}>
-                    <Check color="#000000" size={16} strokeWidth={3} />
-                  </View>
+                  <TouchableOpacity
+                    style={styles.uploadedRemoveButton}
+                    onPress={() => {
+                      if (Platform.OS !== 'web') {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                      }
+                      setUploadedImage(null);
+                    }}
+                    activeOpacity={0.7}
+                    hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                  >
+                    <X color="#ffffff" size={18} strokeWidth={2.5} />
+                  </TouchableOpacity>
                 </View>
               )}
             </View>
@@ -1175,13 +1185,13 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  uploadedCheckmark: {
+  uploadedRemoveButton: {
     position: 'absolute',
     top: 8,
     right: 8,
-    backgroundColor: '#65a30d',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     borderRadius: 12,
-    padding: 4,
+    padding: 6,
   },
   modalContainer: {
     flex: 1,
