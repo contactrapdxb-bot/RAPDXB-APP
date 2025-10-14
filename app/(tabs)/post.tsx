@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, TextInput, Animated } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
-import { ArrowLeft, Upload, Link, Calendar } from 'lucide-react-native';
+import { ArrowLeft, Upload, Link, Calendar, X } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 import { useState, useRef, useEffect } from 'react';
 
@@ -15,6 +15,8 @@ export default function PostScreen() {
   const [caption, setCaption] = useState('');
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
   const [scheduleDate, setScheduleDate] = useState('');
+  const [tagInput, setTagInput] = useState('');
+  const [tags, setTags] = useState<string[]>([]);
 
   const slideAnim = useRef(new Animated.Value(0)).current;
 
@@ -42,6 +44,25 @@ export default function PostScreen() {
     setTitle('');
     setCaption('');
     setSelectedPlatforms([]);
+    setTags([]);
+    setTagInput('');
+  };
+
+  const handleAddTag = () => {
+    if (tagInput.trim() && !tags.includes(tagInput.trim())) {
+      if (Platform.OS !== 'web') {
+        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+      }
+      setTags([...tags, tagInput.trim()]);
+      setTagInput('');
+    }
+  };
+
+  const handleRemoveTag = (tagToRemove: string) => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    setTags(tags.filter(tag => tag !== tagToRemove));
   };
 
   const handlePlatformToggle = (platform: string) => {
@@ -191,6 +212,45 @@ export default function PostScreen() {
                 </TouchableOpacity>
               ))}
             </View>
+          </View>
+
+          {/* Tags */}
+          <View style={styles.inputGroup}>
+            <Text style={styles.label}>Tags</Text>
+            <View style={styles.tagInputContainer}>
+              <TextInput
+                style={styles.tagInput}
+                placeholder="Add a tag..."
+                placeholderTextColor="rgba(255, 255, 255, 0.3)"
+                value={tagInput}
+                onChangeText={setTagInput}
+                onSubmitEditing={handleAddTag}
+                returnKeyType="done"
+              />
+              <TouchableOpacity
+                style={styles.addTagButton}
+                onPress={handleAddTag}
+                activeOpacity={0.7}
+              >
+                <Text style={styles.addTagButtonText}>Add</Text>
+              </TouchableOpacity>
+            </View>
+            {tags.length > 0 && (
+              <View style={styles.tagsContainer}>
+                {tags.map((tag) => (
+                  <View key={tag} style={styles.tag}>
+                    <Text style={styles.tagText}>#{tag}</Text>
+                    <TouchableOpacity
+                      onPress={() => handleRemoveTag(tag)}
+                      activeOpacity={0.7}
+                      hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                    >
+                      <X color="#ffffff" size={14} strokeWidth={2.5} />
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </View>
+            )}
           </View>
 
           {/* Schedule */}
@@ -392,6 +452,59 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.6)',
     fontSize: 15,
     fontFamily: 'Inter-Regular',
+  },
+  tagInputContainer: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  tagInput: {
+    flex: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    color: '#ffffff',
+    fontSize: 16,
+    fontFamily: 'Inter-Regular',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  addTagButton: {
+    backgroundColor: '#8b5cf6',
+    borderRadius: 16,
+    paddingHorizontal: 24,
+    paddingVertical: 14,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  addTagButtonText: {
+    color: '#ffffff',
+    fontSize: 15,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.3,
+  },
+  tagsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+    marginTop: 4,
+  },
+  tag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+    backgroundColor: 'rgba(139, 92, 246, 0.2)',
+    borderWidth: 1,
+    borderColor: '#8b5cf6',
+    borderRadius: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+  },
+  tagText: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.3,
   },
   bottomBar: {
     paddingHorizontal: 20,
