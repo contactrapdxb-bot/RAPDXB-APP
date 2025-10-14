@@ -1141,6 +1141,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 14,
     borderRadius: 18,
+    borderWidth: 1,
+    borderColor: 'transparent',
   },
   platformChipInactive: {
     paddingHorizontal: 20,
