@@ -1011,8 +1011,9 @@ const styles = StyleSheet.create({
   },
   notificationPopup: {
     position: 'absolute',
-    right: 20,
-    width: 380,
+    right: 16,
+    left: 16,
+    maxWidth: 380,
     overflow: 'hidden',
     borderRadius: 28,
     shadowColor: '#000000',
