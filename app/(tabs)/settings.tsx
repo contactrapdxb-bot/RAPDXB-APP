@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, Image, TextInput } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, Image, TextInput, RefreshControl } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -18,7 +18,18 @@ const SOCIAL_PLATFORMS = [
 export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
   const [showEditModal, setShowEditModal] = useState(false);
-  const [editName, setEditName] = useState('RAPDXB');
+  const [profileName, setProfileName] = useState('RAPDXB');
+  const [profileImage, setProfileImage] = useState('https://i.imgur.com/vhILBC1.png');
+  const [editName, setEditName] = useState(profileName);
+  const [editImage, setEditImage] = useState(profileImage);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
+  };
 
   const handleBack = () => {
     if (Platform.OS !== 'web') {
@@ -31,6 +42,8 @@ export default function SettingsScreen() {
     if (Platform.OS !== 'web') {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
+    setEditName(profileName);
+    setEditImage(profileImage);
     setShowEditModal(true);
   };
 
@@ -45,8 +58,23 @@ export default function SettingsScreen() {
     if (Platform.OS !== 'web') {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     }
-    console.log('Save profile:', editName);
+    setProfileName(editName);
+    setProfileImage(editImage);
     setShowEditModal(false);
+  };
+
+  const handleChangeImage = () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    const sampleImages = [
+      'https://i.imgur.com/vhILBC1.png',
+      'https://i.imgur.com/9BvTmzs.png',
+      'https://i.imgur.com/K2vZ9xL.png',
+    ];
+    const currentIndex = sampleImages.indexOf(editImage);
+    const nextIndex = (currentIndex + 1) % sampleImages.length;
+    setEditImage(sampleImages[nextIndex]);
   };
 
   return (
@@ -55,6 +83,14 @@ export default function SettingsScreen() {
         style={styles.scrollContainer}
         contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 100 }]}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#ffffff"
+            colors={['#ffffff']}
+          />
+        }
       >
         <View style={styles.header}>
           <TouchableOpacity
@@ -90,11 +126,11 @@ export default function SettingsScreen() {
 
           <View style={styles.profileContent}>
             <Image
-              source={{ uri: 'https://i.imgur.com/vhILBC1.png' }}
+              source={{ uri: profileImage }}
               style={styles.profileImage}
             />
             <View style={styles.profileInfo}>
-              <Text style={styles.profileName}>RAPDXB</Text>
+              <Text style={styles.profileName}>{profileName}</Text>
               <Image
                 source={{ uri: 'https://i.imgur.com/5rF4a1S.png' }}
                 style={styles.verifiedBadge}
@@ -138,7 +174,7 @@ export default function SettingsScreen() {
                       resizeMode="contain"
                     />
                     <View style={styles.connectedBadge}>
-                      <Check color="#ffffff" size={12} strokeWidth={3} />
+                      <Check color="#ffffff" size={10} strokeWidth={3} />
                     </View>
                   </View>
                   <Text style={styles.platformName}>{platform.name}</Text>
@@ -179,12 +215,13 @@ export default function SettingsScreen() {
 
               <View style={styles.editImageSection}>
                 <Image
-                  source={{ uri: 'https://i.imgur.com/vhILBC1.png' }}
+                  source={{ uri: editImage }}
                   style={styles.editProfileImage}
                 />
                 <TouchableOpacity
                   activeOpacity={0.7}
                   style={styles.changeImageButton}
+                  onPress={handleChangeImage}
                 >
                   <Text style={styles.changeImageText}>Change Image</Text>
                 </TouchableOpacity>
@@ -363,15 +400,15 @@ const styles = StyleSheet.create({
   platformsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 10,
+    gap: 8,
   },
   platformItem: {
-    width: '48.5%',
+    width: '31.5%',
   },
   platformCard: {
-    borderRadius: 24,
-    padding: 16,
-    gap: 12,
+    borderRadius: 20,
+    padding: 12,
+    gap: 8,
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.15,
@@ -384,32 +421,32 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   platformIcon: {
-    width: 32,
-    height: 32,
+    width: 24,
+    height: 24,
   },
   connectedBadge: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
+    width: 16,
+    height: 16,
+    borderRadius: 8,
     backgroundColor: 'rgba(255, 255, 255, 0.3)',
     justifyContent: 'center',
     alignItems: 'center',
   },
   platformName: {
-    fontSize: 16,
+    fontSize: 13,
     fontFamily: 'Archivo-Bold',
     color: '#ffffff',
     letterSpacing: -0.3,
   },
   connectedStatus: {
     backgroundColor: 'rgba(255, 255, 255, 0.2)',
-    borderRadius: 12,
-    paddingVertical: 6,
-    paddingHorizontal: 12,
+    borderRadius: 10,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
     alignSelf: 'flex-start',
   },
   connectedText: {
-    fontSize: 11,
+    fontSize: 9,
     fontFamily: 'Archivo-Bold',
     color: '#ffffff',
     letterSpacing: 0.3,

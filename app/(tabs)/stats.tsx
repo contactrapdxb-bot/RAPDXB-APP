@@ -1,11 +1,20 @@
-import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, RefreshControl } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { ArrowLeft } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
+import { useState } from 'react';
 
 export default function StatsScreen() {
   const insets = useSafeAreaInsets();
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
+  };
 
   const handleBack = () => {
     if (Platform.OS !== 'web') {
@@ -27,7 +36,14 @@ export default function StatsScreen() {
         <Text style={styles.title}>Stats</Text>
         <View style={styles.placeholder} />
       </View>
-      <ScrollView style={styles.content} showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
+      <ScrollView style={styles.content} showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent} refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#ffffff"
+            colors={['#ffffff']}
+          />
+        }>
         <View style={styles.chartSection}>
           <Text style={styles.sectionTitle}>Activity</Text>
           <View style={styles.chartContainer}>

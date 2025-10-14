@@ -1,8 +1,9 @@
-import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, RefreshControl } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { ArrowLeft, CheckCircle, AlertTriangle, AlertCircle, X } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
+import { useState } from 'react';
 
 const notifications = [
   {
@@ -37,6 +38,14 @@ const notifications = [
 
 export default function FeedScreen() {
   const insets = useSafeAreaInsets();
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
+  };
 
   const handleBack = () => {
     if (Platform.OS !== 'web') {
@@ -77,6 +86,14 @@ export default function FeedScreen() {
         style={styles.scrollView}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#ffffff"
+            colors={['#ffffff']}
+          />
+        }
       >
         {notifications.map((notification) => (
           <View key={notification.id} style={styles.notificationCard}>

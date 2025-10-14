@@ -1,11 +1,20 @@
-import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, RefreshControl } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { ArrowLeft } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
+import { useState } from 'react';
 
 export default function CommunityScreen() {
   const insets = useSafeAreaInsets();
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 1000);
+  };
 
   const handleBack = () => {
     if (Platform.OS !== 'web') {
@@ -27,9 +36,23 @@ export default function CommunityScreen() {
         <Text style={styles.title}>Community</Text>
         <View style={styles.placeholder} />
       </View>
-      <View style={styles.content}>
-        <Text style={styles.text}>Community Screen</Text>
-      </View>
+      <ScrollView
+        style={styles.content}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#ffffff"
+            colors={['#ffffff']}
+          />
+        }
+      >
+        <View style={styles.centerContent}>
+          <Text style={styles.text}>Community Screen</Text>
+        </View>
+      </ScrollView>
     </View>
   );
 }
@@ -66,6 +89,12 @@ const styles = StyleSheet.create({
     width: 40,
   },
   content: {
+    flex: 1,
+  },
+  scrollContent: {
+    flex: 1,
+  },
+  centerContent: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
