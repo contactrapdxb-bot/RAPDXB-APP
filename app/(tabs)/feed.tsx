@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, Image, 
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ArrowLeft, Link, Check } from 'lucide-react-native';
+import { ArrowLeft, Link, Check, Globe } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 import { useState, useRef } from 'react';
 import * as Clipboard from 'expo-clipboard';
@@ -525,12 +525,6 @@ export default function FeedScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top + 8 }]}>
-      <View style={styles.backgroundShapes}>
-        <View style={styles.shape1} />
-        <View style={styles.shape2} />
-        <View style={styles.shape3} />
-      </View>
-
       <ScrollView
         style={styles.scrollContainer}
         contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 100 }]}
@@ -607,10 +601,14 @@ export default function FeedScreen() {
                 <View style={styles.cardTopSection}>
                   <View style={styles.cardHeader}>
                     <View style={styles.platformBadge}>
-                      <Image
-                        source={{ uri: item.platformIcon }}
-                        style={styles.platformIconSmall}
-                      />
+                      {item.platform === 'Web' ? (
+                        <Globe color="#6B7280" size={16} strokeWidth={2} />
+                      ) : (
+                        <Image
+                          source={{ uri: item.platformIcon }}
+                          style={styles.platformIconSmall}
+                        />
+                      )}
                     </View>
                     <View style={styles.cardMeta}>
                       <Text style={styles.cardSource}>{item.source}</Text>
@@ -686,39 +684,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#000000',
-  },
-  backgroundShapes: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    overflow: 'hidden',
-  },
-  shape1: {
-    position: 'absolute',
-    top: -100,
-    right: -100,
-    width: 300,
-    height: 300,
-    borderRadius: 150,
-    backgroundColor: 'rgba(96, 165, 250, 0.03)',
-  },
-  shape2: {
-    position: 'absolute',
-    top: 200,
-    left: -150,
-    width: 350,
-    height: 350,
-    borderRadius: 175,
-    backgroundColor: 'rgba(139, 92, 246, 0.02)',
-  },
-  shape3: {
-    position: 'absolute',
-    bottom: -100,
-    right: -50,
-    width: 250,
-    height: 250,
-    borderRadius: 125,
-    backgroundColor: 'rgba(59, 130, 246, 0.03)',
   },
   scrollContainer: {
     flex: 1,
