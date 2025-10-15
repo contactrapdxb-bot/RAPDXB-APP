@@ -152,8 +152,8 @@ export default function AccountScreen() {
             onPress={handleBack}
             activeOpacity={0.6}
           >
-            <View style={styles.backButtonInner}>
-              <ArrowLeft color="#ffffff" size={18} strokeWidth={1.5} />
+            <View style={styles.backButtonGradient}>
+              <ArrowLeft color="#ffffff" size={22} strokeWidth={2} />
             </View>
           </TouchableOpacity>
           <View style={styles.placeholder} />
@@ -333,13 +333,15 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     overflow: 'hidden',
   },
-  backButtonInner: {
+  backButtonGradient: {
     width: '100%',
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#1a1a1a',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
     borderRadius: 24,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
   placeholder: {
     width: 48,
