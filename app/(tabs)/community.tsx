@@ -715,7 +715,7 @@ const styles = StyleSheet.create({
   pageTitleBold: {
     fontSize: 44,
     fontFamily: 'Archivo-Bold',
-    color: '#fb923c',
+    color: '#ffffff',
     letterSpacing: -1.2,
     lineHeight: 50,
   },

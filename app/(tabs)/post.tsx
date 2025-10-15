@@ -698,7 +698,7 @@ const styles = StyleSheet.create({
   pageTitleBold: {
     fontSize: 44,
     fontFamily: 'Archivo-Bold',
-    color: '#fb923c',
+    color: '#ffffff',
     letterSpacing: -1.2,
     lineHeight: 50,
   },
@@ -753,11 +753,11 @@ const styles = StyleSheet.create({
     letterSpacing: -0.4,
   },
   toggleTextActivePost: {
-    color: '#ffffff',
+    color: '#fbbf24',
     fontWeight: '1400',
   },
   toggleTextActiveReel: {
-    color: '#ffffff',
+    color: '#60a5fa',
     fontWeight: '1400',
   },
   inputSection: {
