@@ -302,7 +302,7 @@ export default function CommunityScreen() {
               onPress={() => handleToggle('email')}
               activeOpacity={0.8}
             >
-              <Mail color={contentType === 'email' ? '#10b981' : 'rgba(0, 0, 0, 0.4)'} size={18} strokeWidth={3} />
+              <Mail color={contentType === 'email' ? '#ffffff' : 'rgba(255, 255, 255, 0.4)'} size={18} strokeWidth={3} />
               <Text style={[styles.toggleText, contentType === 'email' && styles.toggleTextActiveEmail]}>
                 Email
               </Text>
@@ -312,7 +312,7 @@ export default function CommunityScreen() {
               onPress={() => handleToggle('message')}
               activeOpacity={0.8}
             >
-              <MessageSquare color={contentType === 'message' ? '#60a5fa' : 'rgba(0, 0, 0, 0.4)'} size={18} strokeWidth={3} />
+              <MessageSquare color={contentType === 'message' ? '#ffffff' : 'rgba(255, 255, 255, 0.4)'} size={18} strokeWidth={3} />
               <Text style={[styles.toggleText, contentType === 'message' && styles.toggleTextActiveMessage]}>
                 Message
               </Text>
@@ -763,18 +763,18 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   toggleText: {
-    color: 'rgba(0, 0, 0, 0.4)',
+    color: 'rgba(255, 255, 255, 0.4)',
     fontSize: 16,
     fontFamily: 'Archivo-Bold',
     fontWeight: '700',
     letterSpacing: -0.4,
   },
   toggleTextActiveEmail: {
-    color: '#10b981',
+    color: '#ffffff',
     fontWeight: '1400',
   },
   toggleTextActiveMessage: {
-    color: '#60a5fa',
+    color: '#ffffff',
     fontWeight: '1400',
   },
   inputSection: {
