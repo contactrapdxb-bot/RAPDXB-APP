@@ -111,8 +111,8 @@ export default function StatsScreen() {
             onPress={handleBack}
             activeOpacity={0.6}
           >
-            <View style={styles.backButtonInner}>
-              <ArrowLeft color="#ffffff" size={18} strokeWidth={1.5} />
+            <View style={styles.backButtonGradient}>
+              <ArrowLeft color="#ffffff" size={22} strokeWidth={2} />
             </View>
           </TouchableOpacity>
           <View style={styles.placeholder} />
@@ -320,23 +320,26 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginBottom: 32,
+    marginBottom: 20,
   },
   backButton: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     overflow: 'hidden',
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
   },
-  backButtonInner: {
-    flex: 1,
+  backButtonGradient: {
+    width: '100%',
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 24,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
   placeholder: {
-    width: 44,
+    width: 48,
   },
   titleSection: {
     flexDirection: 'row',

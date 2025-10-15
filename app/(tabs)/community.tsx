@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, TextInput, Animated, Dimensions, Modal, Image } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, TextInput, Animated, Dimensions, Modal, Image, RefreshControl } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -36,12 +36,18 @@ export default function CommunityScreen() {
   const [showPostModal, setShowPostModal] = useState(false);
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPosts, setSelectedPosts] = useState<Post[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
 
   const sliderAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     fetchPosts();
   }, []);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchPosts().finally(() => setRefreshing(false));
+  };
 
   const fetchPosts = async () => {
     const { data, error } = await supabase
@@ -242,6 +248,14 @@ export default function CommunityScreen() {
         style={styles.scrollContainer}
         contentContainerStyle={[styles.scrollContent, { paddingBottom: insets.bottom + 120 }]}
         showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor="#ffffff"
+            colors={['#ffffff']}
+          />
+        }
       >
         <View style={styles.header}>
           <TouchableOpacity
@@ -308,7 +322,7 @@ export default function CommunityScreen() {
 
         <View style={styles.inputSection}>
           <LinearGradient
-            colors={['#8b5cf6', '#7c3aed']}
+            colors={['#a855f7', '#9333ea']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.uploadCard}
@@ -385,7 +399,7 @@ export default function CommunityScreen() {
           </LinearGradient>
 
           <LinearGradient
-            colors={['#ec4899', '#db2777']}
+            colors={['#f97316', '#ea580c']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.inputCard}
@@ -431,7 +445,7 @@ export default function CommunityScreen() {
           </LinearGradient>
 
           <LinearGradient
-            colors={['#f59e0b', '#d97706']}
+            colors={['#06b6d4', '#0891b2']}
             start={{ x: 0, y: 0 }}
             end={{ x: 1, y: 1 }}
             style={styles.scheduleCard}
@@ -770,7 +784,7 @@ const styles = StyleSheet.create({
     borderRadius: 32,
     padding: 24,
     gap: 24,
-    shadowColor: '#ec4899',
+    shadowColor: '#f97316',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.4,
     shadowRadius: 20,
@@ -780,7 +794,7 @@ const styles = StyleSheet.create({
     borderRadius: 32,
     padding: 24,
     gap: 20,
-    shadowColor: '#8b5cf6',
+    shadowColor: '#a855f7',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.4,
     shadowRadius: 20,
@@ -789,7 +803,7 @@ const styles = StyleSheet.create({
   scheduleCard: {
     borderRadius: 32,
     padding: 24,
-    shadowColor: '#f59e0b',
+    shadowColor: '#06b6d4',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.4,
     shadowRadius: 20,

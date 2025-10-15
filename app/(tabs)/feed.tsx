@@ -536,8 +536,8 @@ export default function FeedScreen() {
             onPress={handleBack}
             activeOpacity={0.6}
           >
-            <View style={styles.backButtonInner}>
-              <ArrowLeft color="#ffffff" size={18} strokeWidth={1.5} />
+            <View style={styles.backButtonGradient}>
+              <ArrowLeft color="#ffffff" size={22} strokeWidth={2} />
             </View>
           </TouchableOpacity>
           <View style={styles.placeholder} />
@@ -698,21 +698,23 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   backButton: {
-    width: 36,
-    height: 36,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    overflow: 'hidden',
   },
-  backButtonInner: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+  backButtonGradient: {
+    width: '100%',
+    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderRadius: 24,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
   placeholder: {
-    width: 36,
+    width: 48,
   },
   titleSection: {
     flexDirection: 'row',
