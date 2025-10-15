@@ -277,7 +277,7 @@ export default function CommunityScreen() {
             {
               color: sliderAnim.interpolate({
                 inputRange: [0, 1],
-                outputRange: ['#60a5fa', '#10b981'],
+                outputRange: ['#fbbf24', '#10b981'],
               }),
             },
           ]}>

@@ -156,7 +156,7 @@ export default function StatsScreen() {
                 <View key={index} style={styles.chartBarGroup}>
                   <View style={styles.chartBarContainer}>
                     <LinearGradient
-                      colors={['#60a5fa', '#3b82f6']}
+                      colors={['#8b5cf6', '#7c3aed']}
                       start={{ x: 0, y: 0 }}
                       end={{ x: 0, y: 1 }}
                       style={[styles.chartBar, { height: `${data.value}%` }]}
@@ -357,7 +357,7 @@ const styles = StyleSheet.create({
   pageTitleBold: {
     fontSize: 44,
     fontFamily: 'Archivo-Bold',
-    color: '#ec4899',
+    color: '#8b5cf6',
     letterSpacing: -1.2,
     lineHeight: 50,
   },
