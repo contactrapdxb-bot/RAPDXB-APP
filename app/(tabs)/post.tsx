@@ -709,11 +709,6 @@ const styles = StyleSheet.create({
     bottom: 4,
     width: '47.5%',
     borderRadius: 20,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 5,
   },
   toggleSliderInner: {
     flex: 1,
@@ -1079,12 +1074,10 @@ const styles = StyleSheet.create({
     letterSpacing: -0.4,
   },
   platformsBadge: {
-    backgroundColor: 'rgba(96, 165, 250, 0.2)',
+    backgroundColor: 'rgba(96, 165, 250, 0.15)',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(96, 165, 250, 0.4)',
   },
   platformsBadgeText: {
     color: '#60a5fa',
@@ -1108,9 +1101,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 14,
     borderRadius: 18,
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.15)',
+    backgroundColor: '#1a1a1a',
   },
   platformChipText: {
     color: 'rgba(255, 255, 255, 0.5)',
@@ -1208,7 +1199,7 @@ const styles = StyleSheet.create({
   },
   createButtonText: {
     color: '#ffffff',
-    fontSize: 19,
+    fontSize: 18,
     fontFamily: 'Archivo-Bold',
     letterSpacing: -0.4,
   },
