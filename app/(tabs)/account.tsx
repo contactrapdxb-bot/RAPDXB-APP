@@ -148,13 +148,11 @@ export default function AccountScreen() {
       >
         <View style={styles.header}>
           <TouchableOpacity
-            style={styles.backButton}
+            style={styles.backButtonInner}
             onPress={handleBack}
             activeOpacity={0.6}
           >
-            <View style={styles.backButtonInner}>
-              <ArrowLeft color="#ffffff" size={18} strokeWidth={1.5} />
-            </View>
+            <ArrowLeft color="#ffffff" size={18} strokeWidth={1.5} />
           </TouchableOpacity>
           <View style={styles.placeholder} />
         </View>
@@ -327,15 +325,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
-  backButton: {
+  backButtonInner: {
     width: 48,
     height: 48,
-    borderRadius: 24,
-    overflow: 'hidden',
-  },
-  backButtonInner: {
-    width: '100%',
-    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#1a1a1a',
@@ -382,7 +374,7 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 40,
     borderWidth: 3,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    borderColor: 'rgba(255, 255, 255, 0.5)',
   },
   cameraOverlay: {
     position: 'absolute',
@@ -406,7 +398,7 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontFamily: 'Archivo-Bold',
     color: '#ffffff',
-    letterSpacing: -0.5,
+    letterSpacing: -1,
   },
   verifiedBadge: {
     width: 24,
@@ -449,10 +441,10 @@ const styles = StyleSheet.create({
     gap: 14,
   },
   sectionTitle: {
-    fontSize: 19.5,
+    fontSize: 20,
     fontFamily: 'Archivo-Bold',
     color: '#ffffff',
-    letterSpacing: -0.3,
+    letterSpacing: -0.4,
   },
   platformsGrid: {
     flexDirection: 'row',
@@ -466,19 +458,12 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     padding: 16,
     gap: 12,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
-    elevation: 3,
   },
   platformCardInactive: {
     borderRadius: 24,
     padding: 16,
     gap: 12,
-    backgroundColor: 'rgba(255, 255, 255, 0.08)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.12)',
+    backgroundColor: '#1a1a1a',
   },
   platformHeader: {
     flexDirection: 'row',
@@ -549,11 +534,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 16,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
-    elevation: 3,
   },
   settingIconWrapper: {
     width: 40,
@@ -581,11 +561,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 12,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 6,
   },
   signOutText: {
     fontSize: 18,
