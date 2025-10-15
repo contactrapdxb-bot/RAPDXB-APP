@@ -271,13 +271,11 @@ export default function PostScreen() {
       >
         <View style={styles.header}>
           <TouchableOpacity
-            style={styles.backButton}
+            style={styles.backButtonGradient}
             onPress={handleBack}
             activeOpacity={0.6}
           >
-            <View style={styles.backButtonGradient}>
-              <ArrowLeft color="#ffffff" size={22} strokeWidth={2} />
-            </View>
+            <ArrowLeft color="#ffffff" size={18} strokeWidth={1.5} />
           </TouchableOpacity>
           <View style={styles.placeholder} />
         </View>
@@ -314,7 +312,7 @@ export default function PostScreen() {
               onPress={() => handleToggle('post')}
               activeOpacity={0.8}
             >
-              <ImageIcon color={contentType === 'post' ? '#fbbf24' : 'rgba(0, 0, 0, 0.4)'} size={18} strokeWidth={3} />
+              <ImageIcon color={contentType === 'post' ? '#fbbf24' : 'rgba(255, 255, 255, 0.4)'} size={18} strokeWidth={2.5} />
               <Text style={[styles.toggleText, contentType === 'post' && styles.toggleTextActivePost]}>
                 Post
               </Text>
@@ -324,7 +322,7 @@ export default function PostScreen() {
               onPress={() => handleToggle('reel')}
               activeOpacity={0.8}
             >
-              <Video color={contentType === 'reel' ? '#60a5fa' : 'rgba(0, 0, 0, 0.4)'} size={18} strokeWidth={3} />
+              <Video color={contentType === 'reel' ? '#60a5fa' : 'rgba(255, 255, 255, 0.4)'} size={18} strokeWidth={2.5} />
               <Text style={[styles.toggleText, contentType === 'reel' && styles.toggleTextActiveReel]}>
                 Reel
               </Text>
@@ -663,21 +661,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
-  backButton: {
+  backButtonGradient: {
     width: 48,
     height: 48,
-    borderRadius: 24,
-    overflow: 'hidden',
-  },
-  backButtonGradient: {
-    width: '100%',
-    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
     borderRadius: 24,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: '#1a1a1a',
   },
   placeholder: {
     width: 48,
@@ -710,15 +700,8 @@ const styles = StyleSheet.create({
     borderRadius: 24,
     padding: 4,
     position: 'relative',
-    borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
     overflow: 'hidden',
-    shadowColor: '#ffffff',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.2,
-    shadowRadius: 16,
-    elevation: 8,
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    backgroundColor: '#1a1a1a',
   },
   toggleSlider: {
     position: 'absolute',
@@ -746,19 +729,16 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   toggleText: {
-    color: 'rgba(0, 0, 0, 0.4)',
+    color: 'rgba(255, 255, 255, 0.4)',
     fontSize: 16,
     fontFamily: 'Archivo-Bold',
-    fontWeight: '700',
     letterSpacing: -0.4,
   },
   toggleTextActivePost: {
     color: '#fbbf24',
-    fontWeight: '1400',
   },
   toggleTextActiveReel: {
     color: '#60a5fa',
-    fontWeight: '1400',
   },
   inputSection: {
     gap: 20,
@@ -767,39 +747,19 @@ const styles = StyleSheet.create({
     borderRadius: 32,
     padding: 24,
     gap: 24,
-    shadowColor: '#60a5fa',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.4,
-    shadowRadius: 20,
-    elevation: 10,
   },
   uploadCard: {
     borderRadius: 32,
     padding: 24,
     gap: 20,
-    shadowColor: '#fbbf24',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.4,
-    shadowRadius: 20,
-    elevation: 10,
   },
   tagsCard: {
     borderRadius: 32,
     padding: 24,
-    shadowColor: '#a3e635',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.4,
-    shadowRadius: 20,
-    elevation: 10,
   },
   scheduleCard: {
     borderRadius: 32,
     padding: 24,
-    shadowColor: '#fb923c',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.4,
-    shadowRadius: 20,
-    elevation: 10,
   },
   inputGroup: {
     gap: 14,
@@ -876,15 +836,15 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
   },
   uploadButton: {
-    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
     borderRadius: 20,
     paddingVertical: 18,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.35)',
   },
   uploadButtonText: {
     color: '#000000',
@@ -925,10 +885,10 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   glassInputWrapperDark: {
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
     borderRadius: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(0, 0, 0, 0.15)',
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.35)',
   },
   inputDark: {
     paddingHorizontal: 20,
@@ -938,15 +898,15 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter-Regular',
   },
   scheduleButtonDark: {
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
     flexDirection: 'row',
     alignItems: 'center',
     gap: 14,
     borderRadius: 20,
     paddingHorizontal: 20,
     paddingVertical: 18,
-    borderWidth: 1,
-    borderColor: 'rgba(0, 0, 0, 0.15)',
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.35)',
   },
   scheduleButtonTextDark: {
     color: 'rgba(0, 0, 0, 0.8)',
@@ -966,10 +926,10 @@ const styles = StyleSheet.create({
   },
   glassTagInputDark: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.1)',
+    backgroundColor: 'rgba(255, 255, 255, 0.25)',
     borderRadius: 20,
-    borderWidth: 1,
-    borderColor: 'rgba(0, 0, 0, 0.15)',
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.35)',
     flexDirection: 'row',
     alignItems: 'center',
   },
@@ -1016,14 +976,14 @@ const styles = StyleSheet.create({
     letterSpacing: -0.3,
   },
   addTagButtonDark: {
-    backgroundColor: 'rgba(0, 0, 0, 0.15)',
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
     borderRadius: 20,
     paddingHorizontal: 32,
     paddingVertical: 18,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(0, 0, 0, 0.2)',
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.4)',
   },
   addTagButtonTextDark: {
     color: '#000000',
@@ -1175,11 +1135,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 32,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.4,
-    shadowRadius: 20,
-    elevation: 10,
   },
   uploadedImageContainer: {
     position: 'relative',
@@ -1188,7 +1143,7 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     overflow: 'hidden',
     borderWidth: 2,
-    borderColor: 'rgba(255, 255, 255, 0.3)',
+    borderColor: 'rgba(255, 255, 255, 0.5)',
   },
   uploadedImage: {
     width: '100%',
@@ -1252,10 +1207,9 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   createButtonText: {
-    color: '#000000',
+    color: '#ffffff',
     fontSize: 19,
     fontFamily: 'Archivo-Bold',
-    fontWeight: '1400',
     letterSpacing: -0.4,
   },
 });
