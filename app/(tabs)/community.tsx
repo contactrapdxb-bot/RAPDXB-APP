@@ -193,6 +193,7 @@ export default function CommunityScreen() {
     if (Platform.OS !== 'web') {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     }
+    fetchPosts();
     setShowPostModal(true);
   };
 
@@ -582,6 +583,12 @@ export default function CommunityScreen() {
                   <Text style={styles.emptyStateEmoji}>📭</Text>
                   <Text style={styles.emptyStateTitle}>No Posts Yet</Text>
                   <Text style={styles.emptyStateText}>Create some posts first to select them here</Text>
+                  <TouchableOpacity
+                    onPress={fetchPosts}
+                    style={styles.retryButton}
+                  >
+                    <Text style={styles.retryButtonText}>Retry</Text>
+                  </TouchableOpacity>
                 </View>
               ) : (
                 posts.map((post) => {
@@ -1195,6 +1202,19 @@ const styles = StyleSheet.create({
     fontFamily: 'Inter-Regular',
     textAlign: 'center',
     paddingHorizontal: 40,
+  },
+  retryButton: {
+    marginTop: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 32,
+    backgroundColor: '#60a5fa',
+    borderRadius: 20,
+  },
+  retryButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.3,
   },
   postCard: {
     borderRadius: 20,
