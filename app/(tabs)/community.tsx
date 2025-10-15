@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, TextInp
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ArrowLeft, Upload, Calendar, X, Mail, MessageSquare, Check } from 'lucide-react-native';
+import { ArrowLeft, Upload, Calendar, X, Mail, MessageSquare, Check, Plus, Globe } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 import { useState, useRef, useEffect } from 'react';
 import * as ImagePicker from 'expo-image-picker';
@@ -539,64 +539,97 @@ export default function CommunityScreen() {
         onRequestClose={() => setShowPostModal(false)}
       >
         <View style={styles.modalOverlay}>
-          <View style={styles.modalContainer}>
+          <View style={[styles.modalContainer, { paddingTop: insets.top + 16 }]}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Select Posts (Max 3)</Text>
-              <TouchableOpacity onPress={() => setShowPostModal(false)}>
-                <X color="#000000" size={24} strokeWidth={2} />
+              <View>
+                <Text style={styles.modalTitle}>Select From</Text>
+                <Text style={styles.modalSubtitle}>Your Posts</Text>
+              </View>
+              <TouchableOpacity
+                onPress={() => setShowPostModal(false)}
+                activeOpacity={0.6}
+                style={styles.closeButton}
+              >
+                <X color="#ffffff" size={20} strokeWidth={2} />
               </TouchableOpacity>
             </View>
-            <ScrollView style={styles.modalScroll} showsVerticalScrollIndicator={false}>
-              <View style={styles.postsGrid}>
-                {posts.map((post) => {
-                  const isSelected = selectedPosts.find(p => p.id === post.id);
-                  return (
-                    <TouchableOpacity
-                      key={post.id}
-                      onPress={() => handlePostToggle(post)}
-                      activeOpacity={0.8}
-                      disabled={!isSelected && selectedPosts.length >= 3}
-                    >
-                      <View style={[
-                        styles.postCard,
-                        isSelected && styles.postCardSelected,
-                        !isSelected && selectedPosts.length >= 3 && styles.postCardDisabled
-                      ]}>
-                        {post.thumbnail_url ? (
-                          <Image source={{ uri: post.thumbnail_url }} style={styles.postCardImage} />
-                        ) : (
-                          <View style={styles.postCardImagePlaceholder}>
-                            <Text style={styles.postCardImagePlaceholderText}>📄</Text>
-                          </View>
-                        )}
-                        {isSelected && (
-                          <View style={styles.postCardCheck}>
-                            <Check color="#ffffff" size={20} strokeWidth={3} />
-                          </View>
-                        )}
-                        <View style={styles.postCardContent}>
-                          <Text style={styles.postCardTitle} numberOfLines={2}>{post.title}</Text>
-                          <Text style={styles.postCardCaption} numberOfLines={1}>{post.caption}</Text>
+
+            <View style={styles.selectCountBadge}>
+              <LinearGradient
+                colors={['#60a5fa', '#3b82f6']}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.selectCountBadgeInner}
+              >
+                <Text style={styles.selectCountText}>{selectedPosts.length} / 3 Selected</Text>
+              </LinearGradient>
+            </View>
+
+            <ScrollView
+              style={styles.modalScroll}
+              contentContainerStyle={[styles.modalScrollContent, { paddingBottom: insets.bottom + 100 }]}
+              showsVerticalScrollIndicator={false}
+            >
+              {posts.map((post) => {
+                const isSelected = selectedPosts.find(p => p.id === post.id);
+                return (
+                  <TouchableOpacity
+                    key={post.id}
+                    onPress={() => handlePostToggle(post)}
+                    activeOpacity={0.7}
+                    disabled={!isSelected && selectedPosts.length >= 3}
+                    style={[styles.postCard, isSelected && styles.postCardSelected]}
+                  >
+                    <View style={styles.postCardImageContainer}>
+                      {post.thumbnail_url ? (
+                        <Image source={{ uri: post.thumbnail_url }} style={styles.postCardImage} />
+                      ) : (
+                        <View style={styles.postCardImagePlaceholder}>
+                          <Text style={styles.postCardImagePlaceholderText}>📄</Text>
                         </View>
-                      </View>
-                    </TouchableOpacity>
-                  );
-                })}
-              </View>
+                      )}
+                      {isSelected && (
+                        <>
+                          <View style={styles.selectedOverlay}>
+                            <LinearGradient
+                              colors={['rgba(96, 165, 250, 0.7)', 'rgba(59, 130, 246, 0.7)']}
+                              start={{ x: 0, y: 0 }}
+                              end={{ x: 1, y: 1 }}
+                              style={StyleSheet.absoluteFill}
+                            />
+                          </View>
+                          <View style={styles.postCardCheck}>
+                            <Check color="#ffffff" size={18} strokeWidth={3} />
+                          </View>
+                        </>
+                      )}
+                    </View>
+                    <View style={styles.postCardContent}>
+                      <Text style={styles.postCardTitle} numberOfLines={2}>{post.title}</Text>
+                      <Text style={styles.postCardCaption} numberOfLines={1}>{post.caption || 'No caption'}</Text>
+                    </View>
+                  </TouchableOpacity>
+                );
+              })}
             </ScrollView>
-            <View style={styles.modalFooter}>
+
+            <View style={[styles.modalFooter, { paddingBottom: insets.bottom + 20 }]}>
               <TouchableOpacity
-                style={styles.modalConfirmButton}
+                style={[styles.modalConfirmButton, selectedPosts.length === 0 && styles.modalConfirmButtonDisabled]}
                 onPress={handleConfirmSelection}
                 activeOpacity={0.8}
+                disabled={selectedPosts.length === 0}
               >
                 <LinearGradient
-                  colors={['#8b5cf6', '#7c3aed']}
+                  colors={selectedPosts.length === 0 ? ['#1a1a1a', '#1a1a1a'] : ['#60a5fa', '#3b82f6']}
                   start={{ x: 0, y: 0 }}
                   end={{ x: 1, y: 1 }}
                   style={styles.modalConfirmButtonInner}
                 >
-                  <Text style={styles.modalConfirmButtonText}>Confirm ({selectedPosts.length})</Text>
+                  <Check color="#ffffff" size={20} strokeWidth={2.5} />
+                  <Text style={styles.modalConfirmButtonText}>
+                    {selectedPosts.length === 0 ? 'Select Posts' : `Confirm ${selectedPosts.length} Post${selectedPosts.length !== 1 ? 's' : ''}`}
+                  </Text>
                 </LinearGradient>
               </TouchableOpacity>
             </View>
@@ -1052,111 +1085,154 @@ const styles = StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.7)',
-    justifyContent: 'flex-end',
+    backgroundColor: 'rgba(0, 0, 0, 0.98)',
   },
   modalContainer: {
-    backgroundColor: '#ffffff',
-    borderTopLeftRadius: 32,
-    borderTopRightRadius: 32,
-    height: '80%',
+    flex: 1,
+    backgroundColor: '#000000',
   },
   modalHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 24,
-    paddingVertical: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0, 0, 0, 0.1)',
+    alignItems: 'flex-start',
+    paddingHorizontal: 20,
+    paddingBottom: 16,
   },
   modalTitle: {
-    color: '#000000',
-    fontSize: 20,
+    color: '#ffffff',
+    fontSize: 32,
+    fontFamily: 'Inter-Thin',
+    letterSpacing: -1,
+    lineHeight: 36,
+  },
+  modalSubtitle: {
+    color: '#60a5fa',
+    fontSize: 32,
     fontFamily: 'Archivo-Bold',
-    letterSpacing: -0.5,
+    letterSpacing: -1,
+    lineHeight: 36,
+    marginTop: -4,
+  },
+  closeButton: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#1a1a1a',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  selectCountBadge: {
+    marginHorizontal: 20,
+    marginBottom: 20,
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  selectCountBadgeInner: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+  },
+  selectCountText: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.2,
   },
   modalScroll: {
     flex: 1,
   },
-  postsGrid: {
-    padding: 16,
+  modalScrollContent: {
+    padding: 20,
     gap: 16,
   },
   postCard: {
-    borderRadius: 16,
-    backgroundColor: 'rgba(0, 0, 0, 0.04)',
-    borderWidth: 2,
-    borderColor: 'rgba(0, 0, 0, 0.08)',
+    borderRadius: 20,
     overflow: 'hidden',
-    position: 'relative',
+    backgroundColor: '#1a1a1a',
   },
   postCardSelected: {
-    borderColor: '#8b5cf6',
-    backgroundColor: 'rgba(139, 92, 246, 0.1)',
+    backgroundColor: '#1a1a1a',
   },
-  postCardDisabled: {
-    opacity: 0.4,
+  postCardImageContainer: {
+    width: '100%',
+    height: 200,
+    position: 'relative',
   },
   postCardImage: {
     width: '100%',
-    height: 180,
+    height: '100%',
   },
   postCardImagePlaceholder: {
     width: '100%',
-    height: 180,
-    backgroundColor: 'rgba(0, 0, 0, 0.08)',
+    height: '100%',
+    backgroundColor: '#2a2a2a',
     justifyContent: 'center',
     alignItems: 'center',
   },
   postCardImagePlaceholderText: {
     fontSize: 64,
   },
+  selectedOverlay: {
+    ...StyleSheet.absoluteFillObject,
+  },
   postCardCheck: {
     position: 'absolute',
-    top: 12,
-    right: 12,
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#8b5cf6',
+    top: 16,
+    right: 16,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#60a5fa',
     justifyContent: 'center',
     alignItems: 'center',
   },
   postCardContent: {
     padding: 16,
-    gap: 4,
+    gap: 8,
   },
   postCardTitle: {
-    color: '#000000',
+    color: '#ffffff',
     fontSize: 16,
     fontFamily: 'Archivo-Bold',
-    letterSpacing: -0.3,
+    letterSpacing: -0.4,
+    lineHeight: 22,
   },
   postCardCaption: {
-    color: 'rgba(0, 0, 0, 0.6)',
+    color: 'rgba(255, 255, 255, 0.5)',
     fontSize: 13,
     fontFamily: 'Inter-Regular',
+    letterSpacing: 0.2,
   },
   modalFooter: {
-    padding: 16,
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingHorizontal: 20,
+    paddingTop: 16,
+    backgroundColor: '#000000',
     borderTopWidth: 1,
-    borderTopColor: 'rgba(0, 0, 0, 0.1)',
+    borderTopColor: 'rgba(255, 255, 255, 0.1)',
   },
   modalConfirmButton: {
     borderRadius: 24,
     overflow: 'hidden',
   },
+  modalConfirmButtonDisabled: {
+    opacity: 0.5,
+  },
   modalConfirmButtonInner: {
     paddingVertical: 18,
     alignItems: 'center',
     justifyContent: 'center',
+    flexDirection: 'row',
+    gap: 10,
   },
   modalConfirmButtonText: {
     color: '#ffffff',
     fontSize: 17,
     fontFamily: 'Archivo-Bold',
-    letterSpacing: -0.4,
+    letterSpacing: -0.3,
   },
   dateModalContainer: {
     flex: 1,
