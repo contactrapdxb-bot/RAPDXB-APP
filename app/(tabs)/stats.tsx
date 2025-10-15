@@ -107,13 +107,11 @@ export default function StatsScreen() {
       >
         <View style={styles.header}>
           <TouchableOpacity
-            style={styles.backButton}
+            style={styles.backButtonGradient}
             onPress={handleBack}
             activeOpacity={0.6}
           >
-            <View style={styles.backButtonGradient}>
-              <ArrowLeft color="#ffffff" size={22} strokeWidth={2} />
-            </View>
+            <ArrowLeft color="#ffffff" size={18} strokeWidth={1.5} />
           </TouchableOpacity>
           <View style={styles.placeholder} />
         </View>
@@ -314,7 +312,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
   },
   header: {
     flexDirection: 'row',
@@ -322,21 +320,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginBottom: 20,
   },
-  backButton: {
+  backButtonGradient: {
     width: 48,
     height: 48,
-    borderRadius: 24,
-    overflow: 'hidden',
-  },
-  backButtonGradient: {
-    width: '100%',
-    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
     borderRadius: 24,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: '#1a1a1a',
   },
   placeholder: {
     width: 48,
@@ -368,11 +358,9 @@ const styles = StyleSheet.create({
   },
   metricCard: {
     flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    backgroundColor: '#1a1a1a',
     borderRadius: 16,
     padding: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.06)',
     gap: 8,
   },
   metricIconContainer: {
@@ -386,15 +374,15 @@ const styles = StyleSheet.create({
   },
   metricValue: {
     color: '#ffffff',
-    fontSize: 24,
-    fontFamily: 'Archivo-Bold',
-    letterSpacing: -0.5,
+    fontSize: 28,
+    fontFamily: 'Inter-SemiBold',
+    letterSpacing: -1,
   },
   metricLabel: {
     color: 'rgba(255, 255, 255, 0.5)',
-    fontSize: 11,
+    fontSize: 12,
     fontFamily: 'Inter-Regular',
-    letterSpacing: 0.3,
+    letterSpacing: 0.2,
   },
   metricChange: {
     flexDirection: 'row',
@@ -412,17 +400,15 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     color: '#ffffff',
-    fontSize: 18,
+    fontSize: 20,
     fontFamily: 'Archivo-Bold',
-    letterSpacing: -0.5,
+    letterSpacing: -0.4,
     marginBottom: 16,
   },
   chartCard: {
-    backgroundColor: 'rgba(255, 255, 255, 0.03)',
+    backgroundColor: '#1a1a1a',
     borderRadius: 20,
     padding: 24,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.06)',
   },
   chartContainer: {
     flexDirection: 'row',
@@ -440,21 +426,23 @@ const styles = StyleSheet.create({
   chartBarContainer: {
     width: '100%',
     flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
     borderRadius: 8,
     overflow: 'hidden',
     justifyContent: 'flex-end',
     marginBottom: 8,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.12)',
   },
   chartBar: {
     width: '100%',
     borderRadius: 8,
   },
   chartLabel: {
-    color: 'rgba(255, 255, 255, 0.4)',
-    fontSize: 11,
-    fontFamily: 'Inter-Regular',
-    letterSpacing: 0.3,
+    color: 'rgba(255, 255, 255, 0.7)',
+    fontSize: 9,
+    fontFamily: 'Inter-SemiBold',
+    letterSpacing: 0.2,
   },
   platformSection: {
     marginBottom: 32,
@@ -465,9 +453,7 @@ const styles = StyleSheet.create({
   platformCardInner: {
     borderRadius: 24,
     overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
-    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    backgroundColor: '#1a1a1a',
   },
   platformGradient: {
     padding: 20,
@@ -511,9 +497,9 @@ const styles = StyleSheet.create({
   },
   platformName: {
     color: '#ffffff',
-    fontSize: 18,
+    fontSize: 17,
     fontFamily: 'Archivo-Bold',
-    letterSpacing: -0.4,
+    letterSpacing: -0.3,
   },
   growthBadge: {
     flexDirection: 'row',
@@ -591,12 +577,10 @@ const styles = StyleSheet.create({
   detailItem: {
     flex: 1,
     minWidth: '45%',
-    backgroundColor: 'rgba(0, 0, 0, 0.2)',
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
     padding: 16,
     borderRadius: 16,
     gap: 10,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.06)',
   },
   detailHeader: {
     flexDirection: 'row',
@@ -612,8 +596,8 @@ const styles = StyleSheet.create({
   },
   detailValue: {
     color: '#ffffff',
-    fontSize: 22,
-    fontFamily: 'Archivo-Bold',
+    fontSize: 20,
+    fontFamily: 'Inter-SemiBold',
     letterSpacing: -0.5,
   },
   detailLabel: {
