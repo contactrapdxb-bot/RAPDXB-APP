@@ -50,13 +50,20 @@ export default function CommunityScreen() {
   };
 
   const fetchPosts = async () => {
-    const { data, error } = await supabase
-      .from('posts')
-      .select('*')
-      .order('created_at', { ascending: false });
+    try {
+      const { data, error } = await supabase
+        .from('posts')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-    if (data && !error) {
-      setPosts(data);
+      if (error) {
+        console.error('Error fetching posts:', error);
+      } else if (data) {
+        console.log('Fetched posts:', data.length);
+        setPosts(data);
+      }
+    } catch (err) {
+      console.error('Exception fetching posts:', err);
     }
   };
 
@@ -570,47 +577,55 @@ export default function CommunityScreen() {
               contentContainerStyle={[styles.modalScrollContent, { paddingBottom: insets.bottom + 100 }]}
               showsVerticalScrollIndicator={false}
             >
-              {posts.map((post) => {
-                const isSelected = selectedPosts.find(p => p.id === post.id);
-                return (
-                  <TouchableOpacity
-                    key={post.id}
-                    onPress={() => handlePostToggle(post)}
-                    activeOpacity={0.7}
-                    disabled={!isSelected && selectedPosts.length >= 3}
-                    style={[styles.postCard, isSelected && styles.postCardSelected]}
-                  >
-                    <View style={styles.postCardImageContainer}>
-                      {post.thumbnail_url ? (
-                        <Image source={{ uri: post.thumbnail_url }} style={styles.postCardImage} />
-                      ) : (
-                        <View style={styles.postCardImagePlaceholder}>
-                          <Text style={styles.postCardImagePlaceholderText}>📄</Text>
-                        </View>
-                      )}
-                      {isSelected && (
-                        <>
-                          <View style={styles.selectedOverlay}>
-                            <LinearGradient
-                              colors={['rgba(96, 165, 250, 0.7)', 'rgba(59, 130, 246, 0.7)']}
-                              start={{ x: 0, y: 0 }}
-                              end={{ x: 1, y: 1 }}
-                              style={StyleSheet.absoluteFill}
-                            />
+              {posts.length === 0 ? (
+                <View style={styles.emptyState}>
+                  <Text style={styles.emptyStateEmoji}>📭</Text>
+                  <Text style={styles.emptyStateTitle}>No Posts Yet</Text>
+                  <Text style={styles.emptyStateText}>Create some posts first to select them here</Text>
+                </View>
+              ) : (
+                posts.map((post) => {
+                  const isSelected = selectedPosts.find(p => p.id === post.id);
+                  return (
+                    <TouchableOpacity
+                      key={post.id}
+                      onPress={() => handlePostToggle(post)}
+                      activeOpacity={0.7}
+                      disabled={!isSelected && selectedPosts.length >= 3}
+                      style={[styles.postCard, isSelected && styles.postCardSelected]}
+                    >
+                      <View style={styles.postCardImageContainer}>
+                        {post.thumbnail_url ? (
+                          <Image source={{ uri: post.thumbnail_url }} style={styles.postCardImage} />
+                        ) : (
+                          <View style={styles.postCardImagePlaceholder}>
+                            <Text style={styles.postCardImagePlaceholderText}>📄</Text>
                           </View>
-                          <View style={styles.postCardCheck}>
-                            <Check color="#ffffff" size={18} strokeWidth={3} />
-                          </View>
-                        </>
-                      )}
-                    </View>
-                    <View style={styles.postCardContent}>
-                      <Text style={styles.postCardTitle} numberOfLines={2}>{post.title}</Text>
-                      <Text style={styles.postCardCaption} numberOfLines={1}>{post.caption || 'No caption'}</Text>
-                    </View>
-                  </TouchableOpacity>
-                );
-              })}
+                        )}
+                        {isSelected && (
+                          <>
+                            <View style={styles.selectedOverlay}>
+                              <LinearGradient
+                                colors={['rgba(96, 165, 250, 0.7)', 'rgba(59, 130, 246, 0.7)']}
+                                start={{ x: 0, y: 0 }}
+                                end={{ x: 1, y: 1 }}
+                                style={StyleSheet.absoluteFill}
+                              />
+                            </View>
+                            <View style={styles.postCardCheck}>
+                              <Check color="#ffffff" size={18} strokeWidth={3} />
+                            </View>
+                          </>
+                        )}
+                      </View>
+                      <View style={styles.postCardContent}>
+                        <Text style={styles.postCardTitle} numberOfLines={2}>{post.title}</Text>
+                        <Text style={styles.postCardCaption} numberOfLines={1}>{post.caption || 'No caption'}</Text>
+                      </View>
+                    </TouchableOpacity>
+                  );
+                })
+              )}
             </ScrollView>
 
             <View style={[styles.modalFooter, { paddingBottom: insets.bottom + 20 }]}>
@@ -1155,6 +1170,31 @@ const styles = StyleSheet.create({
   modalScrollContent: {
     padding: 20,
     gap: 16,
+    flexGrow: 1,
+  },
+  emptyState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 80,
+    gap: 16,
+  },
+  emptyStateEmoji: {
+    fontSize: 64,
+    marginBottom: 8,
+  },
+  emptyStateTitle: {
+    color: '#ffffff',
+    fontSize: 22,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.5,
+  },
+  emptyStateText: {
+    color: 'rgba(255, 255, 255, 0.6)',
+    fontSize: 15,
+    fontFamily: 'Inter-Regular',
+    textAlign: 'center',
+    paddingHorizontal: 40,
   },
   postCard: {
     borderRadius: 20,
