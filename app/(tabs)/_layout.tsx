@@ -129,12 +129,12 @@ export default function TabLayout() {
   const pathname = usePathname();
   const translateX = useSharedValue(0);
 
-  const tabs = ['index', 'feed', 'post', 'stats', 'settings'];
+  const tabs = ['community', 'feed', 'post', 'stats', 'settings'];
   let currentIndex = -1;
 
   const isOnHome = pathname === '/' || pathname === '/(tabs)' || pathname === '/(tabs)/' || pathname.includes('/home');
 
-  if (pathname.includes('/index') && !pathname.includes('/home')) {
+  if (pathname.includes('/community')) {
     currentIndex = 0;
   } else if (pathname.includes('/feed')) {
     currentIndex = 1;
@@ -228,7 +228,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="index"
+        name="community"
         options={{
           tabBarIcon: ({ focused }) => <CommunicationIcon focused={!isOnHome && focused} />,
         }}
@@ -259,7 +259,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="community"
+        name="index"
         options={{
           href: null,
         }}
