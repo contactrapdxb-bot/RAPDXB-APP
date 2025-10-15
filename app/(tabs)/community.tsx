@@ -18,8 +18,9 @@ interface Post {
   id: string;
   title: string;
   caption: string;
-  media_url: string;
+  media_url?: string;
   thumbnail_url: string;
+  created_at: string;
 }
 
 export default function CommunityScreen() {
@@ -63,44 +64,44 @@ export default function CommunityScreen() {
           {
             id: '1',
             title: 'Tech Innovation 2025',
-            caption: 'Exploring the future of artificial intelligence and machine learning in business',
+            caption: 'Exploring the future of artificial intelligence and machine learning in business applications',
             thumbnail_url: 'https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=2',
-            created_at: new Date().toISOString(),
+            created_at: new Date(Date.now() - 3600000).toISOString(),
           },
           {
             id: '2',
             title: 'Digital Marketing Trends',
-            caption: 'How social media is changing the way we connect with customers',
+            caption: 'How social media is changing the way we connect with customers and build communities',
             thumbnail_url: 'https://images.pexels.com/photos/267389/pexels-photo-267389.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=2',
-            created_at: new Date().toISOString(),
+            created_at: new Date(Date.now() - 7200000).toISOString(),
           },
           {
             id: '3',
             title: 'Startup Success Stories',
-            caption: 'Learn from entrepreneurs who built million-dollar companies from scratch',
+            caption: 'Learn from entrepreneurs who built million-dollar companies from scratch in record time',
             thumbnail_url: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=2',
-            created_at: new Date().toISOString(),
+            created_at: new Date(Date.now() - 10800000).toISOString(),
           },
           {
             id: '4',
             title: 'Remote Work Revolution',
-            caption: 'Best practices for managing distributed teams in 2025',
+            caption: 'Best practices for managing distributed teams in 2025 and beyond',
             thumbnail_url: 'https://images.pexels.com/photos/4226140/pexels-photo-4226140.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=2',
-            created_at: new Date().toISOString(),
+            created_at: new Date(Date.now() - 14400000).toISOString(),
           },
           {
             id: '5',
             title: 'Sustainable Business',
-            caption: 'How companies are going green while increasing profits',
+            caption: 'How companies are going green while increasing profits and customer satisfaction',
             thumbnail_url: 'https://images.pexels.com/photos/3861458/pexels-photo-3861458.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=2',
-            created_at: new Date().toISOString(),
+            created_at: new Date(Date.now() - 18000000).toISOString(),
           },
           {
             id: '6',
             title: 'Customer Experience Design',
-            caption: 'Creating seamless user journeys that delight and convert',
+            caption: 'Creating seamless user journeys that delight and convert visitors into customers',
             thumbnail_url: 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=2',
-            created_at: new Date().toISOString(),
+            created_at: new Date(Date.now() - 21600000).toISOString(),
           },
         ]);
       } else if (data) {
@@ -306,6 +307,23 @@ export default function CommunityScreen() {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
     }
     setShowPostModal(false);
+  };
+
+  const getTimeAgo = (dateString: string) => {
+    const now = new Date();
+    const past = new Date(dateString);
+    const diffInMs = now.getTime() - past.getTime();
+    const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
+
+    if (diffInHours < 1) {
+      const diffInMins = Math.floor(diffInMs / (1000 * 60));
+      return `${diffInMins}m ago`;
+    } else if (diffInHours < 24) {
+      return `${diffInHours}h ago`;
+    } else {
+      const diffInDays = Math.floor(diffInHours / 24);
+      return `${diffInDays}d ago`;
+    }
   };
 
   const handleRemoveSelectedPost = (postId: string) => {
@@ -689,36 +707,61 @@ export default function CommunityScreen() {
                       onPress={() => handlePostToggle(post)}
                       activeOpacity={0.7}
                       disabled={!isSelected && selectedPosts.length >= 3}
-                      style={[styles.postCard, isSelected && styles.postCardSelected]}
+                      style={styles.postCard}
                     >
-                      <View style={styles.postCardImageContainer}>
-                        {post.thumbnail_url ? (
-                          <Image source={{ uri: post.thumbnail_url }} style={styles.postCardImage} />
-                        ) : (
-                          <View style={styles.postCardImagePlaceholder}>
-                            <Text style={styles.postCardImagePlaceholderText}>📄</Text>
+                      <LinearGradient
+                        colors={isSelected ? ['rgba(96, 165, 250, 0.2)', 'rgba(59, 130, 246, 0.2)'] : ['rgba(255, 255, 255, 0.06)', 'rgba(255, 255, 255, 0.02)']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 1 }}
+                        style={styles.postCardInner}
+                      >
+                        <View style={styles.postCardHeader}>
+                          <View style={styles.postCardPlatformBadge}>
+                            <Image
+                              source={{ uri: 'https://i.imgur.com/vkcuEzE.png' }}
+                              style={styles.postCardPlatformIcon}
+                            />
                           </View>
-                        )}
-                        {isSelected && (
-                          <>
-                            <View style={styles.selectedOverlay}>
-                              <LinearGradient
-                                colors={['rgba(96, 165, 250, 0.7)', 'rgba(59, 130, 246, 0.7)']}
-                                start={{ x: 0, y: 0 }}
-                                end={{ x: 1, y: 1 }}
-                                style={StyleSheet.absoluteFill}
-                              />
+                          <Text style={styles.postCardTimeAgo}>{getTimeAgo(post.created_at)}</Text>
+                        </View>
+
+                        <View style={styles.postCardImageContainer}>
+                          {post.thumbnail_url ? (
+                            <Image source={{ uri: post.thumbnail_url }} style={styles.postCardImage} />
+                          ) : (
+                            <View style={styles.postCardImagePlaceholder}>
+                              <Text style={styles.postCardImagePlaceholderText}>📄</Text>
                             </View>
-                            <View style={styles.postCardCheck}>
-                              <Check color="#ffffff" size={18} strokeWidth={3} />
+                          )}
+                          {isSelected && (
+                            <>
+                              <View style={styles.selectedOverlay}>
+                                <LinearGradient
+                                  colors={['rgba(96, 165, 250, 0.6)', 'rgba(59, 130, 246, 0.6)']}
+                                  start={{ x: 0, y: 0 }}
+                                  end={{ x: 1, y: 1 }}
+                                  style={StyleSheet.absoluteFill}
+                                />
+                              </View>
+                              <View style={styles.postCardCheck}>
+                                <Check color="#ffffff" size={18} strokeWidth={3} />
+                              </View>
+                            </>
+                          )}
+                        </View>
+
+                        <View style={styles.postCardContent}>
+                          <Text style={styles.postCardTitle} numberOfLines={2}>{post.title}</Text>
+                          <Text style={styles.postCardCaption} numberOfLines={2}>{post.caption || 'No caption'}</Text>
+
+                          <View style={styles.postCardFooter}>
+                            <View style={styles.postCardPlatformTag}>
+                              <View style={[styles.platformDot, { backgroundColor: '#E1306C' }]} />
+                              <Text style={styles.postCardPlatformText}>Instagram</Text>
                             </View>
-                          </>
-                        )}
-                      </View>
-                      <View style={styles.postCardContent}>
-                        <Text style={styles.postCardTitle} numberOfLines={2}>{post.title}</Text>
-                        <Text style={styles.postCardCaption} numberOfLines={1}>{post.caption || 'No caption'}</Text>
-                      </View>
+                          </View>
+                        </View>
+                      </LinearGradient>
                     </TouchableOpacity>
                   );
                 })
@@ -1307,17 +1350,48 @@ const styles = StyleSheet.create({
     letterSpacing: -0.3,
   },
   postCard: {
-    borderRadius: 20,
+    borderRadius: 18,
     overflow: 'hidden',
     backgroundColor: '#1a1a1a',
+    marginBottom: 16,
   },
-  postCardSelected: {
-    backgroundColor: '#1a1a1a',
+  postCardInner: {
+    padding: 14,
+    gap: 10,
+  },
+  postCardHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
+    marginBottom: 6,
+  },
+  postCardPlatformBadge: {
+    width: 28,
+    height: 28,
+    borderRadius: 8,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  postCardPlatformIcon: {
+    width: 18,
+    height: 18,
+    borderRadius: 5,
+  },
+  postCardTimeAgo: {
+    color: 'rgba(255, 255, 255, 0.4)',
+    fontSize: 11,
+    fontFamily: 'Inter-Regular',
+    letterSpacing: 0.2,
   },
   postCardImageContainer: {
     width: '100%',
-    height: 200,
+    height: 120,
     position: 'relative',
+    borderRadius: 12,
+    overflow: 'hidden',
   },
   postCardImage: {
     width: '100%',
@@ -1331,37 +1405,61 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   postCardImagePlaceholderText: {
-    fontSize: 64,
+    fontSize: 48,
   },
   selectedOverlay: {
     ...StyleSheet.absoluteFillObject,
   },
   postCardCheck: {
     position: 'absolute',
-    top: 16,
-    right: 16,
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    top: 10,
+    right: 10,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     backgroundColor: '#60a5fa',
     justifyContent: 'center',
     alignItems: 'center',
   },
   postCardContent: {
-    padding: 16,
-    gap: 8,
+    gap: 6,
   },
   postCardTitle: {
     color: '#ffffff',
-    fontSize: 16,
+    fontSize: 15,
     fontFamily: 'Archivo-Bold',
-    letterSpacing: -0.4,
-    lineHeight: 22,
+    letterSpacing: -0.3,
+    lineHeight: 20,
   },
   postCardCaption: {
-    color: 'rgba(255, 255, 255, 0.5)',
-    fontSize: 13,
+    color: 'rgba(255, 255, 255, 0.55)',
+    fontSize: 12,
     fontFamily: 'Inter-Regular',
+    letterSpacing: 0.2,
+    lineHeight: 18,
+  },
+  postCardFooter: {
+    marginTop: 4,
+  },
+  postCardPlatformTag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 8,
+    alignSelf: 'flex-start',
+  },
+  platformDot: {
+    width: 5,
+    height: 5,
+    borderRadius: 2.5,
+  },
+  postCardPlatformText: {
+    color: 'rgba(255, 255, 255, 0.6)',
+    fontSize: 11,
+    fontFamily: 'Archivo-Bold',
     letterSpacing: 0.2,
   },
   modalFooter: {
