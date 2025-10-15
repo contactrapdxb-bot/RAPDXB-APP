@@ -271,9 +271,9 @@ export default function CommunityScreen() {
         </View>
 
         <View style={styles.titleSection}>
-          <Text style={styles.pageTitle}>Community </Text>
+          <Text style={styles.pageTitleBold}>Send </Text>
           <Animated.Text style={[
-            styles.pageTitleBold,
+            styles.pageTitle,
             {
               color: sliderAnim.interpolate({
                 inputRange: [0, 1],
