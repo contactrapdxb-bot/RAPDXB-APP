@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, TextInp
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ArrowLeft, Upload, Link, Calendar, X, Image as ImageIcon, Video, Check } from 'lucide-react-native';
+import { ArrowLeft, Upload, Link, Calendar, X, Image as ImageIcon, Video, Check, Plus, Globe } from 'lucide-react-native';
 import Svg, { Circle, Defs, RadialGradient as SvgRadialGradient, Stop } from 'react-native-svg';
 import * as Haptics from 'expo-haptics';
 import { useState, useRef, useEffect } from 'react';
@@ -13,6 +13,41 @@ const { width } = Dimensions.get('window');
 
 const PLATFORMS_POST = ['Instagram', 'Facebook', 'Twitter', 'All'];
 const PLATFORMS_REEL = ['Instagram Reels', 'YouTube Shorts', 'TikTok', 'Facebook Reels', 'Snapchat', 'All'];
+
+const FEED_DATA = [
+  {
+    id: 1,
+    platform: 'Instagram',
+    platformIcon: 'https://i.imgur.com/vkcuEzE.png',
+    thumbnail: 'https://images.pexels.com/photos/1105666/pexels-photo-1105666.jpeg?auto=compress&cs=tinysrgb&w=800',
+    title: 'Drake Announces New Album',
+    source: '@complexmusic',
+  },
+  {
+    id: 2,
+    platform: 'YouTube',
+    platformIcon: 'https://i.imgur.com/8H35ptZ.png',
+    thumbnail: 'https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=800',
+    title: 'Kendrick Lamar Performance',
+    source: '@geniusofficial',
+  },
+  {
+    id: 3,
+    platform: 'TikTok',
+    platformIcon: 'https://i.imgur.com/K2FKVUP.png',
+    thumbnail: 'https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg?auto=compress&cs=tinysrgb&w=800',
+    title: 'Ice Spice New Single',
+    source: '@rapvibes',
+  },
+  {
+    id: 4,
+    platform: 'Web',
+    platformIcon: 'https://i.imgur.com/aXfHxEZ.png',
+    thumbnail: 'https://images.pexels.com/photos/1644888/pexels-photo-1644888.jpeg?auto=compress&cs=tinysrgb&w=800',
+    title: 'J. Cole Interview',
+    source: 'Complex',
+  },
+];
 
 export default function PostScreen() {
   const insets = useSafeAreaInsets();
@@ -29,6 +64,9 @@ export default function PostScreen() {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
 
   const [refreshing, setRefreshing] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedPosts, setSelectedPosts] = useState<number[]>([]);
+  const [confirmedPosts, setConfirmedPosts] = useState<number[]>([]);
 
   const floatAnim1 = useRef(new Animated.Value(0)).current;
   const floatAnim2 = useRef(new Animated.Value(0)).current;
@@ -214,7 +252,45 @@ export default function PostScreen() {
     if (Platform.OS !== 'web') {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     }
-    console.log('Creating', contentType, { title, caption, selectedPlatforms, scheduleDate, tags, mediaLink });
+    console.log('Creating', contentType, { title, caption, selectedPlatforms, scheduleDate, tags, mediaLink, selectedPosts: confirmedPosts });
+  };
+
+  const handleOpenModal = () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
+    setShowModal(false);
+    setSelectedPosts([]);
+  };
+
+  const handleTogglePost = (id: number) => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    setSelectedPosts(prev => {
+      if (prev.includes(id)) {
+        return prev.filter(postId => postId !== id);
+      } else if (prev.length < 3) {
+        return [...prev, id];
+      }
+      return prev;
+    });
+  };
+
+  const handleConfirm = () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    }
+    setConfirmedPosts(selectedPosts);
+    setShowModal(false);
+    setSelectedPosts([]);
   };
 
   const platforms = contentType === 'post' ? PLATFORMS_POST : PLATFORMS_REEL;
@@ -294,6 +370,60 @@ export default function PostScreen() {
             {contentType === 'post' ? 'Post' : 'Reel'}
           </Animated.Text>
         </View>
+
+        <View style={styles.statsRow}>
+          <View style={styles.statBox}>
+            <Text style={styles.statValue}>{FEED_DATA.length}</Text>
+            <Text style={styles.statLabel}>Articles</Text>
+          </View>
+          <View style={styles.statBox}>
+            <Text style={styles.statValue}>{confirmedPosts.length}</Text>
+            <Text style={styles.statLabel}>Selected</Text>
+          </View>
+          <TouchableOpacity
+            style={styles.selectBox}
+            onPress={handleOpenModal}
+            activeOpacity={0.7}
+          >
+            <LinearGradient
+              colors={['rgba(96, 165, 250, 0.15)', 'rgba(59, 130, 246, 0.15)']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.selectBoxGradient}
+            >
+              <Plus color="#60a5fa" size={20} strokeWidth={2.5} />
+              <Text style={styles.selectLabel}>Select</Text>
+            </LinearGradient>
+          </TouchableOpacity>
+        </View>
+
+        {confirmedPosts.length > 0 && (
+          <View style={styles.selectedPostsPreview}>
+            <Text style={styles.previewTitle}>Selected Posts ({confirmedPosts.length})</Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.previewScroll}
+            >
+              {confirmedPosts.map(postId => {
+                const post = FEED_DATA.find(p => p.id === postId);
+                if (!post) return null;
+                return (
+                  <View key={postId} style={styles.previewCard}>
+                    <Image
+                      source={{ uri: post.thumbnail }}
+                      style={styles.previewThumbnail}
+                      resizeMode="cover"
+                    />
+                    <View style={styles.previewOverlay}>
+                      <Check color="#ffffff" size={24} strokeWidth={3} />
+                    </View>
+                  </View>
+                );
+              })}
+            </ScrollView>
+          </View>
+        )}
 
         <View style={styles.toggleContainer}>
           <View style={styles.toggleBackground}>
@@ -640,6 +770,95 @@ export default function PostScreen() {
           onChange={handleTimeChange}
         />
       )}
+
+      <Modal
+        visible={showModal}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={handleCloseModal}
+      >
+        <View style={styles.selectModalOverlay}>
+          <View style={[styles.selectModalContainer, { paddingTop: insets.top + 20, paddingBottom: insets.bottom + 20 }]}>
+            <View style={styles.selectModalHeader}>
+              <Text style={styles.selectModalTitle}>Select Posts (Max 3)</Text>
+              <TouchableOpacity
+                onPress={handleCloseModal}
+                activeOpacity={0.6}
+                style={styles.closeButton}
+              >
+                <X color="#ffffff" size={24} strokeWidth={2} />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView
+              style={styles.selectModalScroll}
+              contentContainerStyle={styles.selectModalScrollContent}
+              showsVerticalScrollIndicator={false}
+            >
+              {FEED_DATA.map(item => {
+                const isSelected = selectedPosts.includes(item.id);
+                return (
+                  <TouchableOpacity
+                    key={item.id}
+                    onPress={() => handleTogglePost(item.id)}
+                    activeOpacity={0.7}
+                    style={styles.selectModalItem}
+                  >
+                    <View style={styles.selectModalItemImageContainer}>
+                      <Image
+                        source={{ uri: item.thumbnail }}
+                        style={styles.selectModalItemImage}
+                        resizeMode="cover"
+                      />
+                      {isSelected && (
+                        <View style={styles.selectedOverlay}>
+                          <View style={styles.checkmarkCircle}>
+                            <Check color="#000000" size={20} strokeWidth={3} />
+                          </View>
+                        </View>
+                      )}
+                    </View>
+                    <View style={styles.selectModalItemContent}>
+                      <View style={styles.selectModalItemHeader}>
+                        <View style={styles.selectModalItemPlatformBadge}>
+                          {item.platform === 'Web' ? (
+                            <Globe color="#6B7280" size={12} strokeWidth={2} />
+                          ) : (
+                            <Image
+                              source={{ uri: item.platformIcon }}
+                              style={styles.selectModalItemPlatformIcon}
+                            />
+                          )}
+                        </View>
+                        <Text style={styles.selectModalItemSource} numberOfLines={1}>{item.source}</Text>
+                      </View>
+                      <Text style={styles.selectModalItemTitle} numberOfLines={2}>{item.title}</Text>
+                    </View>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+
+            <View style={styles.selectModalFooter}>
+              <TouchableOpacity
+                onPress={handleConfirm}
+                activeOpacity={0.8}
+                disabled={selectedPosts.length === 0}
+                style={[styles.confirmButton, selectedPosts.length === 0 && styles.confirmButtonDisabled]}
+              >
+                <LinearGradient
+                  colors={selectedPosts.length === 0 ? ['#374151', '#1f2937'] : ['#60a5fa', '#3b82f6']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.confirmButtonGradient}
+                >
+                  <Text style={styles.confirmButtonText}>Confirm ({selectedPosts.length})</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -1202,5 +1421,213 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'Archivo-Bold',
     letterSpacing: -0.4,
+  },
+  statsRow: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 24,
+  },
+  statBox: {
+    flex: 1,
+    backgroundColor: '#1a1a1a',
+    padding: 16,
+    borderRadius: 16,
+    alignItems: 'center',
+  },
+  statValue: {
+    color: '#ffffff',
+    fontSize: 24,
+    fontFamily: 'Inter-SemiBold',
+    letterSpacing: -1,
+    marginBottom: 4,
+  },
+  statLabel: {
+    color: 'rgba(255, 255, 255, 0.5)',
+    fontSize: 11,
+    fontFamily: 'Inter-Regular',
+    letterSpacing: 0.2,
+    textTransform: 'uppercase',
+  },
+  selectBox: {
+    flex: 1,
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  selectBoxGradient: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    padding: 16,
+  },
+  selectLabel: {
+    color: '#60a5fa',
+    fontSize: 12,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.2,
+    textTransform: 'uppercase',
+  },
+  selectedPostsPreview: {
+    marginBottom: 24,
+  },
+  previewTitle: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.3,
+    marginBottom: 12,
+  },
+  previewScroll: {
+    gap: 12,
+    paddingRight: 16,
+  },
+  previewCard: {
+    width: 100,
+    height: 100,
+    borderRadius: 16,
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  previewThumbnail: {
+    width: '100%',
+    height: '100%',
+  },
+  previewOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(96, 165, 250, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  selectModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.95)',
+  },
+  selectModalContainer: {
+    flex: 1,
+    backgroundColor: '#000000',
+  },
+  selectModalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  selectModalTitle: {
+    color: '#ffffff',
+    fontSize: 24,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.5,
+  },
+  closeButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  selectModalScroll: {
+    flex: 1,
+  },
+  selectModalScrollContent: {
+    padding: 20,
+    gap: 16,
+  },
+  selectModalItem: {
+    flexDirection: 'row',
+    gap: 12,
+    backgroundColor: '#1a1a1a',
+    borderRadius: 16,
+    overflow: 'hidden',
+  },
+  selectModalItemImageContainer: {
+    width: 120,
+    height: 120,
+    position: 'relative',
+  },
+  selectModalItemImage: {
+    width: '100%',
+    height: '100%',
+  },
+  selectedOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(96, 165, 250, 0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  checkmarkCircle: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#60a5fa',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 3,
+    borderColor: '#ffffff',
+  },
+  selectModalItemContent: {
+    flex: 1,
+    padding: 12,
+    gap: 8,
+  },
+  selectModalItemHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  selectModalItemPlatformBadge: {
+    width: 24,
+    height: 24,
+    borderRadius: 6,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  selectModalItemPlatformIcon: {
+    width: 16,
+    height: 16,
+    borderRadius: 4,
+  },
+  selectModalItemSource: {
+    color: '#60a5fa',
+    fontSize: 12,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.2,
+    flex: 1,
+  },
+  selectModalItemTitle: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.3,
+    lineHeight: 20,
+  },
+  selectModalFooter: {
+    padding: 20,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  confirmButton: {
+    borderRadius: 20,
+    overflow: 'hidden',
+  },
+  confirmButtonDisabled: {
+    opacity: 0.5,
+  },
+  confirmButtonGradient: {
+    paddingVertical: 18,
+    alignItems: 'center',
+  },
+  confirmButtonText: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.3,
   },
 });
