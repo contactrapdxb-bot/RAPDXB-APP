@@ -119,8 +119,8 @@ export default function StatsScreen() {
         </View>
 
         <View style={styles.titleSection}>
-          <Text style={styles.pageTitleBold}>Your </Text>
-          <Text style={styles.pageTitle}>Analytics</Text>
+          <Text style={styles.pageTitle}>Your </Text>
+          <Text style={styles.pageTitleBold}>Analytics</Text>
         </View>
 
         <View style={styles.metricsGrid}>
@@ -343,20 +343,23 @@ const styles = StyleSheet.create({
   },
   titleSection: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginBottom: 24,
     alignItems: 'center',
-    marginBottom: 32,
   },
   pageTitle: {
+    fontSize: 44,
+    fontFamily: 'Inter-Thin',
     color: '#ffffff',
-    fontSize: 36,
-    fontFamily: 'Archivo-Bold',
-    letterSpacing: -1,
+    letterSpacing: -1.2,
+    lineHeight: 50,
   },
   pageTitleBold: {
-    color: 'rgba(255, 255, 255, 0.5)',
-    fontSize: 36,
+    fontSize: 44,
     fontFamily: 'Archivo-Bold',
-    letterSpacing: -1,
+    color: '#ec4899',
+    letterSpacing: -1.2,
+    lineHeight: 50,
   },
   metricsGrid: {
     flexDirection: 'row',

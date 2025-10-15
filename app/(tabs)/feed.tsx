@@ -544,8 +544,8 @@ export default function FeedScreen() {
         </View>
 
         <View style={styles.titleSection}>
-          <Text style={styles.pageTitleBold}>Your </Text>
-          <Text style={styles.pageTitle}>Feed</Text>
+          <Text style={styles.pageTitle}>Your </Text>
+          <Text style={styles.pageTitleBold}>Feed</Text>
         </View>
 
         <View style={styles.statsRow}>
@@ -718,20 +718,23 @@ const styles = StyleSheet.create({
   },
   titleSection: {
     flexDirection: 'row',
-    marginBottom: 20,
+    flexWrap: 'wrap',
+    marginBottom: 24,
     alignItems: 'center',
   },
   pageTitle: {
+    fontSize: 44,
+    fontFamily: 'Inter-Thin',
     color: '#ffffff',
-    fontSize: 36,
-    fontFamily: 'Archivo-Bold',
-    letterSpacing: -1,
+    letterSpacing: -1.2,
+    lineHeight: 50,
   },
   pageTitleBold: {
-    color: 'rgba(255, 255, 255, 0.5)',
-    fontSize: 36,
+    fontSize: 44,
     fontFamily: 'Archivo-Bold',
-    letterSpacing: -1,
+    color: '#f59e0b',
+    letterSpacing: -1.2,
+    lineHeight: 50,
   },
   statsRow: {
     flexDirection: 'row',
