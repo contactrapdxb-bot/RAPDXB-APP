@@ -707,14 +707,9 @@ export default function CommunityScreen() {
                       onPress={() => handlePostToggle(post)}
                       activeOpacity={0.7}
                       disabled={!isSelected && selectedPosts.length >= 3}
-                      style={styles.postCard}
+                      style={[styles.postCard, isSelected && styles.postCardSelected]}
                     >
-                      <LinearGradient
-                        colors={isSelected ? ['rgba(96, 165, 250, 0.2)', 'rgba(59, 130, 246, 0.2)'] : ['rgba(255, 255, 255, 0.06)', 'rgba(255, 255, 255, 0.02)']}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
-                        style={styles.postCardInner}
-                      >
+                      <View style={styles.postCardInner}>
                         <View style={styles.postCardHeader}>
                           <View style={styles.postCardPlatformBadge}>
                             <Image
@@ -761,7 +756,7 @@ export default function CommunityScreen() {
                             </View>
                           </View>
                         </View>
-                      </LinearGradient>
+                      </View>
                     </TouchableOpacity>
                   );
                 })
@@ -1352,8 +1347,14 @@ const styles = StyleSheet.create({
   postCard: {
     borderRadius: 16,
     overflow: 'hidden',
-    backgroundColor: 'transparent',
+    backgroundColor: '#1a1a1a',
     marginBottom: 14,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.15)',
+  },
+  postCardSelected: {
+    borderColor: '#60a5fa',
+    borderWidth: 2,
   },
   postCardInner: {
     padding: 12,
