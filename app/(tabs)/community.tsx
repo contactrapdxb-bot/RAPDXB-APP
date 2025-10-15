@@ -271,7 +271,7 @@ export default function CommunityScreen() {
         </View>
 
         <View style={styles.titleSection}>
-          <Text style={styles.pageTitle}>Community </Text>
+          <Text style={styles.pageTitle}>Send </Text>
           <Animated.Text style={[
             styles.pageTitleBold,
             {
