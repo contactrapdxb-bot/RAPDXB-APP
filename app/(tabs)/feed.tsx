@@ -1,8 +1,8 @@
-import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, Image, Animated } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, Image, Animated, Modal } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ArrowLeft, Link, Check, Globe } from 'lucide-react-native';
+import { ArrowLeft, Link, Check, Globe, X, Plus } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 import { useState, useRef } from 'react';
 import * as Clipboard from 'expo-clipboard';
@@ -459,6 +459,9 @@ export default function FeedScreen() {
   const [toastMessage, setToastMessage] = useState('');
   const toastOpacity = useRef(new Animated.Value(0)).current;
   const toastTranslateY = useRef(new Animated.Value(-20)).current;
+  const [showModal, setShowModal] = useState(false);
+  const [selectedPosts, setSelectedPosts] = useState<number[]>([]);
+  const [confirmedPosts, setConfirmedPosts] = useState<number[]>([]);
 
   const handleBack = () => {
     if (Platform.OS !== 'web') {
@@ -518,6 +521,45 @@ export default function FeedScreen() {
     showCustomToast('Link copied to clipboard!');
   };
 
+  const handleOpenModal = () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
+    setShowModal(false);
+    setSelectedPosts([]);
+  };
+
+  const handleTogglePost = (id: number) => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    setSelectedPosts(prev => {
+      if (prev.includes(id)) {
+        return prev.filter(postId => postId !== id);
+      } else if (prev.length < 3) {
+        return [...prev, id];
+      }
+      return prev;
+    });
+  };
+
+  const handleConfirm = () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    }
+    setConfirmedPosts(selectedPosts);
+    showCustomToast(`${selectedPosts.length} post${selectedPosts.length !== 1 ? 's' : ''} selected!`);
+    setShowModal(false);
+    setSelectedPosts([]);
+  };
+
   const filteredFeed = FEED_DATA.filter(item => {
     if (selectedFilter === 'All') return true;
     return item.platform === selectedFilter;
@@ -557,11 +599,50 @@ export default function FeedScreen() {
             <Text style={styles.statValue}>4</Text>
             <Text style={styles.statLabel}>Sources</Text>
           </View>
-          <View style={styles.statBox}>
-            <Text style={styles.statValue}>3h ago</Text>
-            <Text style={styles.statLabel}>Updated</Text>
-          </View>
+          <TouchableOpacity
+            style={styles.selectBox}
+            onPress={handleOpenModal}
+            activeOpacity={0.7}
+          >
+            <LinearGradient
+              colors={['rgba(96, 165, 250, 0.2)', 'rgba(59, 130, 246, 0.2)']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.selectBoxGradient}
+            >
+              <Plus color="#60a5fa" size={20} strokeWidth={2.5} />
+              <Text style={styles.selectLabel}>Select</Text>
+            </LinearGradient>
+          </TouchableOpacity>
         </View>
+
+        {confirmedPosts.length > 0 && (
+          <View style={styles.selectedPostsPreview}>
+            <Text style={styles.previewTitle}>Selected Posts ({confirmedPosts.length})</Text>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.previewScroll}
+            >
+              {confirmedPosts.map(postId => {
+                const post = FEED_DATA.find(p => p.id === postId);
+                if (!post) return null;
+                return (
+                  <View key={postId} style={styles.previewCard}>
+                    <Image
+                      source={{ uri: post.thumbnail }}
+                      style={styles.previewThumbnail}
+                      resizeMode="cover"
+                    />
+                    <View style={styles.previewOverlay}>
+                      <Check color="#ffffff" size={24} strokeWidth={3} />
+                    </View>
+                  </View>
+                );
+              })}
+            </ScrollView>
+          </View>
+        )}
 
         <ScrollView
           horizontal
@@ -676,6 +757,95 @@ export default function FeedScreen() {
           </View>
         </Animated.View>
       )}
+
+      <Modal
+        visible={showModal}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={handleCloseModal}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={[styles.modalContainer, { paddingTop: insets.top + 20, paddingBottom: insets.bottom + 20 }]}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Select Posts (Max 3)</Text>
+              <TouchableOpacity
+                onPress={handleCloseModal}
+                activeOpacity={0.6}
+                style={styles.closeButton}
+              >
+                <X color="#ffffff" size={24} strokeWidth={2} />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView
+              style={styles.modalScroll}
+              contentContainerStyle={styles.modalScrollContent}
+              showsVerticalScrollIndicator={false}
+            >
+              {FEED_DATA.map(item => {
+                const isSelected = selectedPosts.includes(item.id);
+                return (
+                  <TouchableOpacity
+                    key={item.id}
+                    onPress={() => handleTogglePost(item.id)}
+                    activeOpacity={0.7}
+                    style={styles.modalItem}
+                  >
+                    <View style={styles.modalItemImageContainer}>
+                      <Image
+                        source={{ uri: item.thumbnail }}
+                        style={styles.modalItemImage}
+                        resizeMode="cover"
+                      />
+                      {isSelected && (
+                        <View style={styles.selectedOverlay}>
+                          <View style={styles.checkmarkCircle}>
+                            <Check color="#000000" size={20} strokeWidth={3} />
+                          </View>
+                        </View>
+                      )}
+                    </View>
+                    <View style={styles.modalItemContent}>
+                      <View style={styles.modalItemHeader}>
+                        <View style={styles.modalItemPlatformBadge}>
+                          {item.platform === 'Web' ? (
+                            <Globe color="#6B7280" size={12} strokeWidth={2} />
+                          ) : (
+                            <Image
+                              source={{ uri: item.platformIcon }}
+                              style={styles.modalItemPlatformIcon}
+                            />
+                          )}
+                        </View>
+                        <Text style={styles.modalItemSource} numberOfLines={1}>{item.source}</Text>
+                      </View>
+                      <Text style={styles.modalItemTitle} numberOfLines={2}>{item.title}</Text>
+                    </View>
+                  </TouchableOpacity>
+                );
+              })}
+            </ScrollView>
+
+            <View style={styles.modalFooter}>
+              <TouchableOpacity
+                onPress={handleConfirm}
+                activeOpacity={0.8}
+                disabled={selectedPosts.length === 0}
+                style={[styles.confirmButton, selectedPosts.length === 0 && styles.confirmButtonDisabled]}
+              >
+                <LinearGradient
+                  colors={selectedPosts.length === 0 ? ['#374151', '#1f2937'] : ['#60a5fa', '#3b82f6']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.confirmButtonGradient}
+                >
+                  <Text style={styles.confirmButtonText}>Confirm ({selectedPosts.length})</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -958,5 +1128,191 @@ const styles = StyleSheet.create({
     letterSpacing: -0.4,
     flex: 1,
     fontWeight: '800',
+  },
+  selectBox: {
+    flex: 1,
+    borderRadius: 16,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(96, 165, 250, 0.3)',
+  },
+  selectBoxGradient: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    padding: 16,
+  },
+  selectLabel: {
+    color: '#60a5fa',
+    fontSize: 12,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.2,
+    textTransform: 'uppercase',
+  },
+  selectedPostsPreview: {
+    marginBottom: 24,
+  },
+  previewTitle: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.3,
+    marginBottom: 12,
+  },
+  previewScroll: {
+    gap: 12,
+    paddingRight: 20,
+  },
+  previewCard: {
+    width: 100,
+    height: 100,
+    borderRadius: 16,
+    overflow: 'hidden',
+    position: 'relative',
+  },
+  previewThumbnail: {
+    width: '100%',
+    height: '100%',
+  },
+  previewOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(96, 165, 250, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.95)',
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: '#000000',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  modalTitle: {
+    color: '#ffffff',
+    fontSize: 24,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.5,
+  },
+  closeButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalScroll: {
+    flex: 1,
+  },
+  modalScrollContent: {
+    padding: 20,
+    gap: 16,
+  },
+  modalItem: {
+    flexDirection: 'row',
+    gap: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderRadius: 16,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.08)',
+  },
+  modalItemImageContainer: {
+    width: 120,
+    height: 120,
+    position: 'relative',
+  },
+  modalItemImage: {
+    width: '100%',
+    height: '100%',
+  },
+  selectedOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(96, 165, 250, 0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  checkmarkCircle: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#60a5fa',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 3,
+    borderColor: '#ffffff',
+  },
+  modalItemContent: {
+    flex: 1,
+    padding: 12,
+    gap: 8,
+  },
+  modalItemHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  modalItemPlatformBadge: {
+    width: 24,
+    height: 24,
+    borderRadius: 6,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  modalItemPlatformIcon: {
+    width: 16,
+    height: 16,
+    borderRadius: 4,
+  },
+  modalItemSource: {
+    color: '#60a5fa',
+    fontSize: 12,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.2,
+    flex: 1,
+  },
+  modalItemTitle: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.3,
+    lineHeight: 20,
+  },
+  modalFooter: {
+    padding: 20,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  confirmButton: {
+    borderRadius: 20,
+    overflow: 'hidden',
+  },
+  confirmButtonDisabled: {
+    opacity: 0.5,
+  },
+  confirmButtonGradient: {
+    paddingVertical: 18,
+    alignItems: 'center',
+  },
+  confirmButtonText: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.3,
   },
 });
