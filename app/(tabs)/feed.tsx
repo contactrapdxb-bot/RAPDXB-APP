@@ -574,13 +574,11 @@ export default function FeedScreen() {
       >
         <View style={styles.header}>
           <TouchableOpacity
-            style={styles.backButton}
+            style={styles.backButtonGradient}
             onPress={handleBack}
             activeOpacity={0.6}
           >
-            <View style={styles.backButtonGradient}>
-              <ArrowLeft color="#ffffff" size={22} strokeWidth={2} />
-            </View>
+            <ArrowLeft color="#ffffff" size={18} strokeWidth={1.5} />
           </TouchableOpacity>
           <View style={styles.placeholder} />
         </View>
@@ -859,7 +857,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
   },
   header: {
     flexDirection: 'row',
@@ -867,21 +865,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 20,
   },
-  backButton: {
+  backButtonGradient: {
     width: 48,
     height: 48,
-    borderRadius: 24,
-    overflow: 'hidden',
-  },
-  backButtonGradient: {
-    width: '100%',
-    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
     borderRadius: 24,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    backgroundColor: '#1a1a1a',
   },
   placeholder: {
     width: 48,
@@ -913,25 +903,23 @@ const styles = StyleSheet.create({
   },
   statBox: {
     flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    backgroundColor: '#1a1a1a',
     padding: 16,
     borderRadius: 16,
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.06)',
   },
   statValue: {
     color: '#ffffff',
-    fontSize: 22,
-    fontFamily: 'Archivo-Bold',
-    letterSpacing: -0.5,
+    fontSize: 24,
+    fontFamily: 'Inter-SemiBold',
+    letterSpacing: -1,
     marginBottom: 4,
   },
   statLabel: {
-    color: 'rgba(255, 255, 255, 0.4)',
-    fontSize: 10,
+    color: 'rgba(255, 255, 255, 0.5)',
+    fontSize: 11,
     fontFamily: 'Inter-Regular',
-    letterSpacing: 0.3,
+    letterSpacing: 0.2,
     textTransform: 'uppercase',
   },
   filterBar: {
@@ -945,8 +933,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 10,
     borderRadius: 16,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
   },
   filterText: {
     color: 'rgba(255, 255, 255, 0.6)',
@@ -963,20 +949,10 @@ const styles = StyleSheet.create({
   feedCardWrapper: {
     borderRadius: 24,
     overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.08)',
-    position: 'relative',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 5,
+    backgroundColor: '#1a1a1a',
   },
   feedCard: {
-    padding: 18,
+    padding: 20,
     gap: 16,
   },
   cardTopSection: {
@@ -1023,17 +999,15 @@ const styles = StyleSheet.create({
     height: 180,
     borderRadius: 16,
     backgroundColor: 'rgba(255, 255, 255, 0.05)',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.06)',
   },
   cardContent: {
     gap: 12,
   },
   cardTitle: {
     color: '#ffffff',
-    fontSize: 19,
+    fontSize: 18,
     fontFamily: 'Archivo-Bold',
-    letterSpacing: -0.5,
+    letterSpacing: -0.4,
     lineHeight: 26,
   },
   cardDescription: {
@@ -1053,12 +1027,10 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
-    backgroundColor: 'rgba(255, 255, 255, 0.04)',
+    backgroundColor: 'rgba(255, 255, 255, 0.06)',
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 10,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.06)',
   },
   platformDot: {
     width: 6,
@@ -1127,7 +1099,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Archivo-Bold',
     letterSpacing: -0.4,
     flex: 1,
-    fontWeight: '800',
   },
   selectBox: {
     flex: 1,
