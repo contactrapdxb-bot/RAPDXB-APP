@@ -58,12 +58,102 @@ export default function CommunityScreen() {
 
       if (error) {
         console.error('Error fetching posts:', error);
+        // Use dummy data if fetch fails
+        setPosts([
+          {
+            id: '1',
+            title: 'Tech Innovation 2025',
+            caption: 'Exploring the future of artificial intelligence and machine learning in business',
+            thumbnail_url: 'https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=2',
+            created_at: new Date().toISOString(),
+          },
+          {
+            id: '2',
+            title: 'Digital Marketing Trends',
+            caption: 'How social media is changing the way we connect with customers',
+            thumbnail_url: 'https://images.pexels.com/photos/267389/pexels-photo-267389.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=2',
+            created_at: new Date().toISOString(),
+          },
+          {
+            id: '3',
+            title: 'Startup Success Stories',
+            caption: 'Learn from entrepreneurs who built million-dollar companies from scratch',
+            thumbnail_url: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=2',
+            created_at: new Date().toISOString(),
+          },
+          {
+            id: '4',
+            title: 'Remote Work Revolution',
+            caption: 'Best practices for managing distributed teams in 2025',
+            thumbnail_url: 'https://images.pexels.com/photos/4226140/pexels-photo-4226140.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=2',
+            created_at: new Date().toISOString(),
+          },
+          {
+            id: '5',
+            title: 'Sustainable Business',
+            caption: 'How companies are going green while increasing profits',
+            thumbnail_url: 'https://images.pexels.com/photos/3861458/pexels-photo-3861458.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=2',
+            created_at: new Date().toISOString(),
+          },
+          {
+            id: '6',
+            title: 'Customer Experience Design',
+            caption: 'Creating seamless user journeys that delight and convert',
+            thumbnail_url: 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=2',
+            created_at: new Date().toISOString(),
+          },
+        ]);
       } else if (data) {
         console.log('Fetched posts:', data.length);
         setPosts(data);
       }
     } catch (err) {
       console.error('Exception fetching posts:', err);
+      // Use dummy data if exception occurs
+      setPosts([
+        {
+          id: '1',
+          title: 'Tech Innovation 2025',
+          caption: 'Exploring the future of artificial intelligence and machine learning in business',
+          thumbnail_url: 'https://images.pexels.com/photos/3861969/pexels-photo-3861969.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=2',
+          created_at: new Date().toISOString(),
+        },
+        {
+          id: '2',
+          title: 'Digital Marketing Trends',
+          caption: 'How social media is changing the way we connect with customers',
+          thumbnail_url: 'https://images.pexels.com/photos/267389/pexels-photo-267389.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=2',
+          created_at: new Date().toISOString(),
+        },
+        {
+          id: '3',
+          title: 'Startup Success Stories',
+          caption: 'Learn from entrepreneurs who built million-dollar companies from scratch',
+          thumbnail_url: 'https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=2',
+          created_at: new Date().toISOString(),
+        },
+        {
+          id: '4',
+          title: 'Remote Work Revolution',
+          caption: 'Best practices for managing distributed teams in 2025',
+          thumbnail_url: 'https://images.pexels.com/photos/4226140/pexels-photo-4226140.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=2',
+          created_at: new Date().toISOString(),
+        },
+        {
+          id: '5',
+          title: 'Sustainable Business',
+          caption: 'How companies are going green while increasing profits',
+          thumbnail_url: 'https://images.pexels.com/photos/3861458/pexels-photo-3861458.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=2',
+          created_at: new Date().toISOString(),
+        },
+        {
+          id: '6',
+          title: 'Customer Experience Design',
+          caption: 'Creating seamless user journeys that delight and convert',
+          thumbnail_url: 'https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg?auto=compress&cs=tinysrgb&w=400&h=300&dpr=2',
+          created_at: new Date().toISOString(),
+        },
+      ]);
     }
   };
 
