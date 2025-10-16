@@ -11,7 +11,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 
 const { width } = Dimensions.get('window');
 
-const PLATFORMS_POST = ['Instagram', 'Facebook', 'Twitter', 'All'];
+const PLATFORMS_POST = ['Instagram', 'Facebook', 'Twitter', 'Snapchat', 'All'];
 const PLATFORMS_REEL = ['Instagram Reels', 'YouTube Shorts', 'TikTok', 'Facebook Reels', 'Snapchat', 'All'];
 
 const FEED_DATA = [
@@ -231,7 +231,7 @@ export default function PostScreen() {
 
     if (platform === 'All') {
       const allPlatforms = contentType === 'post'
-        ? ['Instagram', 'Facebook', 'Twitter']
+        ? ['Instagram', 'Facebook', 'Twitter', 'Snapchat']
         : ['Instagram Reels', 'YouTube Shorts', 'TikTok', 'Facebook Reels', 'Snapchat'];
 
       if (selectedPlatforms.length === allPlatforms.length) {
@@ -603,7 +603,7 @@ export default function PostScreen() {
             <View style={styles.platformGrid}>
               {platforms.map((platform) => {
                 const allPlatforms = contentType === 'post'
-                  ? ['Instagram', 'Facebook', 'Twitter']
+                  ? ['Instagram', 'Facebook', 'Twitter', 'Snapchat']
                   : ['Instagram Reels', 'YouTube Shorts', 'TikTok', 'Facebook Reels', 'Snapchat'];
                 const isAllSelected = platform === 'All' && selectedPlatforms.length === allPlatforms.length;
                 const isSelected = platform === 'All' ? isAllSelected : selectedPlatforms.includes(platform);
