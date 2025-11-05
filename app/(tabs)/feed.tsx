@@ -1,8 +1,8 @@
-import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, Image, Animated } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, Image, Animated, TextInput, Modal } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ArrowLeft, Link, Check, Globe } from 'lucide-react-native';
+import { ArrowLeft, Link, Check, Globe, Plus, X } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 import { useState, useRef } from 'react';
 import * as Clipboard from 'expo-clipboard';
@@ -52,411 +52,20 @@ const FEED_DATA = [
     timeAgo: '4h ago',
     url: 'https://www.complex.com/music/j-cole-songwriting-process-interview',
   },
-  {
-    id: 5,
-    platform: 'Instagram',
-    platformIcon: 'https://i.imgur.com/vkcuEzE.png',
-    thumbnail: 'https://images.pexels.com/photos/1540406/pexels-photo-1540406.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'Travis Scott Debuts New Single at Coachella',
-    source: '@billboard',
-    description: 'Travis Scott surprises Coachella crowd with unreleased track. The Houston rapper brought out special guests and delivered one of the most talked-about performances of the festival.',
-    timeAgo: '5h ago',
-    url: 'https://www.instagram.com/p/travis-scott-coachella',
-  },
-  {
-    id: 6,
-    platform: 'YouTube',
-    platformIcon: 'https://i.imgur.com/8H35ptZ.png',
-    thumbnail: 'https://images.pexels.com/photos/1389429/pexels-photo-1389429.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'Lil Baby Interview: Success and Future Plans',
-    source: '@theshaderoom',
-    description: 'Lil Baby discusses his journey from Atlanta streets to global stardom. The rapper shares insights on his work ethic, upcoming projects, and what drives him to keep pushing boundaries.',
-    timeAgo: '6h ago',
-    url: 'https://www.youtube.com/watch?v=lil-baby-interview',
-  },
-  {
-    id: 7,
-    platform: 'TikTok',
-    platformIcon: 'https://i.imgur.com/K2FKVUP.png',
-    thumbnail: 'https://images.pexels.com/photos/1864642/pexels-photo-1864642.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'Cardi B Dance Challenge Takes Over',
-    source: '@hiphopnation',
-    description: 'Cardi B\'s new dance challenge breaks records on TikTok. Celebrities and fans alike are participating in the viral trend, with the original video amassing over 50 million views.',
-    timeAgo: '7h ago',
-    url: 'https://www.tiktok.com/@hiphopnation/video/cardi-b-dance-challenge',
-  },
-  {
-    id: 8,
-    platform: 'Web',
-    platformIcon: 'https://i.imgur.com/aXfHxEZ.png',
-    thumbnail: 'https://images.pexels.com/photos/2102934/pexels-photo-2102934.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'Nas Reflects on 30 Years in Hip-Hop',
-    source: 'Rolling Stone',
-    description: 'Hip-hop legend Nas celebrates three decades of influential music. The Queens rapper discusses his iconic albums, evolving sound, and impact on the culture in this exclusive feature.',
-    timeAgo: '8h ago',
-    url: 'https://www.rollingstone.com/music/nas-30-years-hip-hop',
-  },
-  {
-    id: 9,
-    platform: 'Instagram',
-    platformIcon: 'https://i.imgur.com/vkcuEzE.png',
-    thumbnail: 'https://images.pexels.com/photos/1699161/pexels-photo-1699161.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'Megan Thee Stallion Wins Grammy Award',
-    source: '@recordingacademy',
-    description: 'Hot Girl Meg takes home another Grammy for Best Rap Performance. The Houston rapper delivered an emotional acceptance speech, thanking her fans and late mother.',
-    timeAgo: '9h ago',
-    url: 'https://www.instagram.com/p/megan-thee-stallion-grammy',
-  },
-  {
-    id: 10,
-    platform: 'YouTube',
-    platformIcon: 'https://i.imgur.com/8H35ptZ.png',
-    thumbnail: 'https://images.pexels.com/photos/1047442/pexels-photo-1047442.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'Future & Metro Boomin Drop Joint Album',
-    source: '@xxlmag',
-    description: 'The dynamic duo surprise fans with "We Trust You" album. Future and Metro Boomin continue their winning streak, delivering another project filled with hard-hitting beats and memorable hooks.',
-    timeAgo: '10h ago',
-    url: 'https://www.youtube.com/watch?v=future-metro-boomin-album',
-  },
-  {
-    id: 11,
-    platform: 'TikTok',
-    platformIcon: 'https://i.imgur.com/K2FKVUP.png',
-    thumbnail: 'https://images.pexels.com/photos/1047930/pexels-photo-1047930.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'Doja Cat Teases New Music Video',
-    source: '@dojacat',
-    description: 'Doja Cat shares behind-the-scenes footage from upcoming visual. The versatile artist hints at a bold new direction, with fans speculating about potential collaborations.',
-    timeAgo: '11h ago',
-    url: 'https://www.tiktok.com/@dojacat/video/new-music-video-teaser',
-  },
-  {
-    id: 12,
-    platform: 'Web',
-    platformIcon: 'https://i.imgur.com/aXfHxEZ.png',
-    thumbnail: 'https://images.pexels.com/photos/1190298/pexels-photo-1190298.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'The Weeknd Announces Stadium Tour',
-    source: 'Variety',
-    description: 'Abel Tesfaye reveals massive world tour spanning 40 cities. The multi-platinum artist promises an unforgettable production featuring his biggest hits and new material.',
-    timeAgo: '12h ago',
-    url: 'https://www.variety.com/music/the-weeknd-stadium-tour-announcement',
-  },
-  {
-    id: 13,
-    platform: 'Instagram',
-    platformIcon: 'https://i.imgur.com/vkcuEzE.png',
-    thumbnail: 'https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'Tyler, The Creator Launches New Brand',
-    source: '@golfwang',
-    description: 'Tyler expands his Golf Wang empire with new clothing line. The creative mogul showcases his unique aesthetic with bold designs, proving his influence extends far beyond music.',
-    timeAgo: '13h ago',
-    url: 'https://www.instagram.com/p/tyler-creator-new-brand',
-  },
-  {
-    id: 14,
-    platform: 'YouTube',
-    platformIcon: 'https://i.imgur.com/8H35ptZ.png',
-    thumbnail: 'https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'A$AP Rocky Studio Session Exclusive',
-    source: '@asaprocky',
-    description: 'Get an inside look at Rocky\'s creative process in the studio. The Harlem rapper works on his highly anticipated album, experimenting with new sounds and production techniques.',
-    timeAgo: '14h ago',
-    url: 'https://www.youtube.com/watch?v=asap-rocky-studio-session',
-  },
-  {
-    id: 15,
-    platform: 'TikTok',
-    platformIcon: 'https://i.imgur.com/K2FKVUP.png',
-    thumbnail: 'https://images.pexels.com/photos/1387037/pexels-photo-1387037.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'Lil Uzi Vert Previews Unreleased Track',
-    source: '@liluzivert',
-    description: 'Uzi sends fans into a frenzy with snippet of new music. The Philadelphia rapper\'s unique style and energy have followers eagerly awaiting the full release.',
-    timeAgo: '15h ago',
-    url: 'https://www.tiktok.com/@liluzivert/video/unreleased-track-preview',
-  },
-  {
-    id: 16,
-    platform: 'Web',
-    platformIcon: 'https://i.imgur.com/aXfHxEZ.png',
-    thumbnail: 'https://images.pexels.com/photos/1035682/pexels-photo-1035682.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'Jay-Z Inducted into Rock Hall of Fame',
-    source: 'Rock & Roll Hall of Fame',
-    description: 'Hov receives one of music\'s highest honors at star-studded ceremony. Jay-Z\'s induction celebrates his decades-long influence on hip-hop and popular culture worldwide.',
-    timeAgo: '16h ago',
-    url: 'https://www.rockhall.com/inductees/jay-z',
-  },
-  {
-    id: 17,
-    platform: 'Instagram',
-    platformIcon: 'https://i.imgur.com/vkcuEzE.png',
-    thumbnail: 'https://images.pexels.com/photos/1311518/pexels-photo-1311518.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'Playboi Carti Drops Surprise Single',
-    source: '@playboicarti',
-    description: 'Carti shocks fans with unexpected midnight release. The Atlanta rapper\'s experimental sound continues to push boundaries, dividing critics while thrilling his devoted fanbase.',
-    timeAgo: '17h ago',
-    url: 'https://www.instagram.com/p/playboicarti-surprise-single',
-  },
-  {
-    id: 18,
-    platform: 'YouTube',
-    platformIcon: 'https://i.imgur.com/8H35ptZ.png',
-    thumbnail: 'https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'Jack Harlow: From Louisville to Stardom',
-    source: '@jackharlow',
-    description: 'Documentary explores Jack Harlow\'s rise to fame. The Kentucky native shares personal stories, struggles, and triumphs on his journey to becoming one of rap\'s brightest stars.',
-    timeAgo: '18h ago',
-    url: 'https://www.youtube.com/watch?v=jack-harlow-documentary',
-  },
-  {
-    id: 19,
-    platform: 'TikTok',
-    platformIcon: 'https://i.imgur.com/K2FKVUP.png',
-    thumbnail: 'https://images.pexels.com/photos/1190298/pexels-photo-1190298.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'SZA Shares Vocal Warm-Up Routine',
-    source: '@sza',
-    description: 'Fans get rare glimpse into SZA\'s pre-show preparation. The R&B/rap artist demonstrates her vocal exercises, offering insight into maintaining her signature smooth sound.',
-    timeAgo: '19h ago',
-    url: 'https://www.tiktok.com/@sza/video/vocal-warmup-routine',
-  },
-  {
-    id: 20,
-    platform: 'Web',
-    platformIcon: 'https://i.imgur.com/aXfHxEZ.png',
-    thumbnail: 'https://images.pexels.com/photos/1105666/pexels-photo-1105666.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: '50 Cent Producing New Crime Drama Series',
-    source: 'Hollywood Reporter',
-    description: 'Curtis Jackson expands his television empire with new show. The hip-hop mogul continues his success in entertainment, bringing authentic street stories to mainstream audiences.',
-    timeAgo: '20h ago',
-    url: 'https://www.hollywoodreporter.com/tv/50-cent-new-crime-drama',
-  },
-  {
-    id: 21,
-    platform: 'Instagram',
-    platformIcon: 'https://i.imgur.com/vkcuEzE.png',
-    thumbnail: 'https://images.pexels.com/photos/1644888/pexels-photo-1644888.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'Gunna Released from Prison, Plans Comeback',
-    source: '@gunna',
-    description: 'Atlanta rapper announces return to music after legal troubles. Gunna expresses gratitude to fans and promises new music that reflects his personal growth and experiences.',
-    timeAgo: '21h ago',
-    url: 'https://www.instagram.com/p/gunna-comeback-announcement',
-  },
-  {
-    id: 22,
-    platform: 'YouTube',
-    platformIcon: 'https://i.imgur.com/8H35ptZ.png',
-    thumbnail: 'https://images.pexels.com/photos/1540406/pexels-photo-1540406.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'DaBaby Collaborates with International Artists',
-    source: '@dababy',
-    description: 'Charlotte rapper goes global with new international features. DaBaby\'s infectious energy and versatile flow make him the perfect collaborator for artists across different markets.',
-    timeAgo: '22h ago',
-    url: 'https://www.youtube.com/watch?v=dababy-international-collab',
-  },
-  {
-    id: 23,
-    platform: 'TikTok',
-    platformIcon: 'https://i.imgur.com/K2FKVUP.png',
-    thumbnail: 'https://images.pexels.com/photos/1389429/pexels-photo-1389429.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'Latto Freestyle Goes Platinum on TikTok',
-    source: '@latto',
-    description: 'Atlanta\'s Latto proves why she\'s one of the hottest rappers out. Her impromptu freestyle showcases her lyrical ability and commanding presence, racking up millions of plays.',
-    timeAgo: '23h ago',
-    url: 'https://www.tiktok.com/@latto/video/freestyle-platinum',
-  },
-  {
-    id: 24,
-    platform: 'Web',
-    platformIcon: 'https://i.imgur.com/aXfHxEZ.png',
-    thumbnail: 'https://images.pexels.com/photos/1864642/pexels-photo-1864642.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'Eminem Surprises Fans with New EP',
-    source: 'Pitchfork',
-    description: 'Marshall Mathers drops unexpected project without warning. The Detroit legend reminds everyone why he\'s considered one of the greatest, delivering technical prowess and raw emotion.',
-    timeAgo: '1d ago',
-    url: 'https://pitchfork.com/news/eminem-surprise-ep',
-  },
-  {
-    id: 25,
-    platform: 'Instagram',
-    platformIcon: 'https://i.imgur.com/vkcuEzE.png',
-    thumbnail: 'https://images.pexels.com/photos/2102934/pexels-photo-2102934.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'Nicki Minaj Breaks Streaming Record',
-    source: '@nickiminaj',
-    description: 'The Queen of Rap achieves another milestone on Spotify. Nicki\'s latest album surpasses 500 million streams in record time, cementing her status as a streaming powerhouse.',
-    timeAgo: '1d ago',
-    url: 'https://www.instagram.com/p/nickiminaj-streaming-record',
-  },
-  {
-    id: 26,
-    platform: 'YouTube',
-    platformIcon: 'https://i.imgur.com/8H35ptZ.png',
-    thumbnail: 'https://images.pexels.com/photos/1699161/pexels-photo-1699161.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'Polo G Documentary Chronicles His Journey',
-    source: '@polo.capalot',
-    description: 'Chicago rapper shares emotional story of his rise. Polo G opens up about losing friends, overcoming adversity, and using music as therapy to process his experiences.',
-    timeAgo: '1d ago',
-    url: 'https://www.youtube.com/watch?v=polo-g-documentary',
-  },
-  {
-    id: 27,
-    platform: 'TikTok',
-    platformIcon: 'https://i.imgur.com/K2FKVUP.png',
-    thumbnail: 'https://images.pexels.com/photos/1047442/pexels-photo-1047442.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'GloRilla Dance Moves Take Over Platform',
-    source: '@glorillapimp',
-    description: 'Memphis rapper\'s signature moves become viral sensation. GloRilla\'s authentic personality and infectious energy have users everywhere recreating her iconic dance routines.',
-    timeAgo: '1d ago',
-    url: 'https://www.tiktok.com/@glorillapimp/video/dance-moves-viral',
-  },
-  {
-    id: 28,
-    platform: 'Web',
-    platformIcon: 'https://i.imgur.com/aXfHxEZ.png',
-    thumbnail: 'https://images.pexels.com/photos/1047930/pexels-photo-1047930.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'Logic Announces Return to Music',
-    source: 'Billboard',
-    description: 'Rapper comes out of retirement with new album announcement. Logic promises a return to the sound that made him famous, addressing fan concerns and reigniting excitement.',
-    timeAgo: '1d ago',
-    url: 'https://www.billboard.com/music/logic-return-announcement',
-  },
-  {
-    id: 29,
-    platform: 'Instagram',
-    platformIcon: 'https://i.imgur.com/vkcuEzE.png',
-    thumbnail: 'https://images.pexels.com/photos/1190298/pexels-photo-1190298.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'Young Thug Trial Update: Latest Developments',
-    source: '@wsj',
-    description: 'New information emerges in high-profile RICO case. The Atlanta rapper\'s legal team presents compelling arguments as the hip-hop community watches closely.',
-    timeAgo: '1d ago',
-    url: 'https://www.instagram.com/p/young-thug-trial-update',
-  },
-  {
-    id: 30,
-    platform: 'YouTube',
-    platformIcon: 'https://i.imgur.com/8H35ptZ.png',
-    thumbnail: 'https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'Roddy Ricch Previews New Album Tracks',
-    source: '@roddyricch',
-    description: 'Compton rapper shares snippets of upcoming project. Roddy Ricch\'s melodic style and authentic storytelling have fans counting down the days until the official release.',
-    timeAgo: '1d ago',
-    url: 'https://www.youtube.com/watch?v=roddy-ricch-album-preview',
-  },
-  {
-    id: 31,
-    platform: 'TikTok',
-    platformIcon: 'https://i.imgur.com/K2FKVUP.png',
-    thumbnail: 'https://images.pexels.com/photos/1763075/pexels-photo-1763075.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'Saweetie Cooking Series Goes Viral',
-    source: '@saweetie',
-    description: 'Bay Area rapper combines music with culinary content. Saweetie\'s unique personality shines through as she shares her famous recipes, connecting with fans in unexpected ways.',
-    timeAgo: '2d ago',
-    url: 'https://www.tiktok.com/@saweetie/video/cooking-series',
-  },
-  {
-    id: 32,
-    platform: 'Web',
-    platformIcon: 'https://i.imgur.com/aXfHxEZ.png',
-    thumbnail: 'https://images.pexels.com/photos/1387037/pexels-photo-1387037.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'Dr. Dre Working on Final Album',
-    source: 'Complex',
-    description: 'Hip-hop legend hints at one last project before retirement. Dr. Dre teases collaborations with both veteran artists and new talent, promising a fitting end to his legendary career.',
-    timeAgo: '2d ago',
-    url: 'https://www.complex.com/music/dr-dre-final-album',
-  },
-  {
-    id: 33,
-    platform: 'Instagram',
-    platformIcon: 'https://i.imgur.com/vkcuEzE.png',
-    thumbnail: 'https://images.pexels.com/photos/1035682/pexels-photo-1035682.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'Offset Solo Album Tops Charts',
-    source: '@offsetyrn',
-    description: 'Migos member proves his solo star power. Offset\'s debut solo project showcases his versatility and growth as an artist, earning critical acclaim and commercial success.',
-    timeAgo: '2d ago',
-    url: 'https://www.instagram.com/p/offset-solo-album-charts',
-  },
-  {
-    id: 34,
-    platform: 'YouTube',
-    platformIcon: 'https://i.imgur.com/8H35ptZ.png',
-    thumbnail: 'https://images.pexels.com/photos/1311518/pexels-photo-1311518.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'Baby Keem & Kendrick Studio Session',
-    source: '@babykeem',
-    description: 'Cousins reunite for highly anticipated collaboration. Baby Keem and Kendrick Lamar\'s creative chemistry produces magic, with fans eagerly awaiting the final product.',
-    timeAgo: '2d ago',
-    url: 'https://www.youtube.com/watch?v=baby-keem-kendrick-studio',
-  },
-  {
-    id: 35,
-    platform: 'TikTok',
-    platformIcon: 'https://i.imgur.com/K2FKVUP.png',
-    thumbnail: 'https://images.pexels.com/photos/1190297/pexels-photo-1190297.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'Yeat Sound Challenge Breaks Records',
-    source: '@yeat',
-    description: 'Underground sensation takes TikTok by storm. Yeat\'s unique sound and aesthetic resonate with Gen Z, making him one of the platform\'s most viral artists.',
-    timeAgo: '2d ago',
-  },
-  {
-    id: 36,
-    platform: 'Web',
-    platformIcon: 'https://i.imgur.com/aXfHxEZ.png',
-    thumbnail: 'https://images.pexels.com/photos/1105666/pexels-photo-1105666.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'Kanye West Planning New Sunday Service',
-    source: 'TMZ',
-    description: 'Ye announces return of his spiritual musical gatherings. Despite controversies, Kanye continues to innovate and blur lines between hip-hop, gospel, and performance art.',
-    timeAgo: '2d ago',
-  },
-  {
-    id: 37,
-    platform: 'Instagram',
-    platformIcon: 'https://i.imgur.com/vkcuEzE.png',
-    thumbnail: 'https://images.pexels.com/photos/1644888/pexels-photo-1644888.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'Lil Durk Charity Event Raises Millions',
-    source: '@lildurk',
-    description: 'Chicago rapper gives back to his community. Durk\'s annual event provides resources for underprivileged youth, showing the positive impact hip-hop artists can have.',
-    timeAgo: '2d ago',
-  },
-  {
-    id: 38,
-    platform: 'YouTube',
-    platformIcon: 'https://i.imgur.com/8H35ptZ.png',
-    thumbnail: 'https://images.pexels.com/photos/1540406/pexels-photo-1540406.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'City Girls Talk Breakup and New Music',
-    source: '@citygirls',
-    description: 'Miami duo opens up about going separate ways. Despite the split, both JT and Yung Miami express mutual respect and hint at future solo projects.',
-    timeAgo: '2d ago',
-  },
-  {
-    id: 39,
-    platform: 'TikTok',
-    platformIcon: 'https://i.imgur.com/K2FKVUP.png',
-    thumbnail: 'https://images.pexels.com/photos/1389429/pexels-photo-1389429.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'Sexyy Red Meme Takes Over Internet',
-    source: '@sexyyred',
-    description: 'St. Louis rapper becomes unexpected meme queen. Sexyy Red\'s unfiltered personality and memorable moments make her one of social media\'s most entertaining figures.',
-    timeAgo: '2d ago',
-  },
-  {
-    id: 40,
-    platform: 'Web',
-    platformIcon: 'https://i.imgur.com/aXfHxEZ.png',
-    thumbnail: 'https://images.pexels.com/photos/1864642/pexels-photo-1864642.jpeg?auto=compress&cs=tinysrgb&w=800',
-    title: 'Hip-Hop Turns 50: Special Celebration',
-    source: 'The Source',
-    description: 'The culture celebrates five decades of influence. From the Bronx to worldwide phenomenon, hip-hop\'s journey is honored with special events, documentaries, and all-star performances.',
-    timeAgo: '3d ago',
-  },
 ];
 
 const FILTERS = [
-  { name: 'All', colors: ['#60a5fa', '#3b82f6'] },
-  { name: 'Instagram', colors: ['#E1306C', '#C13584'] },
-  { name: 'Web', colors: ['#6B7280', '#4B5563'] },
-  { name: 'YouTube', colors: ['#FF0000', '#DC143C'] },
-  { name: 'TikTok', colors: ['#000000', '#69C9D0'] },
+  { name: 'Posts', colors: ['#60a5fa', '#3b82f6'] },
+  { name: 'Stories', colors: ['#fb923c', '#f97316'] },
 ];
 
 export default function FeedScreen() {
   const insets = useSafeAreaInsets();
-  const [selectedFilter, setSelectedFilter] = useState('All');
+  const [selectedFilter, setSelectedFilter] = useState('Posts');
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
+  const [showAddFeedModal, setShowAddFeedModal] = useState(false);
+  const [feedUrl, setFeedUrl] = useState('');
   const toastOpacity = useRef(new Animated.Value(0)).current;
   const toastTranslateY = useRef(new Animated.Value(-20)).current;
 
@@ -518,11 +127,32 @@ export default function FeedScreen() {
     showCustomToast('Link copied to clipboard!');
   };
 
+  const handleAddFeed = () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+    setShowAddFeedModal(true);
+  };
 
-  const filteredFeed = FEED_DATA.filter(item => {
-    if (selectedFilter === 'All') return true;
-    return item.platform === selectedFilter;
-  });
+  const handleCloseAddFeedModal = () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
+    setShowAddFeedModal(false);
+    setFeedUrl('');
+  };
+
+  const handleSubmitFeed = () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
+    }
+    console.log('Adding feed:', feedUrl);
+    showCustomToast('Feed added successfully!');
+    setShowAddFeedModal(false);
+    setFeedUrl('');
+  };
+
+  const filteredFeed = FEED_DATA;
 
   return (
     <View style={[styles.container, { paddingTop: insets.top + 8 }]}>
@@ -547,46 +177,72 @@ export default function FeedScreen() {
           <Text style={styles.pageTitleBold}>Feed</Text>
         </View>
 
-        <View style={styles.statsRow}>
-          <View style={styles.statBox}>
-            <Text style={styles.statValue}>{FEED_DATA.length}</Text>
-            <Text style={styles.statLabel}>Articles</Text>
+        <View style={styles.topSection}>
+          <View style={styles.statsRow}>
+            <View style={styles.statBox}>
+              <Text style={styles.statValue}>{FEED_DATA.length}</Text>
+              <Text style={styles.statLabel}>Articles</Text>
+            </View>
+            <View style={styles.statBox}>
+              <Text style={styles.statValue}>4</Text>
+              <Text style={styles.statLabel}>Sources</Text>
+            </View>
+            <View style={styles.statBox}>
+              <Text style={styles.statValue}>6</Text>
+              <Text style={styles.statLabel}>Platforms</Text>
+            </View>
           </View>
-          <View style={styles.statBox}>
-            <Text style={styles.statValue}>4</Text>
-            <Text style={styles.statLabel}>Sources</Text>
-          </View>
-          <View style={styles.statBox}>
-            <Text style={styles.statValue}>6</Text>
-            <Text style={styles.statLabel}>Platforms</Text>
-          </View>
+          <TouchableOpacity
+            onPress={handleAddFeed}
+            activeOpacity={0.7}
+            style={styles.addFeedButton}
+          >
+            <LinearGradient
+              colors={['#60a5fa', '#3b82f6']}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.addFeedButtonInner}
+            >
+              <Plus color="#ffffff" size={18} strokeWidth={2.5} />
+              <Text style={styles.addFeedButtonText}>Add Feed</Text>
+            </LinearGradient>
+          </TouchableOpacity>
         </View>
 
-        <ScrollView
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          style={styles.filterBar}
-          contentContainerStyle={styles.filterBarContent}
-        >
-          {FILTERS.map((filter) => (
-            <TouchableOpacity
-              key={filter.name}
-              onPress={() => handleFilterPress(filter.name)}
-              activeOpacity={0.7}
-            >
-              <LinearGradient
-                colors={selectedFilter === filter.name ? filter.colors : ['rgba(255, 255, 255, 0.06)', 'rgba(255, 255, 255, 0.03)']}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-                style={styles.filterButton}
-              >
-                <Text style={[styles.filterText, selectedFilter === filter.name && styles.filterTextActive]}>
-                  {filter.name}
-                </Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
+        <View style={styles.filterToggleContainer}>
+          <View style={styles.filterToggleBackground}>
+            {FILTERS.map((filter, index) => {
+              const isSelected = selectedFilter === filter.name;
+              return (
+                <TouchableOpacity
+                  key={filter.name}
+                  onPress={() => handleFilterPress(filter.name)}
+                  activeOpacity={0.8}
+                  style={styles.filterToggleOption}
+                >
+                  {isSelected ? (
+                    <LinearGradient
+                      colors={filter.colors}
+                      start={{ x: 0, y: 0 }}
+                      end={{ x: 1, y: 1 }}
+                      style={styles.filterToggleSelected}
+                    >
+                      <Text style={styles.filterToggleTextActive}>
+                        {filter.name}
+                      </Text>
+                    </LinearGradient>
+                  ) : (
+                    <View style={styles.filterToggleUnselected}>
+                      <Text style={styles.filterToggleText}>
+                        {filter.name}
+                      </Text>
+                    </View>
+                  )}
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+        </View>
 
         <View style={styles.feedList}>
           {filteredFeed.map((item, index) => (
@@ -676,6 +332,57 @@ export default function FeedScreen() {
         </Animated.View>
       )}
 
+      <Modal
+        visible={showAddFeedModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={handleCloseAddFeedModal}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Add Feed</Text>
+              <TouchableOpacity
+                onPress={handleCloseAddFeedModal}
+                activeOpacity={0.7}
+                style={styles.modalCloseButton}
+              >
+                <X color="#ffffff" size={20} strokeWidth={2} />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalLabel}>Feed URL</Text>
+              <View style={styles.modalInputWrapper}>
+                <TextInput
+                  style={styles.modalInput}
+                  placeholder="https://..."
+                  placeholderTextColor="rgba(255, 255, 255, 0.3)"
+                  value={feedUrl}
+                  onChangeText={setFeedUrl}
+                  autoCapitalize="none"
+                  autoCorrect={false}
+                />
+              </View>
+              <TouchableOpacity
+                onPress={handleSubmitFeed}
+                activeOpacity={0.8}
+                style={[styles.modalSubmitButton, !feedUrl && styles.modalSubmitButtonDisabled]}
+                disabled={!feedUrl}
+              >
+                <LinearGradient
+                  colors={['#60a5fa', '#3b82f6']}
+                  start={{ x: 0, y: 0 }}
+                  end={{ x: 1, y: 1 }}
+                  style={styles.modalSubmitButtonInner}
+                >
+                  <Text style={styles.modalSubmitButtonText}>Add Feed</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
     </View>
   );
 }
@@ -730,10 +437,36 @@ const styles = StyleSheet.create({
     letterSpacing: -1.2,
     lineHeight: 50,
   },
+  topSection: {
+    gap: 16,
+    marginBottom: 24,
+  },
   statsRow: {
     flexDirection: 'row',
     gap: 12,
-    marginBottom: 24,
+  },
+  addFeedButton: {
+    borderRadius: 16,
+    overflow: 'hidden',
+    shadowColor: '#60a5fa',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  addFeedButtonInner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    gap: 8,
+  },
+  addFeedButtonText: {
+    color: '#ffffff',
+    fontSize: 14,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.2,
   },
   statBox: {
     flex: 1,
@@ -758,31 +491,45 @@ const styles = StyleSheet.create({
     letterSpacing: 0.2,
     textTransform: 'uppercase',
   },
-  filterBar: {
+  filterToggleContainer: {
     marginBottom: 24,
   },
-  filterBarContent: {
-    gap: 8,
-    paddingRight: 20,
+  filterToggleBackground: {
+    flexDirection: 'row',
+    borderRadius: 20,
+    padding: 4,
+    backgroundColor: '#1a1a1a',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
   },
-  filterButton: {
+  filterToggleOption: {
+    flex: 1,
+  },
+  filterToggleSelected: {
+    paddingVertical: 14,
     paddingHorizontal: 20,
-    paddingVertical: 10,
     borderRadius: 16,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  filterText: {
-    color: 'rgba(255, 255, 255, 0.6)',
+  filterToggleUnselected: {
+    paddingVertical: 14,
+    paddingHorizontal: 20,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  filterToggleText: {
+    color: 'rgba(255, 255, 255, 0.4)',
     fontSize: 14,
     fontFamily: 'Archivo-Bold',
     letterSpacing: -0.2,
   },
-  filterTextActive: {
+  filterToggleTextActive: {
     color: '#ffffff',
+    fontSize: 14,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.2,
   },
   feedList: {
     gap: 20,
@@ -957,5 +704,84 @@ const styles = StyleSheet.create({
     fontFamily: 'Archivo-Bold',
     letterSpacing: -0.4,
     flex: 1,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.9)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  modalContainer: {
+    width: '100%',
+    backgroundColor: '#1a1a1a',
+    borderRadius: 24,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+    overflow: 'hidden',
+  },
+  modalHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  modalTitle: {
+    color: '#ffffff',
+    fontSize: 20,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.4,
+  },
+  modalCloseButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    padding: 20,
+    gap: 16,
+  },
+  modalLabel: {
+    color: '#ffffff',
+    fontSize: 15,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.3,
+  },
+  modalInputWrapper: {
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 255, 255, 0.1)',
+  },
+  modalInput: {
+    paddingHorizontal: 16,
+    paddingVertical: 14,
+    color: '#ffffff',
+    fontSize: 15,
+    fontFamily: 'Inter-Regular',
+  },
+  modalSubmitButton: {
+    borderRadius: 16,
+    overflow: 'hidden',
+    marginTop: 8,
+  },
+  modalSubmitButtonDisabled: {
+    opacity: 0.5,
+  },
+  modalSubmitButtonInner: {
+    paddingVertical: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  modalSubmitButtonText: {
+    color: '#ffffff',
+    fontSize: 16,
+    fontFamily: 'Archivo-Bold',
+    letterSpacing: -0.3,
   },
 });

@@ -34,15 +34,6 @@ const PLATFORM_STATS = [
     color: ['#E1306C', '#C13584']
   },
   {
-    name: 'TikTok',
-    followers: '18.3K',
-    growth: '+5%',
-    growthUp: true,
-    totalReach: '9.8K',
-    icon: 'https://i.imgur.com/K2FKVUP.png',
-    color: ['#000000', '#333333']
-  },
-  {
     name: 'YouTube',
     followers: '3.7K',
     growth: '+2%',
@@ -52,31 +43,13 @@ const PLATFORM_STATS = [
     color: ['#FF0000', '#DC143C']
   },
   {
-    name: 'Snapchat',
-    followers: '8.7K',
-    growth: '+4%',
+    name: 'TikTok',
+    followers: '18.3K',
+    growth: '+5%',
     growthUp: true,
-    totalReach: '1.5K',
-    icon: 'https://i.imgur.com/XF3FRka.png',
-    color: ['#FFFC00', '#FFA500']
-  },
-  {
-    name: 'Twitter',
-    followers: '1.2K',
-    growth: '-1%',
-    growthUp: false,
-    totalReach: '890',
-    icon: 'https://i.imgur.com/fPOjKNr.png',
-    color: ['#1DA1F2', '#1a8cd8']
-  },
-  {
-    name: 'Facebook',
-    followers: '2.6K',
-    growth: '+3%',
-    growthUp: true,
-    totalReach: '1.2K',
-    icon: 'https://i.imgur.com/zfY36en.png',
-    color: ['#1877F2', '#0a5fd1']
+    totalReach: '9.8K',
+    icon: 'https://i.imgur.com/K2FKVUP.png',
+    color: ['#000000', '#333333']
   },
 ];
 

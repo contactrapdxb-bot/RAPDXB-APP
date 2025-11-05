@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, TextInp
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ArrowLeft, Upload, Link, Calendar, X, Image as ImageIcon, Video, Check, Plus, Globe } from 'lucide-react-native';
+import { ArrowLeft, Upload, Link, Calendar, X, Image as ImageIcon, Video, Check, Plus, Globe, Mic, MicOff } from 'lucide-react-native';
 import Svg, { Circle, Defs, RadialGradient as SvgRadialGradient, Stop } from 'react-native-svg';
 import * as Haptics from 'expo-haptics';
 import { useState, useRef, useEffect } from 'react';
@@ -62,6 +62,8 @@ export default function PostScreen() {
   const [tags, setTags] = useState<string[]>([]);
   const [mediaLink, setMediaLink] = useState('');
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [isRecordingTitle, setIsRecordingTitle] = useState(false);
+  const [isRecordingCaption, setIsRecordingCaption] = useState(false);
 
   const [refreshing, setRefreshing] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -476,18 +478,33 @@ export default function PostScreen() {
             <View style={styles.inputGroup}>
               <View style={styles.labelRow}>
                 <Text style={styles.labelDark}>Title</Text>
-                <View style={styles.labelBadgeDark}>
-                  <Text style={styles.labelBadgeTextDark}>Required</Text>
+                <View style={contentType === 'reel' ? styles.labelBadgeOptionalDark : styles.labelBadgeDark}>
+                  <Text style={contentType === 'reel' ? styles.labelBadgeTextOptionalDark : styles.labelBadgeTextDark}>
+                    {contentType === 'reel' ? 'Optional' : 'Required'}
+                  </Text>
                 </View>
               </View>
-              <View style={styles.glassInputWrapperDark}>
-                <TextInput
-                  style={styles.inputDark}
-                  placeholder="Enter title..."
-                  placeholderTextColor="rgba(0, 0, 0, 0.4)"
-                  value={title}
-                  onChangeText={setTitle}
-                />
+              <View style={styles.inputWithMicContainer}>
+                <View style={[styles.glassInputWrapperDark, styles.flexInput]}>
+                  <TextInput
+                    style={styles.inputDark}
+                    placeholder="Enter title..."
+                    placeholderTextColor="rgba(0, 0, 0, 0.4)"
+                    value={title}
+                    onChangeText={setTitle}
+                  />
+                </View>
+                <TouchableOpacity
+                  onPress={() => isRecordingTitle ? setIsRecordingTitle(false) : setIsRecordingTitle(true)}
+                  activeOpacity={0.7}
+                  style={[styles.micButton, isRecordingTitle && styles.micButtonActive]}
+                >
+                  {isRecordingTitle ? (
+                    <MicOff color="#ffffff" size={20} strokeWidth={2.5} />
+                  ) : (
+                    <Mic color="#000000" size={20} strokeWidth={2.5} />
+                  )}
+                </TouchableOpacity>
               </View>
             </View>
 
@@ -498,17 +515,30 @@ export default function PostScreen() {
                   <Text style={styles.labelBadgeTextOptionalDark}>Optional</Text>
                 </View>
               </View>
-              <View style={styles.glassInputWrapperDark}>
-                <TextInput
-                  style={[styles.inputDark, styles.textArea]}
-                  placeholder="Write your caption..."
-                  placeholderTextColor="rgba(0, 0, 0, 0.4)"
-                  value={caption}
-                  onChangeText={setCaption}
-                  multiline
-                  numberOfLines={5}
-                  textAlignVertical="top"
-                />
+              <View style={styles.inputWithMicContainer}>
+                <View style={[styles.glassInputWrapperDark, styles.flexInput]}>
+                  <TextInput
+                    style={[styles.inputDark, styles.textArea]}
+                    placeholder="Write your caption..."
+                    placeholderTextColor="rgba(0, 0, 0, 0.4)"
+                    value={caption}
+                    onChangeText={setCaption}
+                    multiline
+                    numberOfLines={5}
+                    textAlignVertical="top"
+                  />
+                </View>
+                <TouchableOpacity
+                  onPress={() => isRecordingCaption ? setIsRecordingCaption(false) : setIsRecordingCaption(true)}
+                  activeOpacity={0.7}
+                  style={[styles.micButton, isRecordingCaption && styles.micButtonActive]}
+                >
+                  {isRecordingCaption ? (
+                    <MicOff color="#ffffff" size={20} strokeWidth={2.5} />
+                  ) : (
+                    <Mic color="#000000" size={20} strokeWidth={2.5} />
+                  )}
+                </TouchableOpacity>
               </View>
             </View>
           </LinearGradient>
@@ -641,11 +671,11 @@ export default function PostScreen() {
           <TouchableOpacity
             style={[
               styles.createButtonWrapper,
-              !title && styles.createButtonDisabled,
+              (contentType === 'post' && !title) && styles.createButtonDisabled,
             ]}
             onPress={handleCreate}
             activeOpacity={0.8}
-            disabled={!title}
+            disabled={contentType === 'post' && !title}
           >
             <LinearGradient
               colors={contentType === 'post'
@@ -984,6 +1014,28 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1.5,
     borderColor: 'rgba(255, 255, 255, 0.35)',
+  },
+  flexInput: {
+    flex: 1,
+  },
+  inputWithMicContainer: {
+    flexDirection: 'row',
+    gap: 12,
+    alignItems: 'flex-start',
+  },
+  micButton: {
+    width: 52,
+    height: 52,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  micButtonActive: {
+    backgroundColor: '#ef4444',
+    borderColor: '#dc2626',
   },
   inputDark: {
     paddingHorizontal: 20,
