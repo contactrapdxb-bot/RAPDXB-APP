@@ -12,9 +12,6 @@ const PLATFORM_DATA = [
   { name: 'Instagram', followers: '21.6K', likes: '743K', icon: 'https://i.imgur.com/vkcuEzE.png', color: '#E1306C' },
   { name: 'TikTok', followers: '18.3K', likes: '146K', icon: 'https://i.imgur.com/K2FKVUP.png', color: '#000000' },
   { name: 'YouTube', followers: '3.7K', likes: '4.5K', icon: 'https://i.imgur.com/8H35ptZ.png', color: '#FF0000' },
-  { name: 'Snapchat', followers: '8.7K', likes: '2.3K', icon: 'https://i.imgur.com/XF3FRka.png', color: '#FFFC00' },
-  { name: 'Twitter', followers: '1.2K', likes: '3.4K', icon: 'https://i.imgur.com/fPOjKNr.png', color: '#1DA1F2' },
-  { name: 'Facebook', followers: '2.6K', likes: '3.1K', icon: 'https://i.imgur.com/zfY36en.png', color: '#1877F2' },
 ];
 
 const MONTHLY_DATA = [
