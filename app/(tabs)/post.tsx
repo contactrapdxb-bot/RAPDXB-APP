@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, TextInp
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
-import { ArrowLeft, Upload, Link, Calendar, X, Image as ImageIcon, Video, Check, Plus, Globe, Mic, MicOff } from 'lucide-react-native';
+import { ArrowLeft, Upload, Link, Calendar, X, Image as ImageIcon, Video, Check, Plus, Globe, Mic } from 'lucide-react-native';
 import Svg, { Circle, Defs, RadialGradient as SvgRadialGradient, Stop } from 'react-native-svg';
 import * as Haptics from 'expo-haptics';
 import { useState, useRef, useEffect } from 'react';
@@ -64,6 +64,8 @@ export default function PostScreen() {
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [isRecordingTitle, setIsRecordingTitle] = useState(false);
   const [isRecordingCaption, setIsRecordingCaption] = useState(false);
+  const recognitionTitle = useRef<any>(null);
+  const recognitionCaption = useRef<any>(null);
 
   const [refreshing, setRefreshing] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -74,6 +76,104 @@ export default function PostScreen() {
   const floatAnim2 = useRef(new Animated.Value(0)).current;
   const floatAnim3 = useRef(new Animated.Value(0)).current;
   const sliderAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    if (Platform.OS === 'web' && typeof window !== 'undefined') {
+      const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+      if (SpeechRecognition) {
+        recognitionTitle.current = new SpeechRecognition();
+        recognitionTitle.current.continuous = true;
+        recognitionTitle.current.interimResults = true;
+        recognitionTitle.current.lang = 'en-US';
+
+        recognitionTitle.current.onresult = (event: any) => {
+          let interimTranscript = '';
+          let finalTranscript = '';
+
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            const transcript = event.results[i][0].transcript;
+            if (event.results[i].isFinal) {
+              finalTranscript += transcript + ' ';
+            } else {
+              interimTranscript += transcript;
+            }
+          }
+
+          if (finalTranscript) {
+            setTitle(prev => prev + finalTranscript);
+          }
+        };
+
+        recognitionCaption.current = new SpeechRecognition();
+        recognitionCaption.current.continuous = true;
+        recognitionCaption.current.interimResults = true;
+        recognitionCaption.current.lang = 'en-US';
+
+        recognitionCaption.current.onresult = (event: any) => {
+          let interimTranscript = '';
+          let finalTranscript = '';
+
+          for (let i = event.resultIndex; i < event.results.length; i++) {
+            const transcript = event.results[i][0].transcript;
+            if (event.results[i].isFinal) {
+              finalTranscript += transcript + ' ';
+            } else {
+              interimTranscript += transcript;
+            }
+          }
+
+          if (finalTranscript) {
+            setCaption(prev => prev + finalTranscript);
+          }
+        };
+      }
+    }
+
+    return () => {
+      if (recognitionTitle.current) {
+        recognitionTitle.current.stop();
+      }
+      if (recognitionCaption.current) {
+        recognitionCaption.current.stop();
+      }
+    };
+  }, []);
+
+  const toggleTitleRecording = () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
+
+    if (!isRecordingTitle) {
+      if (recognitionTitle.current) {
+        recognitionTitle.current.start();
+        setIsRecordingTitle(true);
+      }
+    } else {
+      if (recognitionTitle.current) {
+        recognitionTitle.current.stop();
+        setIsRecordingTitle(false);
+      }
+    }
+  };
+
+  const toggleCaptionRecording = () => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+    }
+
+    if (!isRecordingCaption) {
+      if (recognitionCaption.current) {
+        recognitionCaption.current.start();
+        setIsRecordingCaption(true);
+      }
+    } else {
+      if (recognitionCaption.current) {
+        recognitionCaption.current.stop();
+        setIsRecordingCaption(false);
+      }
+    }
+  };
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -494,15 +594,11 @@ export default function PostScreen() {
                     onChangeText={setTitle}
                   />
                   <TouchableOpacity
-                    onPress={() => isRecordingTitle ? setIsRecordingTitle(false) : setIsRecordingTitle(true)}
+                    onPress={toggleTitleRecording}
                     activeOpacity={0.7}
                     style={[styles.micButtonInside, isRecordingTitle && styles.micButtonActiveInside]}
                   >
-                    {isRecordingTitle ? (
-                      <MicOff color="#ffffff" size={18} strokeWidth={2.5} />
-                    ) : (
-                      <Mic color="#000000" size={18} strokeWidth={2.5} />
-                    )}
+                    <Mic color={isRecordingTitle ? "#ffffff" : "#000000"} size={18} strokeWidth={2.5} />
                   </TouchableOpacity>
                 </View>
               </View>
@@ -528,15 +624,11 @@ export default function PostScreen() {
                     textAlignVertical="top"
                   />
                   <TouchableOpacity
-                    onPress={() => isRecordingCaption ? setIsRecordingCaption(false) : setIsRecordingCaption(true)}
+                    onPress={toggleCaptionRecording}
                     activeOpacity={0.7}
                     style={[styles.micButtonInside, isRecordingCaption && styles.micButtonActiveInside, styles.micButtonCaption]}
                   >
-                    {isRecordingCaption ? (
-                      <MicOff color="#ffffff" size={18} strokeWidth={2.5} />
-                    ) : (
-                      <Mic color="#000000" size={18} strokeWidth={2.5} />
-                    )}
+                    <Mic color={isRecordingCaption ? "#ffffff" : "#000000"} size={18} strokeWidth={2.5} />
                   </TouchableOpacity>
                 </View>
               </View>
