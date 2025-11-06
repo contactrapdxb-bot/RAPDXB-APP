@@ -484,27 +484,27 @@ export default function PostScreen() {
                   </Text>
                 </View>
               </View>
-              <View style={styles.inputWithMicContainer}>
-                <View style={[styles.glassInputWrapperDark, styles.flexInput]}>
+              <View style={styles.glassInputWrapperDark}>
+                <View style={styles.inputWithMicInside}>
                   <TextInput
-                    style={styles.inputDark}
+                    style={styles.inputDarkWithMic}
                     placeholder="Enter title..."
                     placeholderTextColor="rgba(0, 0, 0, 0.4)"
                     value={title}
                     onChangeText={setTitle}
                   />
+                  <TouchableOpacity
+                    onPress={() => isRecordingTitle ? setIsRecordingTitle(false) : setIsRecordingTitle(true)}
+                    activeOpacity={0.7}
+                    style={[styles.micButtonInside, isRecordingTitle && styles.micButtonActiveInside]}
+                  >
+                    {isRecordingTitle ? (
+                      <MicOff color="#ffffff" size={18} strokeWidth={2.5} />
+                    ) : (
+                      <Mic color="#000000" size={18} strokeWidth={2.5} />
+                    )}
+                  </TouchableOpacity>
                 </View>
-                <TouchableOpacity
-                  onPress={() => isRecordingTitle ? setIsRecordingTitle(false) : setIsRecordingTitle(true)}
-                  activeOpacity={0.7}
-                  style={[styles.micButton, isRecordingTitle && styles.micButtonActive]}
-                >
-                  {isRecordingTitle ? (
-                    <MicOff color="#ffffff" size={20} strokeWidth={2.5} />
-                  ) : (
-                    <Mic color="#000000" size={20} strokeWidth={2.5} />
-                  )}
-                </TouchableOpacity>
               </View>
             </View>
 
@@ -515,10 +515,10 @@ export default function PostScreen() {
                   <Text style={styles.labelBadgeTextOptionalDark}>Optional</Text>
                 </View>
               </View>
-              <View style={styles.inputWithMicContainer}>
-                <View style={[styles.glassInputWrapperDark, styles.flexInput]}>
+              <View style={styles.glassInputWrapperDark}>
+                <View style={styles.inputWithMicInside}>
                   <TextInput
-                    style={[styles.inputDark, styles.textArea]}
+                    style={[styles.inputDarkWithMic, styles.textArea]}
                     placeholder="Write your caption..."
                     placeholderTextColor="rgba(0, 0, 0, 0.4)"
                     value={caption}
@@ -527,18 +527,18 @@ export default function PostScreen() {
                     numberOfLines={5}
                     textAlignVertical="top"
                   />
+                  <TouchableOpacity
+                    onPress={() => isRecordingCaption ? setIsRecordingCaption(false) : setIsRecordingCaption(true)}
+                    activeOpacity={0.7}
+                    style={[styles.micButtonInside, isRecordingCaption && styles.micButtonActiveInside, styles.micButtonCaption]}
+                  >
+                    {isRecordingCaption ? (
+                      <MicOff color="#ffffff" size={18} strokeWidth={2.5} />
+                    ) : (
+                      <Mic color="#000000" size={18} strokeWidth={2.5} />
+                    )}
+                  </TouchableOpacity>
                 </View>
-                <TouchableOpacity
-                  onPress={() => isRecordingCaption ? setIsRecordingCaption(false) : setIsRecordingCaption(true)}
-                  activeOpacity={0.7}
-                  style={[styles.micButton, isRecordingCaption && styles.micButtonActive]}
-                >
-                  {isRecordingCaption ? (
-                    <MicOff color="#ffffff" size={20} strokeWidth={2.5} />
-                  ) : (
-                    <Mic color="#000000" size={20} strokeWidth={2.5} />
-                  )}
-                </TouchableOpacity>
               </View>
             </View>
           </LinearGradient>
@@ -1015,27 +1015,34 @@ const styles = StyleSheet.create({
     borderWidth: 1.5,
     borderColor: 'rgba(255, 255, 255, 0.35)',
   },
-  flexInput: {
-    flex: 1,
-  },
-  inputWithMicContainer: {
+  inputWithMicInside: {
     flexDirection: 'row',
-    gap: 12,
-    alignItems: 'flex-start',
+    alignItems: 'center',
   },
-  micButton: {
-    width: 52,
-    height: 52,
-    borderRadius: 16,
-    backgroundColor: 'rgba(255, 255, 255, 0.3)',
-    borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.4)',
+  inputDarkWithMic: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 18,
+    paddingRight: 56,
+    color: '#000000',
+    fontSize: 16,
+    fontFamily: 'Inter-Regular',
+  },
+  micButtonInside: {
+    position: 'absolute',
+    right: 12,
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    backgroundColor: 'rgba(0, 0, 0, 0.1)',
     justifyContent: 'center',
     alignItems: 'center',
   },
-  micButtonActive: {
+  micButtonActiveInside: {
     backgroundColor: '#ef4444',
-    borderColor: '#dc2626',
+  },
+  micButtonCaption: {
+    top: 12,
   },
   inputDark: {
     paddingHorizontal: 20,
