@@ -20,6 +20,7 @@ export default function SignInScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
+      <View style={styles.spacer} />
       <View style={styles.content}>
         <View style={styles.headerSection}>
           <Text style={styles.welcomeText}>Welcome to</Text>
@@ -82,10 +83,13 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000000',
   },
+  spacer: {
+    flex: 0.3,
+  },
   content: {
     flex: 1,
     paddingHorizontal: 28,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     maxWidth: 500,
     width: '100%',

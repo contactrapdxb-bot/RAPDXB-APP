@@ -24,12 +24,12 @@ export default function AccountScreen() {
   const [selectedPlatform, setSelectedPlatform] = useState<any>(null);
   const [connectingPlatform, setConnectingPlatform] = useState(false);
   const [platforms, setPlatforms] = useState([
-    { id: 'instagram', name: 'Instagram', connected: false, icon: 'https://i.imgur.com/vkcuEzE.png', color: ['#E1306C', '#C13584'] },
-    { id: 'tiktok', name: 'TikTok', connected: false, icon: 'https://i.imgur.com/K2FKVUP.png', color: ['#000000', '#333333'] },
-    { id: 'youtube', name: 'YouTube', connected: false, icon: 'https://i.imgur.com/8H35ptZ.png', color: ['#FF0000', '#DC143C'] },
-    { id: 'snapchat', name: 'Snapchat', connected: false, icon: 'https://i.imgur.com/XF3FRka.png', color: ['#FFFC00', '#FFA500'] },
-    { id: 'twitter', name: 'Twitter', connected: false, icon: 'https://i.imgur.com/fPOjKNr.png', color: ['#1DA1F2', '#1a8cd8'] },
-    { id: 'facebook', name: 'Facebook', connected: false, icon: 'https://i.imgur.com/zfY36en.png', color: ['#1877F2', '#0a5fd1'] },
+    { id: 'instagram', name: 'Instagram', connected: false, icon: 'https://i.imgur.com/vkcuEzE.png', color: ['#E1306C', '#C13584'] as [string, string] },
+    { id: 'tiktok', name: 'TikTok', connected: false, icon: 'https://i.imgur.com/K2FKVUP.png', color: ['#000000', '#333333'] as [string, string] },
+    { id: 'youtube', name: 'YouTube', connected: false, icon: 'https://i.imgur.com/8H35ptZ.png', color: ['#FF0000', '#DC143C'] as [string, string] },
+    { id: 'snapchat', name: 'Snapchat', connected: false, icon: 'https://i.imgur.com/XF3FRka.png', color: ['#FFFC00', '#FFA500'] as [string, string] },
+    { id: 'twitter', name: 'Twitter', connected: false, icon: 'https://i.imgur.com/fPOjKNr.png', color: ['#1DA1F2', '#1a8cd8'] as [string, string] },
+    { id: 'facebook', name: 'Facebook', connected: false, icon: 'https://i.imgur.com/zfY36en.png', color: ['#1877F2', '#0a5fd1'] as [string, string] },
   ]);
 
   const handleBack = () => {
@@ -267,7 +267,7 @@ export default function AccountScreen() {
           <Text style={styles.sectionTitle}>Connected Accounts</Text>
           <View style={styles.platformsGrid}>
             {platforms.map((platform) => (
-              <View key={platform.id} style={styles.platformItem}>
+              <View key={`${platform.id}-${platform.connected}`} style={styles.platformItem}>
                 {platform.connected ? (
                   <LinearGradient
                     colors={platform.color}
