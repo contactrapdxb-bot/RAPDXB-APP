@@ -89,6 +89,7 @@ const styles = StyleSheet.create({
   },
   headerSection: {
     marginBottom: 48,
+    alignItems: 'center',
   },
   welcomeText: {
     fontSize: 20,
@@ -96,12 +97,14 @@ const styles = StyleSheet.create({
     color: 'rgba(255, 255, 255, 0.5)',
     marginBottom: 8,
     letterSpacing: -0.3,
+    textAlign: 'center',
   },
   brandName: {
     fontSize: 52,
     fontFamily: 'Archivo-Bold',
     color: '#ffffff',
     letterSpacing: -2,
+    textAlign: 'center',
   },
   formSection: {
     gap: 20,
