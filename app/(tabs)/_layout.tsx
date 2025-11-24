@@ -8,7 +8,7 @@ import { usePathname } from 'expo-router';
 import { useSharedValue, withSpring, useAnimatedStyle } from 'react-native-reanimated';
 import Animated from 'react-native-reanimated';
 
-function CommunicationIcon({ focused }: { focused: boolean }) {
+function HomeIcon({ focused }: { focused: boolean }) {
   return (
     <View style={[styles.tabIconOuter, focused && styles.tabIconOuterFocused]}>
       <LinearGradient
@@ -18,7 +18,7 @@ function CommunicationIcon({ focused }: { focused: boolean }) {
         style={styles.tabIconGradient}>
         <Svg width="24" height="24" viewBox="0 0 24 24" fill="none">
           <Path
-            d="M18.5 16C20.433 16 22 13.0899 22 9.5C22 5.91015 20.433 3 18.5 3M18.5 16C16.567 16 15 13.0899 15 9.5C15 5.91015 16.567 3 18.5 3M18.5 16L5.44354 13.6261C4.51605 13.4575 4.05231 13.3731 3.67733 13.189C2.91447 12.8142 2.34636 12.1335 2.11414 11.3159C2 10.914 2 10.4427 2 9.5C2 8.5573 2 8.08595 2.11414 7.68407C2.34636 6.86649 2.91447 6.18577 3.67733 5.81105C4.05231 5.62685 4.51605 5.54254 5.44354 5.3739L18.5 3M5 14L5.39386 19.514C5.43126 20.0376 5.44996 20.2995 5.56387 20.4979C5.66417 20.6726 5.81489 20.8129 5.99629 20.9005C6.20232 21 6.46481 21 6.98979 21H8.7722C9.37234 21 9.67242 21 9.89451 20.8803C10.0897 20.7751 10.2443 20.6081 10.3342 20.4055C10.4365 20.1749 10.4135 19.8757 10.3675 19.2773L10 14.5"
+            d="M9 21V13.6C9 13.0399 9 12.7599 9.109 12.546C9.20487 12.3578 9.35785 12.2049 9.54601 12.109C9.75992 12 10.0399 12 10.6 12H13.4C13.9601 12 14.2401 12 14.454 12.109C14.6422 12.2049 14.7951 12.3578 14.891 12.546C15 12.7599 15 13.0399 15 13.6V21M11.0177 2.76403L4.23539 8.03915C3.78202 8.39176 3.55534 8.56807 3.39203 8.78887C3.24737 8.98446 3.1396 9.2048 3.07403 9.43907C3 9.70355 3 9.99073 3 10.5651V17.8C3 18.9201 3 19.4802 3.21799 19.908C3.40973 20.2843 3.71569 20.5903 4.09202 20.782C4.51984 21 5.07989 21 6.2 21H17.8C18.9201 21 19.4802 21 19.908 20.782C20.2843 20.5903 20.5903 20.2843 20.782 19.908C21 19.4802 21 18.9201 21 17.8V10.5651C21 9.99073 21 9.70355 20.926 9.43907C20.8604 9.2048 20.7526 8.98446 20.608 8.78887C20.4447 8.56807 20.218 8.39176 19.7646 8.03915L12.9823 2.76403C12.631 2.49078 12.4553 2.35415 12.2613 2.30163C12.0902 2.25529 11.9098 2.25529 11.7387 2.30163C11.5447 2.35415 11.369 2.49078 11.0177 2.76403Z"
             stroke={focused ? '#1a1a1a' : '#ffffff'}
             strokeWidth="1.8"
             strokeLinecap="round"
@@ -129,12 +129,12 @@ export default function TabLayout() {
   const pathname = usePathname();
   const translateX = useSharedValue(0);
 
-  const tabs = ['community', 'feed', 'post', 'stats', 'settings'];
+  const tabs = ['home', 'feed', 'post', 'stats', 'settings'];
   let currentIndex = -1;
 
   const isOnHome = pathname === '/' || pathname === '/(tabs)' || pathname === '/(tabs)/' || pathname.includes('/home');
 
-  if (pathname.includes('/community')) {
+  if (isOnHome) {
     currentIndex = 0;
   } else if (pathname.includes('/feed')) {
     currentIndex = 1;
@@ -222,15 +222,15 @@ export default function TabLayout() {
         tabPress: handleTabPress,
       }}>
       <Tabs.Screen
-        name="home"
+        name="community"
         options={{
           href: null,
         }}
       />
       <Tabs.Screen
-        name="community"
+        name="home"
         options={{
-          tabBarIcon: ({ focused }) => <CommunicationIcon focused={!isOnHome && focused} />,
+          tabBarIcon: ({ focused }) => <HomeIcon focused={isOnHome || focused} />,
         }}
       />
       <Tabs.Screen

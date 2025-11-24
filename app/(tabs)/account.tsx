@@ -31,7 +31,9 @@ export default function AccountScreen() {
   const [showConnectionModal, setShowConnectionModal] = useState(false);
   const [selectedPlatform, setSelectedPlatform] = useState<any>(null);
   const [connectingPlatform, setConnectingPlatform] = useState(false);
-  const [platforms, setPlatforms] = useState(SOCIAL_PLATFORMS);
+  const [platforms, setPlatforms] = useState(() =>
+    SOCIAL_PLATFORMS.map(p => ({ ...p, connected: false }))
+  );
 
   const handleBack = () => {
     if (Platform.OS !== 'web') {
