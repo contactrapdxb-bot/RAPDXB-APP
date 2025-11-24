@@ -9,9 +9,9 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 
 const SOCIAL_PLATFORMS = [
-  { id: 'instagram', name: 'Instagram', connected: true, icon: 'https://i.imgur.com/vkcuEzE.png', color: ['#E1306C', '#C13584'] },
-  { id: 'tiktok', name: 'TikTok', connected: true, icon: 'https://i.imgur.com/K2FKVUP.png', color: ['#000000', '#333333'] },
-  { id: 'youtube', name: 'YouTube', connected: true, icon: 'https://i.imgur.com/8H35ptZ.png', color: ['#FF0000', '#DC143C'] },
+  { id: 'instagram', name: 'Instagram', connected: false, icon: 'https://i.imgur.com/vkcuEzE.png', color: ['#E1306C', '#C13584'] },
+  { id: 'tiktok', name: 'TikTok', connected: false, icon: 'https://i.imgur.com/K2FKVUP.png', color: ['#000000', '#333333'] },
+  { id: 'youtube', name: 'YouTube', connected: false, icon: 'https://i.imgur.com/8H35ptZ.png', color: ['#FF0000', '#DC143C'] },
   { id: 'snapchat', name: 'Snapchat', connected: false, icon: 'https://i.imgur.com/XF3FRka.png', color: ['#FFFC00', '#FFA500'] },
   { id: 'twitter', name: 'Twitter', connected: false, icon: 'https://i.imgur.com/fPOjKNr.png', color: ['#1DA1F2', '#1a8cd8'] },
   { id: 'facebook', name: 'Facebook', connected: false, icon: 'https://i.imgur.com/zfY36en.png', color: ['#1877F2', '#0a5fd1'] },
