@@ -1,11 +1,11 @@
-import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, Image, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform, ScrollView, Image, Alert, ActivityIndicator, Modal } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeft, User, Bell, Lock, CreditCard, LogOut, Check, Plus, Camera } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 import * as ImagePicker from 'expo-image-picker';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../../lib/supabase';
 
 const SOCIAL_PLATFORMS = [
@@ -28,6 +28,10 @@ export default function AccountScreen() {
   const insets = useSafeAreaInsets();
   const [profileImage, setProfileImage] = useState('https://i.imgur.com/vhILBC1.png');
   const [uploading, setUploading] = useState(false);
+  const [showConnectionModal, setShowConnectionModal] = useState(false);
+  const [selectedPlatform, setSelectedPlatform] = useState<any>(null);
+  const [connectingPlatform, setConnectingPlatform] = useState(false);
+  const [platforms, setPlatforms] = useState(SOCIAL_PLATFORMS);
 
   const handleBack = () => {
     if (Platform.OS !== 'web') {
@@ -118,11 +122,53 @@ export default function AccountScreen() {
     }
   };
 
-  const handleConnect = (platformId: string) => {
+  const handleConnect = (platform: any) => {
     if (Platform.OS !== 'web') {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
-    console.log('Connect platform:', platformId);
+    setSelectedPlatform(platform);
+    setShowConnectionModal(true);
+  };
+
+  const handleConfirmConnection = async () => {
+    if (!selectedPlatform) return;
+
+    setConnectingPlatform(true);
+
+    try {
+      // Simulate connection process
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      // Update platform connection status
+      setPlatforms(prevPlatforms =>
+        prevPlatforms.map(p =>
+          p.id === selectedPlatform.id ? { ...p, connected: true } : p
+        )
+      );
+
+      setShowConnectionModal(false);
+      setSelectedPlatform(null);
+
+      if (Platform.OS !== 'web') {
+        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      }
+    } catch (error) {
+      console.error('Connection error:', error);
+    } finally {
+      setConnectingPlatform(false);
+    }
+  };
+
+  const handleDisconnect = (platform: any) => {
+    if (Platform.OS !== 'web') {
+      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    }
+
+    setPlatforms(prevPlatforms =>
+      prevPlatforms.map(p =>
+        p.id === platform.id ? { ...p, connected: false } : p
+      )
+    );
   };
 
   const handleSettingPress = (settingId: string) => {
@@ -132,11 +178,18 @@ export default function AccountScreen() {
     console.log('Open setting:', settingId);
   };
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
     if (Platform.OS !== 'web') {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     }
-    console.log('Sign out');
+
+    try {
+      await supabase.auth.signOut();
+      router.replace('/sign-in');
+    } catch (error) {
+      console.error('Sign out error:', error);
+      Alert.alert('Error', 'Failed to sign out. Please try again.');
+    }
   };
 
   return (
@@ -214,7 +267,7 @@ export default function AccountScreen() {
         <View style={[styles.section, { marginTop: 32 }]}>
           <Text style={styles.sectionTitle}>Connected Accounts</Text>
           <View style={styles.platformsGrid}>
-            {SOCIAL_PLATFORMS.map((platform) => (
+            {platforms.map((platform) => (
               <View key={platform.id} style={styles.platformItem}>
                 {platform.connected ? (
                   <LinearGradient
@@ -234,9 +287,13 @@ export default function AccountScreen() {
                       </View>
                     </View>
                     <Text style={styles.platformName}>{platform.name}</Text>
-                    <View style={styles.connectedStatus}>
+                    <TouchableOpacity
+                      activeOpacity={0.7}
+                      onPress={() => handleDisconnect(platform)}
+                      style={styles.connectedStatus}
+                    >
                       <Text style={styles.connectedText}>Connected</Text>
-                    </View>
+                    </TouchableOpacity>
                   </LinearGradient>
                 ) : (
                   <View style={styles.platformCardInactive}>
@@ -250,7 +307,7 @@ export default function AccountScreen() {
                     <Text style={styles.platformNameInactive}>{platform.name}</Text>
                     <TouchableOpacity
                       activeOpacity={0.7}
-                      onPress={() => handleConnect(platform.id)}
+                      onPress={() => handleConnect(platform)}
                       style={styles.connectButton}
                     >
                       <Plus color="rgba(255, 255, 255, 0.6)" size={14} strokeWidth={2} />
@@ -304,6 +361,60 @@ export default function AccountScreen() {
           </LinearGradient>
         </TouchableOpacity>
       </ScrollView>
+
+      <Modal
+        visible={showConnectionModal}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setShowConnectionModal(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            {selectedPlatform && (
+              <LinearGradient
+                colors={selectedPlatform.color}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
+                style={styles.modalCard}
+              >
+                <Image
+                  source={{ uri: selectedPlatform.icon }}
+                  style={styles.modalIcon}
+                  resizeMode="contain"
+                />
+                <Text style={styles.modalTitle}>Connect {selectedPlatform.name}</Text>
+                <Text style={styles.modalDescription}>
+                  You'll be redirected to {selectedPlatform.name} to authorize access to your account.
+                </Text>
+
+                <View style={styles.modalButtons}>
+                  <TouchableOpacity
+                    activeOpacity={0.7}
+                    onPress={() => setShowConnectionModal(false)}
+                    style={styles.modalCancelButton}
+                    disabled={connectingPlatform}
+                  >
+                    <Text style={styles.modalCancelText}>Cancel</Text>
+                  </TouchableOpacity>
+
+                  <TouchableOpacity
+                    activeOpacity={0.7}
+                    onPress={handleConfirmConnection}
+                    style={styles.modalConnectButton}
+                    disabled={connectingPlatform}
+                  >
+                    {connectingPlatform ? (
+                      <ActivityIndicator size="small" color="#000000" />
+                    ) : (
+                      <Text style={styles.modalConnectText}>Connect</Text>
+                    )}
+                  </TouchableOpacity>
+                </View>
+              </LinearGradient>
+            )}
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
@@ -592,6 +703,83 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontFamily: 'Archivo-Bold',
     color: '#ffffff',
+    letterSpacing: -0.3,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.85)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+  modalContent: {
+    width: '100%',
+    maxWidth: 400,
+  },
+  modalCard: {
+    borderRadius: 32,
+    padding: 32,
+    alignItems: 'center',
+    gap: 20,
+    shadowColor: '#000000',
+    shadowOffset: { width: 0, height: 12 },
+    shadowOpacity: 0.5,
+    shadowRadius: 24,
+    elevation: 12,
+  },
+  modalIcon: {
+    width: 64,
+    height: 64,
+    marginBottom: 8,
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontFamily: 'Archivo-Bold',
+    color: '#ffffff',
+    letterSpacing: -0.5,
+    textAlign: 'center',
+  },
+  modalDescription: {
+    fontSize: 15,
+    fontFamily: 'Archivo-Regular',
+    color: 'rgba(255, 255, 255, 0.85)',
+    textAlign: 'center',
+    lineHeight: 22,
+  },
+  modalButtons: {
+    flexDirection: 'row',
+    gap: 12,
+    width: '100%',
+    marginTop: 12,
+  },
+  modalCancelButton: {
+    flex: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.15)',
+    borderRadius: 16,
+    paddingVertical: 16,
+    alignItems: 'center',
+    borderWidth: 1.5,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
+  },
+  modalCancelText: {
+    fontSize: 16,
+    fontFamily: 'Archivo-Bold',
+    color: '#ffffff',
+    letterSpacing: -0.3,
+  },
+  modalConnectButton: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    borderRadius: 16,
+    paddingVertical: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 52,
+  },
+  modalConnectText: {
+    fontSize: 16,
+    fontFamily: 'Archivo-Bold',
+    color: '#000000',
     letterSpacing: -0.3,
   },
 });

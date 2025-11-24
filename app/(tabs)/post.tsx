@@ -54,7 +54,6 @@ export default function PostScreen() {
   const [contentType, setContentType] = useState<'post' | 'reel'>('post');
   const [title, setTitle] = useState('');
   const [caption, setCaption] = useState('');
-  const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
   const [scheduleDate, setScheduleDate] = useState<Date | null>(null);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
@@ -230,7 +229,6 @@ export default function PostScreen() {
     setContentType(type);
     setTitle('');
     setCaption('');
-    setSelectedPlatforms([]);
     setTags([]);
     setTagInput('');
     setMediaLink('');
@@ -248,7 +246,7 @@ export default function PostScreen() {
     }
   };
 
-  const handleUploadFile = async () => {
+  const handleUploadFile = async (mediaType: 'photo' | 'video' | 'both') => {
     if (Platform.OS !== 'web') {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
@@ -259,8 +257,15 @@ export default function PostScreen() {
       return;
     }
 
+    let mediaTypes = ImagePicker.MediaTypeOptions.All;
+    if (mediaType === 'photo') {
+      mediaTypes = ImagePicker.MediaTypeOptions.Images;
+    } else if (mediaType === 'video') {
+      mediaTypes = ImagePicker.MediaTypeOptions.Videos;
+    }
+
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: contentType === 'post' ? ImagePicker.MediaTypeOptions.Images : ImagePicker.MediaTypeOptions.All,
+      mediaTypes: mediaTypes,
       allowsEditing: true,
       quality: 1,
     });
@@ -326,35 +331,12 @@ export default function PostScreen() {
     setTags(tags.filter(tag => tag !== tagToRemove));
   };
 
-  const handlePlatformToggle = (platform: string) => {
-    if (Platform.OS !== 'web') {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    }
-
-    if (platform === 'All') {
-      const allPlatforms = contentType === 'post'
-        ? ['Instagram', 'Facebook', 'Twitter', 'Snapchat']
-        : ['Instagram Reels', 'YouTube Shorts', 'TikTok', 'Facebook Reels', 'Snapchat'];
-
-      if (selectedPlatforms.length === allPlatforms.length) {
-        setSelectedPlatforms([]);
-      } else {
-        setSelectedPlatforms(allPlatforms);
-      }
-    } else {
-      setSelectedPlatforms(prev =>
-        prev.includes(platform)
-          ? prev.filter(p => p !== platform)
-          : [...prev, platform]
-      );
-    }
-  };
 
   const handleCreate = () => {
     if (Platform.OS !== 'web') {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Heavy);
     }
-    console.log('Creating', contentType, { title, caption, selectedPlatforms, scheduleDate, tags, mediaLink, selectedPosts: confirmedPosts });
+    console.log('Creating', contentType, { title, caption, scheduleDate, tags, mediaLink, selectedPosts: confirmedPosts, publishToAll: true });
   };
 
   const handleOpenModal = () => {
@@ -395,8 +377,6 @@ export default function PostScreen() {
     setSelectedPosts([]);
   };
 
-  const platforms = contentType === 'post' ? PLATFORMS_POST : PLATFORMS_REEL;
-
   const float1Y = floatAnim1.interpolate({
     inputRange: [0, 0.5, 1],
     outputRange: [0, -15, 0],
@@ -411,21 +391,6 @@ export default function PostScreen() {
     inputRange: [0, 0.5, 1],
     outputRange: [0, -10, 0],
   });
-
-  const getPlatformColors = (platform: string) => {
-    const colorMap: Record<string, string[]> = {
-      'Instagram': ['#f09433', '#e6683c', '#dc2743', '#cc2366', '#bc1888'],
-      'Instagram Reels': ['#f09433', '#e6683c', '#dc2743', '#cc2366', '#bc1888'],
-      'Facebook': ['#1877F2', '#0a5fd1'],
-      'Facebook Reels': ['#1877F2', '#0a5fd1'],
-      'Twitter': ['#1DA1F2', '#1a8cd8'],
-      'YouTube Shorts': ['#FF0000', '#DC143C'],
-      'TikTok': ['#FF0050', '#00F2EA'],
-      'Snapchat': ['#FFFC00', '#FFA500'],
-      'All': ['#8b5cf6', '#7c3aed'],
-    };
-    return colorMap[platform] || ['#8b5cf6', '#7c3aed'];
-  };
 
   const sliderPosition = sliderAnim.interpolate({
     inputRange: [0, 1],
@@ -523,10 +488,27 @@ export default function PostScreen() {
                   <Text style={styles.labelBadgeTextDark}>Required</Text>
                 </View>
               </View>
-              <TouchableOpacity activeOpacity={0.7} style={styles.uploadButton} onPress={handleUploadFile}>
-                <Upload color="#000000" size={20} strokeWidth={2.5} />
-                <Text style={styles.uploadButtonText}>Upload File</Text>
-              </TouchableOpacity>
+              {contentType === 'post' ? (
+                <View style={styles.uploadButtonsContainer}>
+                  <TouchableOpacity activeOpacity={0.7} style={styles.uploadButton} onPress={() => handleUploadFile('video')}>
+                    <Video color="#000000" size={20} strokeWidth={2.5} />
+                    <Text style={styles.uploadButtonText}>Upload Video</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity activeOpacity={0.7} style={styles.uploadButton} onPress={() => handleUploadFile('photo')}>
+                    <ImageIcon color="#000000" size={20} strokeWidth={2.5} />
+                    <Text style={styles.uploadButtonText}>Upload Photo</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity activeOpacity={0.7} style={styles.uploadButton} onPress={() => handleUploadFile('both')}>
+                    <Upload color="#000000" size={20} strokeWidth={2.5} />
+                    <Text style={styles.uploadButtonText}>Upload Both</Text>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <TouchableOpacity activeOpacity={0.7} style={styles.uploadButton} onPress={() => handleUploadFile('video')}>
+                  <Video color="#000000" size={20} strokeWidth={2.5} />
+                  <Text style={styles.uploadButtonText}>Upload Video File</Text>
+                </TouchableOpacity>
+              )}
               {uploadedImage && (
                 <View style={styles.uploadedImageContainer}>
                   <Image source={{ uri: uploadedImage }} style={styles.uploadedImage} />
@@ -715,50 +697,6 @@ export default function PostScreen() {
             </View>
           </LinearGradient>
 
-          <View style={styles.platformsSection}>
-            <View style={styles.platformsHeader}>
-              <Text style={styles.platformsTitle}>Select Platforms</Text>
-              <View style={styles.platformsBadge}>
-                <Text style={styles.platformsBadgeText}>{selectedPlatforms.length} selected</Text>
-              </View>
-            </View>
-            <View style={styles.platformGrid}>
-              {platforms.map((platform) => {
-                const allPlatforms = contentType === 'post'
-                  ? ['Instagram', 'Facebook', 'Twitter', 'Snapchat']
-                  : ['Instagram Reels', 'YouTube Shorts', 'TikTok', 'Facebook Reels', 'Snapchat'];
-                const isAllSelected = platform === 'All' && selectedPlatforms.length === allPlatforms.length;
-                const isSelected = platform === 'All' ? isAllSelected : selectedPlatforms.includes(platform);
-                const colors = getPlatformColors(platform);
-                return (
-                  <TouchableOpacity
-                    key={platform}
-                    onPress={() => handlePlatformToggle(platform)}
-                    activeOpacity={0.7}
-                  >
-                    {isSelected ? (
-                      <LinearGradient
-                        colors={colors}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 1, y: 1 }}
-                        style={styles.platformChip}
-                      >
-                        <Text style={styles.platformChipTextActive}>
-                          {platform}
-                        </Text>
-                      </LinearGradient>
-                    ) : (
-                      <View style={styles.platformChipInactive}>
-                        <Text style={styles.platformChipText}>
-                          {platform}
-                        </Text>
-                      </View>
-                    )}
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-          </View>
 
           <TouchableOpacity
             style={[
@@ -1051,6 +989,9 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontFamily: 'Archivo-Bold',
     letterSpacing: 2,
+  },
+  uploadButtonsContainer: {
+    gap: 10,
   },
   uploadButton: {
     backgroundColor: 'rgba(255, 255, 255, 0.25)',
