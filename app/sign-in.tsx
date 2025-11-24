@@ -86,6 +86,10 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 28,
     justifyContent: 'center',
+    alignItems: 'center',
+    maxWidth: 500,
+    width: '100%',
+    alignSelf: 'center',
   },
   headerSection: {
     marginBottom: 48,
@@ -108,6 +112,7 @@ const styles = StyleSheet.create({
   },
   formSection: {
     gap: 20,
+    width: '100%',
   },
   inputWrapper: {
     flexDirection: 'row',

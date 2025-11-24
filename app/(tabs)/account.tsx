@@ -5,17 +5,9 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { ArrowLeft, User, Bell, Lock, CreditCard, LogOut, Check, Plus, Camera } from 'lucide-react-native';
 import * as Haptics from 'expo-haptics';
 import * as ImagePicker from 'expo-image-picker';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { supabase } from '../../lib/supabase';
 
-const SOCIAL_PLATFORMS = [
-  { id: 'instagram', name: 'Instagram', connected: false, icon: 'https://i.imgur.com/vkcuEzE.png', color: ['#E1306C', '#C13584'] },
-  { id: 'tiktok', name: 'TikTok', connected: false, icon: 'https://i.imgur.com/K2FKVUP.png', color: ['#000000', '#333333'] },
-  { id: 'youtube', name: 'YouTube', connected: false, icon: 'https://i.imgur.com/8H35ptZ.png', color: ['#FF0000', '#DC143C'] },
-  { id: 'snapchat', name: 'Snapchat', connected: false, icon: 'https://i.imgur.com/XF3FRka.png', color: ['#FFFC00', '#FFA500'] },
-  { id: 'twitter', name: 'Twitter', connected: false, icon: 'https://i.imgur.com/fPOjKNr.png', color: ['#1DA1F2', '#1a8cd8'] },
-  { id: 'facebook', name: 'Facebook', connected: false, icon: 'https://i.imgur.com/zfY36en.png', color: ['#1877F2', '#0a5fd1'] },
-];
 
 const SETTINGS_OPTIONS = [
   { id: 'edit', label: 'Edit Profile', icon: User, color: ['#8b5cf6', '#7c3aed'] },
@@ -31,9 +23,14 @@ export default function AccountScreen() {
   const [showConnectionModal, setShowConnectionModal] = useState(false);
   const [selectedPlatform, setSelectedPlatform] = useState<any>(null);
   const [connectingPlatform, setConnectingPlatform] = useState(false);
-  const [platforms, setPlatforms] = useState(() =>
-    SOCIAL_PLATFORMS.map(p => ({ ...p, connected: false }))
-  );
+  const [platforms, setPlatforms] = useState([
+    { id: 'instagram', name: 'Instagram', connected: false, icon: 'https://i.imgur.com/vkcuEzE.png', color: ['#E1306C', '#C13584'] },
+    { id: 'tiktok', name: 'TikTok', connected: false, icon: 'https://i.imgur.com/K2FKVUP.png', color: ['#000000', '#333333'] },
+    { id: 'youtube', name: 'YouTube', connected: false, icon: 'https://i.imgur.com/8H35ptZ.png', color: ['#FF0000', '#DC143C'] },
+    { id: 'snapchat', name: 'Snapchat', connected: false, icon: 'https://i.imgur.com/XF3FRka.png', color: ['#FFFC00', '#FFA500'] },
+    { id: 'twitter', name: 'Twitter', connected: false, icon: 'https://i.imgur.com/fPOjKNr.png', color: ['#1DA1F2', '#1a8cd8'] },
+    { id: 'facebook', name: 'Facebook', connected: false, icon: 'https://i.imgur.com/zfY36en.png', color: ['#1877F2', '#0a5fd1'] },
+  ]);
 
   const handleBack = () => {
     if (Platform.OS !== 'web') {
