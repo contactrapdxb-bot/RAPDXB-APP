@@ -60,7 +60,8 @@ export default function PostScreen() {
   const [tagInput, setTagInput] = useState('');
   const [tags, setTags] = useState<string[]>([]);
   const [mediaLink, setMediaLink] = useState('');
-  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
+  const [uploadedVideo, setUploadedVideo] = useState<string | null>(null);
+  const [uploadedPhoto, setUploadedPhoto] = useState<string | null>(null);
   const [isRecordingTitle, setIsRecordingTitle] = useState(false);
   const [isRecordingCaption, setIsRecordingCaption] = useState(false);
   const recognitionTitle = useRef<any>(null);
@@ -232,7 +233,8 @@ export default function PostScreen() {
     setTags([]);
     setTagInput('');
     setMediaLink('');
-    setUploadedImage(null);
+    setUploadedVideo(null);
+    setUploadedPhoto(null);
     setScheduleDate(null);
   };
 
@@ -246,7 +248,7 @@ export default function PostScreen() {
     }
   };
 
-  const handleUploadFile = async (mediaType: 'photo' | 'video' | 'both') => {
+  const handleUploadFile = async (mediaType: 'photo' | 'video') => {
     if (Platform.OS !== 'web') {
       Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
     }
@@ -257,10 +259,8 @@ export default function PostScreen() {
       return;
     }
 
-    let mediaTypes = ImagePicker.MediaTypeOptions.All;
-    if (mediaType === 'photo') {
-      mediaTypes = ImagePicker.MediaTypeOptions.Images;
-    } else if (mediaType === 'video') {
+    let mediaTypes = ImagePicker.MediaTypeOptions.Images;
+    if (mediaType === 'video') {
       mediaTypes = ImagePicker.MediaTypeOptions.Videos;
     }
 
@@ -271,7 +271,11 @@ export default function PostScreen() {
     });
 
     if (!result.canceled) {
-      setUploadedImage(result.assets[0].uri);
+      if (mediaType === 'video') {
+        setUploadedVideo(result.assets[0].uri);
+      } else {
+        setUploadedPhoto(result.assets[0].uri);
+      }
     }
   };
 
@@ -498,10 +502,6 @@ export default function PostScreen() {
                     <ImageIcon color="#000000" size={20} strokeWidth={2.5} />
                     <Text style={styles.uploadButtonText}>Upload Photo</Text>
                   </TouchableOpacity>
-                  <TouchableOpacity activeOpacity={0.7} style={styles.uploadButton} onPress={() => handleUploadFile('both')}>
-                    <Upload color="#000000" size={20} strokeWidth={2.5} />
-                    <Text style={styles.uploadButtonText}>Upload Both</Text>
-                  </TouchableOpacity>
                 </View>
               ) : (
                 <TouchableOpacity activeOpacity={0.7} style={styles.uploadButton} onPress={() => handleUploadFile('video')}>
@@ -509,22 +509,46 @@ export default function PostScreen() {
                   <Text style={styles.uploadButtonText}>Upload Video File</Text>
                 </TouchableOpacity>
               )}
-              {uploadedImage && (
-                <View style={styles.uploadedImageContainer}>
-                  <Image source={{ uri: uploadedImage }} style={styles.uploadedImage} />
-                  <TouchableOpacity
-                    style={styles.uploadedRemoveButton}
-                    onPress={() => {
-                      if (Platform.OS !== 'web') {
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-                      }
-                      setUploadedImage(null);
-                    }}
-                    activeOpacity={0.7}
-                    hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-                  >
-                    <X color="#ffffff" size={18} strokeWidth={2.5} />
-                  </TouchableOpacity>
+              {(uploadedVideo || uploadedPhoto) && (
+                <View style={styles.uploadedFilesContainer}>
+                  {uploadedVideo && (
+                    <View style={styles.uploadedFileItem}>
+                      <View style={styles.uploadedFilePreview}>
+                        <Video color="#ffffff" size={24} strokeWidth={2} />
+                      </View>
+                      <TouchableOpacity
+                        style={styles.uploadedRemoveButton}
+                        onPress={() => {
+                          if (Platform.OS !== 'web') {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                          }
+                          setUploadedVideo(null);
+                        }}
+                        activeOpacity={0.7}
+                        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                      >
+                        <X color="#ffffff" size={18} strokeWidth={2.5} />
+                      </TouchableOpacity>
+                    </View>
+                  )}
+                  {uploadedPhoto && (
+                    <View style={styles.uploadedFileItem}>
+                      <Image source={{ uri: uploadedPhoto }} style={styles.uploadedImage} />
+                      <TouchableOpacity
+                        style={styles.uploadedRemoveButton}
+                        onPress={() => {
+                          if (Platform.OS !== 'web') {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+                          }
+                          setUploadedPhoto(null);
+                        }}
+                        activeOpacity={0.7}
+                        hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+                      >
+                        <X color="#ffffff" size={18} strokeWidth={2.5} />
+                      </TouchableOpacity>
+                    </View>
+                  )}
                 </View>
               )}
             </View>
@@ -1326,7 +1350,12 @@ const styles = StyleSheet.create({
     shadowRadius: 16,
     elevation: 8,
   },
-  uploadedImageContainer: {
+  uploadedFilesContainer: {
+    flexDirection: 'row',
+    gap: 12,
+    flexWrap: 'wrap',
+  },
+  uploadedFileItem: {
     position: 'relative',
     width: 100,
     height: 100,
@@ -1334,6 +1363,13 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
     borderWidth: 2,
     borderColor: 'rgba(255, 255, 255, 0.5)',
+  },
+  uploadedFilePreview: {
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   uploadedImage: {
     width: '100%',

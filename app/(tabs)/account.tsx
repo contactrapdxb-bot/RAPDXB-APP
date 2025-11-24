@@ -384,32 +384,26 @@ export default function AccountScreen() {
                 />
                 <Text style={styles.modalTitle}>Connect {selectedPlatform.name}</Text>
                 <Text style={styles.modalDescription}>
-                  You'll be redirected to {selectedPlatform.name} to authorize access to your account.
+                  This is a placeholder popup. In production, this will redirect to {selectedPlatform.name} for authorization.
                 </Text>
 
-                <View style={styles.modalButtons}>
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    onPress={() => setShowConnectionModal(false)}
-                    style={styles.modalCancelButton}
-                    disabled={connectingPlatform}
-                  >
-                    <Text style={styles.modalCancelText}>Cancel</Text>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    onPress={handleConfirmConnection}
-                    style={styles.modalConnectButton}
-                    disabled={connectingPlatform}
-                  >
-                    {connectingPlatform ? (
-                      <ActivityIndicator size="small" color="#000000" />
-                    ) : (
-                      <Text style={styles.modalConnectText}>Connect</Text>
-                    )}
-                  </TouchableOpacity>
+                <View style={styles.modalWebViewPlaceholder}>
+                  <Text style={styles.modalPlaceholderText}>Web Authorization View</Text>
+                  <Text style={styles.modalPlaceholderSubtext}>OAuth flow will happen here</Text>
                 </View>
+
+                <TouchableOpacity
+                  activeOpacity={0.7}
+                  onPress={handleConfirmConnection}
+                  style={styles.modalDoneButton}
+                  disabled={connectingPlatform}
+                >
+                  {connectingPlatform ? (
+                    <ActivityIndicator size="small" color="#000000" />
+                  ) : (
+                    <Text style={styles.modalDoneText}>Done (Temporary)</Text>
+                  )}
+                </TouchableOpacity>
               </LinearGradient>
             )}
           </View>
@@ -746,37 +740,41 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 22,
   },
-  modalButtons: {
-    flexDirection: 'row',
-    gap: 12,
+  modalWebViewPlaceholder: {
     width: '100%',
-    marginTop: 12,
-  },
-  modalCancelButton: {
-    flex: 1,
+    height: 200,
     backgroundColor: 'rgba(255, 255, 255, 0.15)',
-    borderRadius: 16,
-    paddingVertical: 16,
+    borderRadius: 20,
+    justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1.5,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    gap: 8,
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.25)',
+    borderStyle: 'dashed',
   },
-  modalCancelText: {
+  modalPlaceholderText: {
     fontSize: 16,
     fontFamily: 'Archivo-Bold',
-    color: '#ffffff',
+    color: 'rgba(255, 255, 255, 0.9)',
     letterSpacing: -0.3,
   },
-  modalConnectButton: {
-    flex: 1,
+  modalPlaceholderSubtext: {
+    fontSize: 13,
+    fontFamily: 'Archivo-Regular',
+    color: 'rgba(255, 255, 255, 0.6)',
+    letterSpacing: -0.2,
+  },
+  modalDoneButton: {
+    width: '100%',
     backgroundColor: '#ffffff',
     borderRadius: 16,
     paddingVertical: 16,
     alignItems: 'center',
     justifyContent: 'center',
     minHeight: 52,
+    marginTop: 8,
   },
-  modalConnectText: {
+  modalDoneText: {
     fontSize: 16,
     fontFamily: 'Archivo-Bold',
     color: '#000000',
